@@ -1,0 +1,285 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
+using myproject_Library.Model;
+
+namespace myproject
+{
+    public partial class CreateTransactionPage : Form
+    {
+
+        private int _requestId;
+        private EquipmentDBContext dbcontext;
+        RentalTransaction transaction;
+        public CreateTransactionPage(int requestid)
+        {
+            InitializeComponent();
+            _requestId = requestid;
+            dbcontext = new EquipmentDBContext();
+        }
+
+        public CreateTransactionPage(RentalTransaction rentalTransaction)
+        {
+            InitializeComponent();
+            dbcontext = new EquipmentDBContext();
+            transaction = rentalTransaction;
+        }
+
+        private void CreateTransactionPage_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                PaymentComboBox.DataSource = dbcontext.PaymentStatuses.ToList();
+                PaymentComboBox.DisplayMember = "PaymentStatusName";
+                PaymentComboBox.ValueMember = "PaymentStatusId";
+                PaymentComboBox.SelectedItem = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading payment statuses: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (transaction != null) 
+            {
+                txtStartDate.Text = transaction.RentalStartDate?.ToString("yyyy-MM-dd") ?? "N/A";
+                txtReturnDate.Text = transaction.RentalReturnDate?.ToString("yyyy-MM-dd") ?? "N/A";
+                RentalPeriodTextBox.Text = transaction.RentalPeriod?.ToString() ?? "0";
+                txtTotalCost.Text = transaction.RentalFee?.ToString("C") ?? "0";
+                Deposit.Text = transaction.Deposit?.ToString() ?? "0";
+                EquipmentTextBox.Text = transaction.EquipmentId.ToString();
+                RequestTextBox.Text = transaction.RequestId.ToString();
+                PaymentComboBox.SelectedValue = transaction.PaymentStatusId;
+
+                if (transaction.Equipment != null)
+                {
+                    EquipmentTextBox.Text = transaction.Equipment.EquipmentName;
+                }
+
+                HighlightRentedDatesForEquipment(transaction.EquipmentId.Value);
+            }
+            else 
+            {
+                var request = dbcontext.RentalRequests.FirstOrDefault(r => r.RequestId == _requestId);
+                if (request != null)
+                {
+                    txtStartDate.Text = request.StartDate?.ToString("yyyy-MM-dd") ?? "N/A";
+                    txtReturnDate.Text = request.ReturnDate?.ToString("yyyy-MM-dd") ?? "N/A";
+                    txtTotalCost.Text = request.TotalCost?.ToString("C") ?? "N/A";
+                    EquipmentTextBox.Text = request.EquipmentId?.ToString() ?? "N/A";
+                    RequestTextBox.Text = request.RequestStatusId?.ToString() ?? "N/A";
+                    Deposit.Text = "0";
+
+                    var equipment = dbcontext.Equipment.FirstOrDefault(e => e.EquipmentId == request.EquipmentId);
+                    if (equipment != null && request.StartDate.HasValue && request.ReturnDate.HasValue)
+                    {
+                        TimeSpan rentalPeriod = request.ReturnDate.Value - request.StartDate.Value;
+                        RentalPeriodTextBox.Text = rentalPeriod.Days.ToString();
+
+                        decimal rentalFee = equipment.RentalPrice.GetValueOrDefault() * rentalPeriod.Days;
+                        txtTotalCost.Text = rentalFee.ToString("C");
+                    }
+                    else
+                    {
+                        RentalPeriodTextBox.Text = "N/A";
+                        txtTotalCost.Text = "N/A";
+                    }
+
+                    HighlightRentedDatesForEquipment(request.EquipmentId.GetValueOrDefault());
+                }
+                else
+                {
+                    MessageBox.Show("Request not found for the provided RequestId.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+
+        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
+        {
+
+        }
+        private void HighlightRentedDatesForEquipment(int equipmentId)
+        {
+            try
+            {
+                var approvedRequests = dbcontext.RentalRequests
+                                                .Where(r => r.EquipmentId == equipmentId && r.RequestStatusId == 2) // todo: make it as enum
+                                                .ToList();
+
+                List<DateTime> rentedDates = new List<DateTime>();
+
+                foreach (var request in approvedRequests)
+                {
+                    var transaction = dbcontext.RentalTransactions.Where(t => t.RequestId == request.RequestId).FirstOrDefault();
+                    if (transaction != null)
+                    {
+                        rentedDates.AddRange(Enumerable.Range(0, (transaction.RentalReturnDate.Value - transaction.RentalStartDate.Value).Days + 1)
+                                                           .Select(d => transaction.RentalStartDate.Value.AddDays(d)));
+                    }
+                    else
+                    {
+                        DateTime startDate = request.StartDate.Value;
+                        DateTime returnDate = request.ReturnDate.Value;
+
+                        rentedDates.AddRange(Enumerable.Range(0, (returnDate - startDate).Days + 1)
+                                                           .Select(d => startDate.AddDays(d)));
+
+                    }   
+                }
+
+                if (rentedDates.Any())
+                {
+                    monthCalendar1.BoldedDates = rentedDates.Distinct().ToArray();
+                    monthCalendar1.Update();
+                }
+                else
+                {
+                    MessageBox.Show("No rented dates found for the selected equipment.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void PaymentComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Submit_btn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int equipmentId = int.Parse(EquipmentTextBox.Text);
+                var equipment = dbcontext.Equipment.FirstOrDefault(e => e.EquipmentId == equipmentId);
+
+                decimal rentalPrice = equipment.RentalPrice ?? 0; 
+
+                int rentalPeriod = int.Parse(RentalPeriodTextBox.Text);
+                decimal rentalFee = rentalPrice * rentalPeriod;
+                int paymentStatusId = (int)PaymentComboBox.SelectedValue;
+
+                var newTransaction = new RentalTransaction
+                {
+                    RequestId = _requestId,
+                    RentalStartDate = DateTime.Parse(txtStartDate.Text),
+                    RentalReturnDate = DateTime.Parse(txtReturnDate.Text),
+                    RentalPeriod = rentalPeriod,
+                    RentalFee = rentalFee,
+                    Deposit = decimal.Parse(Deposit.Text),
+                    EquipmentId = equipmentId,
+                    PaymentStatusId = paymentStatusId
+                };
+
+
+                if (transaction != null)
+                {
+                    validateTransaction(equipmentId, transaction.RequestId.Value);
+
+                    var existingTransaction = dbcontext.RentalTransactions
+                        .FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
+
+                    
+                    existingTransaction.RentalStartDate = DateTime.Parse(txtStartDate.Text);
+                    existingTransaction.RentalReturnDate = DateTime.Parse(txtReturnDate.Text);
+                    existingTransaction.RentalPeriod = rentalPeriod;
+                    existingTransaction.RentalFee = rentalFee;
+                    existingTransaction.Deposit = decimal.Parse(Deposit.Text);
+                    existingTransaction.EquipmentId = equipmentId;
+                    existingTransaction.PaymentStatusId = paymentStatusId;
+                    existingTransaction.RequestId = int.Parse(RequestTextBox.Text); 
+
+                    // Optional: avoid tracking error if navigation properties exist
+                    dbcontext.Entry(existingTransaction).State = EntityState.Modified;
+                    MessageBox.Show("Transaction Updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+                else
+                {
+                    validateTransaction(equipmentId, _requestId);
+
+                    dbcontext.RentalTransactions.Add(newTransaction);
+                    MessageBox.Show("Transaction added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                dbcontext.SaveChanges();
+                this.Close();
+              
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void validateTransaction(int equipmentId, int requestId)
+        {
+            if (string.IsNullOrEmpty(txtStartDate.Text) || string.IsNullOrEmpty(txtReturnDate.Text) ||
+                    string.IsNullOrEmpty(RentalPeriodTextBox.Text) || string.IsNullOrEmpty(EquipmentTextBox.Text))
+            {
+                MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (PaymentComboBox.SelectedValue == null)
+            {
+                MessageBox.Show("Please select valid values from the payment combobox.",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DateTime startDate = DateTime.Parse(txtStartDate.Text);
+            DateTime returnDate = DateTime.Parse(txtReturnDate.Text);
+
+            if (startDate > returnDate)
+            {
+                MessageBox.Show("Start date cannot be after end date");
+                return;
+            }
+
+            var approvedRequests = dbcontext.RentalRequests
+                .Where(r => r.EquipmentId == equipmentId &&
+                r.RequestId != requestId &&
+                r.RequestStatusId == 2)
+                .ToList();
+
+            foreach (var request in approvedRequests)
+            {
+                var transaction = dbcontext.RentalTransactions
+                    .FirstOrDefault(t => t.RequestId == request.RequestId);
+
+                DateTime checkStartDate;
+                DateTime checkEndDate;
+
+                if (transaction != null)
+                {
+                    checkStartDate = transaction.RentalStartDate.Value;
+                    checkEndDate = transaction.RentalReturnDate.Value;
+                }
+                else
+                {
+                    checkStartDate = request.StartDate.Value;
+                    checkEndDate = request.ReturnDate.Value;
+                }
+
+                if (checkStartDate <= returnDate && checkEndDate >= startDate)
+                {
+                    MessageBox.Show("Equipment is already reserved during this period.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+        }
+    }
+}
