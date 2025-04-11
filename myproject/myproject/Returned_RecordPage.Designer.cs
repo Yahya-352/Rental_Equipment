@@ -1,6 +1,6 @@
 ﻿namespace myproject
 {
-    partial class TransactionPage
+    partial class Returned_RecordPage
     {
         /// <summary>
         /// Required designer variable.
@@ -28,19 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            dgvReturn = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dgvReturn).BeginInit();
             SuspendLayout();
             // 
-            // TransactionPage
+            // dgvReturn
+            // 
+            dgvReturn.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvReturn.Location = new Point(42, 65);
+            dgvReturn.Name = "dgvReturn";
+            dgvReturn.RowHeadersWidth = 51;
+            dgvReturn.RowTemplate.Height = 29;
+            dgvReturn.Size = new Size(688, 322);
+            dgvReturn.TabIndex = 0;
+            // 
+            // Returned_RecordPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Name = "TransactionPage";
-            Text = "TransactionPage";
-            Load += TransactionPage_Load;
+            Controls.Add(dgvReturn);
+            Name = "Returned_RecordPage";
+            Text = "Returned_RecordPage";
+            Load += Returned_RecordPage_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvReturn).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
+
+        private DataGridView dgvReturn;
     }
 }

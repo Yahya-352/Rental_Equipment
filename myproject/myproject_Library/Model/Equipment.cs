@@ -13,6 +13,7 @@ namespace myproject_Library.Model
             RentalRequests = new HashSet<RentalRequest>();
             RentalTransactions = new HashSet<RentalTransaction>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Equipment_ID")]
@@ -26,11 +27,20 @@ namespace myproject_Library.Model
         public string? Description { get; set; }
         [Column("Rental_Price", TypeName = "numeric(18, 0)")]
         public decimal? RentalPrice { get; set; }
+
+        [Column("Cost", TypeName = "numeric(18, 0)")]
+        public decimal? Cost { get; set; }
+
+
+
         [Column("Availability_Status_ID")]
         public int? AvailabilityStatusId { get; set; }
         [Column("Category_ID")]
         public int? CategoryId { get; set; }
         [Column("Condition_ID")]
+
+       
+
         public int? ConditionId { get; set; }
         [Column("Late_Penalty_Percentage", TypeName = "numeric(18, 0)")]
         public decimal? LatePenaltyPercentage { get; set; }

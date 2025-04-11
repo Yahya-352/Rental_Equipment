@@ -9,6 +9,8 @@ namespace myproject_Library.Model
     [Table("Document")]
     public partial class Document
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [Key]
         [Column("Document_ID")]
         public int DocumentId { get; set; }

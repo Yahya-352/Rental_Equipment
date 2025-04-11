@@ -8,6 +8,8 @@ namespace myproject_Library.Model
 {
     public partial class Notification
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [Key]
         [Column("Notification_ID")]
         public int NotificationId { get; set; }

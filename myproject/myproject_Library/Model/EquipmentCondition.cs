@@ -14,6 +14,7 @@ namespace myproject_Library.Model
             Equipment = new HashSet<Equipment>();
             ReturnRecords = new HashSet<ReturnRecord>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Condition_ID")]

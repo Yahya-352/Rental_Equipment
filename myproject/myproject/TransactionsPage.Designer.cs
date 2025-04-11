@@ -32,6 +32,7 @@
             dataGridView1 = new DataGridView();
             Filter = new Button();
             ddlequipmentfilter = new ComboBox();
+            btn_return = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -76,10 +77,21 @@
             ddlequipmentfilter.Size = new Size(151, 28);
             ddlequipmentfilter.TabIndex = 6;
             // 
+            // btn_return
+            // 
+            btn_return.Location = new Point(711, 353);
+            btn_return.Name = "btn_return";
+            btn_return.Size = new Size(94, 29);
+            btn_return.TabIndex = 11;
+            btn_return.Text = "Returned";
+            btn_return.UseVisualStyleBackColor = true;
+            btn_return.Click += btn_return_Click;
+            // 
             // TransactionsPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(btn_return);
             Controls.Add(Edit);
             Controls.Add(dataGridView1);
             Controls.Add(Filter);
@@ -97,5 +109,6 @@
         private DataGridView dataGridView1;
         private Button Filter;
         private ComboBox ddlequipmentfilter;
+        private Button btn_return;
     }
 }

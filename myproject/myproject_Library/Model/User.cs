@@ -17,6 +17,7 @@ namespace myproject_Library.Model
             Notifications = new HashSet<Notification>();
             RentalRequests = new HashSet<RentalRequest>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("User_ID")]

@@ -13,6 +13,7 @@ namespace myproject_Library.Model
         {
             Equipment = new HashSet<Equipment>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Availability_Status_ID")]

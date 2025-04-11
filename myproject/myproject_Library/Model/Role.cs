@@ -13,6 +13,7 @@ namespace myproject_Library.Model
         {
             Users = new HashSet<User>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Role_ID")]

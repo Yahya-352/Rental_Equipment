@@ -9,6 +9,8 @@ namespace myproject_Library.Model
     [Table("Return_Record")]
     public partial class ReturnRecord
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [Key]
         [Column("Return_ID")]
         public int ReturnId { get; set; }
