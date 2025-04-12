@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             dgvReturn = new DataGridView();
+            updateBtn = new Button();
+            deleteReturnbtn = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvReturn).BeginInit();
             SuspendLayout();
             // 
@@ -39,14 +41,36 @@
             dgvReturn.Name = "dgvReturn";
             dgvReturn.RowHeadersWidth = 51;
             dgvReturn.RowTemplate.Height = 29;
-            dgvReturn.Size = new Size(688, 322);
+            dgvReturn.Size = new Size(687, 281);
             dgvReturn.TabIndex = 0;
+            // 
+            // updateBtn
+            // 
+            updateBtn.Location = new Point(42, 391);
+            updateBtn.Name = "updateBtn";
+            updateBtn.Size = new Size(94, 29);
+            updateBtn.TabIndex = 1;
+            updateBtn.Text = "Update";
+            updateBtn.UseVisualStyleBackColor = true;
+            updateBtn.Click += updateBtn_Click;
+            // 
+            // deleteReturnbtn
+            // 
+            deleteReturnbtn.Location = new Point(635, 391);
+            deleteReturnbtn.Name = "deleteReturnbtn";
+            deleteReturnbtn.Size = new Size(94, 29);
+            deleteReturnbtn.TabIndex = 2;
+            deleteReturnbtn.Text = "Delete";
+            deleteReturnbtn.UseVisualStyleBackColor = true;
+            deleteReturnbtn.Click += deleteReturnbtn_Click;
             // 
             // Returned_RecordPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(deleteReturnbtn);
+            Controls.Add(updateBtn);
             Controls.Add(dgvReturn);
             Name = "Returned_RecordPage";
             Text = "Returned_RecordPage";
@@ -58,5 +82,7 @@
         #endregion
 
         private DataGridView dgvReturn;
+        private Button updateBtn;
+        private Button deleteReturnbtn;
     }
 }

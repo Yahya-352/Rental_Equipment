@@ -18,30 +18,52 @@ namespace myproject
         RentalTransaction transc;
         EquipmentDBContext context;
 
+        bool Update = false;
+        int return_id = -1;
         Decimal fee;
         public Return_form()
         {
             InitializeComponent();
             context = new EquipmentDBContext();
         }
+
+        public Return_form(int Return, bool update)
+        {
+            InitializeComponent();
+            context = new EquipmentDBContext();
+            this.Update = true;
+            this.return_id= Return;
+            loadTrans();
+
+            transc = context.RentalTransactions
+                   .Include(t => t.Equipment)
+                   .ThenInclude(x => x.RentalRequests)
+                   .Include(t => t.ReturnRecords)
+                   .FirstOrDefault(t => t.ReturnRecords.Any(rr => rr.ReturnId == Return));
+
+            if (transc != null)
+            {
+                textBox1.Text = transc.TransactionId.ToString();
+
+                var returnRecord = transc.ReturnRecords.FirstOrDefault(rr => rr.ReturnId == Return);
+                if (returnRecord != null)
+                {
+                    dateTimePicker1.Value = returnRecord.ActualReturnDate.Value;
+                    codition_cb.SelectedValue = returnRecord.ConditionId;
+                }
+
+                calculateLateDays();
+            }
+        }
         public Return_form(int TranscID)
         {
             InitializeComponent();
-
-
-            context = new EquipmentDBContext();
-            codition_cb.DataSource = context.EquipmentConditions.ToList();
-
-            codition_cb.DisplayMember = "ConditionName";
-
-            codition_cb.ValueMember = "ConditionId";
-
-
+            loadTrans();
             //codition_cb.SelectedValue = 2;
 
 
             transc = context.RentalTransactions
-                        .Include(t => t.Equipment)  
+                        .Include(t => t.Equipment)
                         .FirstOrDefault(t => t.TransactionId == TranscID);
 
             textBox1.Text = transc.TransactionId.ToString();
@@ -52,9 +74,15 @@ namespace myproject
         }
 
 
+
         private void loadTrans()
         {
+            context = new EquipmentDBContext();
+            codition_cb.DataSource = context.EquipmentConditions.ToList();
 
+            codition_cb.DisplayMember = "ConditionName";
+
+            codition_cb.ValueMember = "ConditionId";
         }
 
         private void Return_form_Load(object sender, EventArgs e)
@@ -64,36 +92,53 @@ namespace myproject
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             try
             {
-                // Create a new ReturnRecord object
-                ReturnRecord returnRecord = new ReturnRecord
-                {
-                    // Set values from the transc (RentalTransaction) object
-                    ActualReturnDate = dateTimePicker1.Value, // Actual return date from DateTimePicker
-                    LateReturnFees = fee, // Late fee calculated
-                   // AdditionalCharges = 0, // Set additional charges if applicable, or calculate accordingly
-                    ConditionId = (int)codition_cb.SelectedValue, // Selected condition from ComboBox (must be an integer)
-                    TransactionId = transc.TransactionId // The associated Transaction ID
-                };
+                ReturnRecord returnRecord;
 
-                // Add the new ReturnRecord to the context
-                context.ReturnRecords.Add(returnRecord);
+                if (this.Update)
+                {
+                    // Get the existing return record
+                    int returnId = this.return_id;
+                    returnRecord = context.ReturnRecords.Find(returnId);
+
+                    if (returnRecord == null)
+                    {
+                        MessageBox.Show("Return record not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // Update its properties
+                    returnRecord.ActualReturnDate = dateTimePicker1.Value;
+                    returnRecord.LateReturnFees = fee;
+                    returnRecord.ConditionId = (int)codition_cb.SelectedValue;
+                }
+                else
+                {
+                    // Create a new return record
+                    returnRecord = new ReturnRecord
+                    {
+                        ActualReturnDate = dateTimePicker1.Value,
+                        LateReturnFees = fee,
+                        ConditionId = (int)codition_cb.SelectedValue,
+                        TransactionId = transc.TransactionId
+                    };
+
+                    context.ReturnRecords.Add(returnRecord);
+                }
 
                 // Save changes to the database
                 context.SaveChanges();
 
-                // Optionally, show a message box or perform other actions after saving
-                MessageBox.Show("Return record added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Return record " + (this.Update ? "updated" : "added") + " successfully!",
+                              "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                // Handle any errors
                 MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+    
         public void calculateLateDays()
         {
 
