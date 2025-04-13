@@ -27,11 +27,31 @@ namespace myproject
             refreshTransactionsGridView();
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             dataGridView1.Refresh();
+
+            try
+            {
+                ddlequipmentfilter.DataSource = dbcontext.Equipment.ToList();
+                ddlequipmentfilter.DisplayMember = "EquipmentName";
+                ddlequipmentfilter.ValueMember = "EquipmentId";
+                ddlequipmentfilter.SelectedItem = null;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         private void refreshTransactionsGridView()
         {
             dataGridView1.DataSource = null;
             var rentalTransaction = dbcontext.RentalTransactions.AsQueryable();
+            if (txtfilterno.Text != "")
+            {
+                rentalTransaction = rentalTransaction.Where(x => x.RequestId == Convert.ToInt32(txtfilterno.Text));
+            }
+            if (ddlequipmentfilter.SelectedValue != null)
+            {
+                rentalTransaction = rentalTransaction.Where(x => x.EquipmentId == Convert.ToInt32(ddlequipmentfilter.SelectedValue));
+            }
 
             dataGridView1.DataSource = rentalTransaction.Select(e => new
             {
@@ -64,6 +84,16 @@ namespace myproject
             transactionPage.ShowDialog();
             refreshTransactionsGridView();
 
+        }
+
+        private void txtfilterno_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Filter_Click(object sender, EventArgs e)
+        {
+            refreshTransactionsGridView();
         }
     }
 }

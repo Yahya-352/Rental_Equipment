@@ -48,5 +48,10 @@ namespace myproject
         {
             LoadPage(new TransactionsPage());
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

@@ -152,6 +152,7 @@
             txtReturnDate.Name = "txtReturnDate";
             txtReturnDate.Size = new Size(125, 27);
             txtReturnDate.TabIndex = 38;
+            txtReturnDate.TextChanged += txtReturnDate_TextChanged;
             // 
             // label2
             // 
@@ -168,6 +169,7 @@
             txtStartDate.Name = "txtStartDate";
             txtStartDate.Size = new Size(125, 27);
             txtStartDate.TabIndex = 36;
+            txtStartDate.TextChanged += txtStartDate_TextChanged;
             // 
             // label1
             // 

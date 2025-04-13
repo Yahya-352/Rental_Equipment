@@ -32,6 +32,9 @@
             dataGridView1 = new DataGridView();
             Filter = new Button();
             ddlequipmentfilter = new ComboBox();
+            txtfilterno = new TextBox();
+            label1 = new Label();
+            label2 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -67,19 +70,49 @@
             Filter.TabIndex = 7;
             Filter.Text = "Filter";
             Filter.UseVisualStyleBackColor = false;
+            Filter.Click += Filter_Click;
             // 
             // ddlequipmentfilter
             // 
             ddlequipmentfilter.FormattingEnabled = true;
-            ddlequipmentfilter.Location = new Point(73, 19);
+            ddlequipmentfilter.Location = new Point(472, 19);
             ddlequipmentfilter.Name = "ddlequipmentfilter";
             ddlequipmentfilter.Size = new Size(151, 28);
             ddlequipmentfilter.TabIndex = 6;
+            // 
+            // txtfilterno
+            // 
+            txtfilterno.Location = new Point(207, 21);
+            txtfilterno.Name = "txtfilterno";
+            txtfilterno.Size = new Size(125, 27);
+            txtfilterno.TabIndex = 11;
+            txtfilterno.TextChanged += txtfilterno_TextChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(382, 24);
+            label1.Name = "label1";
+            label1.Size = new Size(84, 20);
+            label1.TabIndex = 12;
+            label1.Text = "Equipment:";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(115, 24);
+            label2.Name = "label2";
+            label2.Size = new Size(84, 20);
+            label2.TabIndex = 13;
+            label2.Text = "Request ID:";
             // 
             // TransactionsPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(txtfilterno);
             Controls.Add(Edit);
             Controls.Add(dataGridView1);
             Controls.Add(Filter);
@@ -89,6 +122,7 @@
             Load += TransactionsPage_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -97,5 +131,8 @@
         private DataGridView dataGridView1;
         private Button Filter;
         private ComboBox ddlequipmentfilter;
+        private TextBox txtfilterno;
+        private Label label1;
+        private Label label2;
     }
 }
