@@ -13,7 +13,7 @@ namespace myproject_Library.Model
         {
             Equipment = new HashSet<Equipment>();
         }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Column("Category_ID")]
         public int CategoryId { get; set; }

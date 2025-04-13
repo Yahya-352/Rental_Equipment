@@ -14,6 +14,7 @@ namespace myproject_Library.Model
             Feedbacks = new HashSet<Feedback>();
             ReturnRecords = new HashSet<ReturnRecord>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Transaction_ID")]

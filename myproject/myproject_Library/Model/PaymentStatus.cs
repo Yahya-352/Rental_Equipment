@@ -13,6 +13,7 @@ namespace myproject_Library.Model
         {
             RentalTransactions = new HashSet<RentalTransaction>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Payment_Status_ID")]

@@ -8,6 +8,8 @@ namespace myproject_Library.Model
 {
     public partial class Log
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [Key]
         [Column("Log_ID")]
         public int LogId { get; set; }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
@@ -94,6 +95,17 @@ namespace myproject
         private void Filter_Click(object sender, EventArgs e)
         {
             refreshTransactionsGridView();
+        }
+        private void btn_return_Click(object sender, EventArgs e)
+        {
+            int selectedTransc = (int) dataGridView1.SelectedCells[0].OwningRow.Cells[0].Value;
+
+            Return_form return_Form = new Return_form(selectedTransc);
+
+            return_Form.ShowDialog();
+
+
+
         }
     }
 }

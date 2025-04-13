@@ -13,6 +13,7 @@ namespace myproject_Library.Model
         {
             RentalRequests = new HashSet<RentalRequest>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         [Key]
         [Column("Request_Status_ID")]

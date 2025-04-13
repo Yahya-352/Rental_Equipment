@@ -9,6 +9,8 @@ namespace myproject_Library.Model
     [Table("Feedback")]
     public partial class Feedback
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [Key]
         [Column("Feedback_ID")]
         public int FeedbackId { get; set; }

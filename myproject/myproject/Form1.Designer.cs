@@ -51,6 +51,7 @@
             label10 = new Label();
             label4 = new Label();
             panel2 = new Panel();
+            button5 = new Button();
             button4 = new Button();
             button3 = new Button();
             button2 = new Button();
@@ -73,7 +74,7 @@
             panel1.Controls.Add(label1);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(879, 68);
+            panel1.Size = new Size(923, 68);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
             // 
@@ -109,7 +110,7 @@
             panelContainer.Controls.Add(panel3);
             panelContainer.Location = new Point(0, 102);
             panelContainer.Name = "panelContainer";
-            panelContainer.Size = new Size(879, 402);
+            panelContainer.Size = new Size(923, 402);
             panelContainer.TabIndex = 2;
             // 
             // panel8
@@ -301,14 +302,25 @@
             // panel2
             // 
             panel2.BackColor = SystemColors.ControlDarkDark;
+            panel2.Controls.Add(button5);
             panel2.Controls.Add(button4);
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
             panel2.Location = new Point(0, 68);
             panel2.Name = "panel2";
-            panel2.Size = new Size(879, 35);
+            panel2.Size = new Size(901, 35);
             panel2.TabIndex = 3;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(750, 3);
+            button5.Name = "button5";
+            button5.Size = new Size(129, 29);
+            button5.TabIndex = 4;
+            button5.Text = "button5";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // button4
             // 
@@ -354,12 +366,13 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(878, 502);
+            ClientSize = new Size(913, 502);
             Controls.Add(panel2);
             Controls.Add(panelContainer);
             Controls.Add(panel1);
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panelContainer.ResumeLayout(false);
@@ -408,5 +421,6 @@
         private Label label11;
         private Label label9;
         private Label label10;
+        private Button button5;
     }
 }

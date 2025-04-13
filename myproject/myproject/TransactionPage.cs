@@ -16,5 +16,10 @@ namespace myproject
         {
             InitializeComponent();
         }
+
+        private void TransactionPage_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

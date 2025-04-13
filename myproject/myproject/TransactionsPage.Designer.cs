@@ -35,6 +35,7 @@
             txtfilterno = new TextBox();
             label1 = new Label();
             label2 = new Label();
+            btn_return = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -105,6 +106,15 @@
             label2.Size = new Size(84, 20);
             label2.TabIndex = 13;
             label2.Text = "Request ID:";
+            // btn_return
+            // 
+            btn_return.Location = new Point(711, 353);
+            btn_return.Name = "btn_return";
+            btn_return.Size = new Size(94, 29);
+            btn_return.TabIndex = 11;
+            btn_return.Text = "Returned";
+            btn_return.UseVisualStyleBackColor = true;
+            btn_return.Click += btn_return_Click;
             // 
             // TransactionsPage
             // 
@@ -113,6 +123,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(txtfilterno);
+            Controls.Add(btn_return);
             Controls.Add(Edit);
             Controls.Add(dataGridView1);
             Controls.Add(Filter);
@@ -134,5 +145,6 @@
         private TextBox txtfilterno;
         private Label label1;
         private Label label2;
+        private Button btn_return;
     }
 }
