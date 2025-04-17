@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace myproject_Library.Model
@@ -37,7 +38,7 @@ namespace myproject_Library.Model
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=EquipmentsDB;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\rehan\\Downloads\\EquipmentsDB.mdf;Integrated Security=True;Connect Timeout=30");
             }
         }
 
@@ -162,6 +163,105 @@ namespace myproject_Library.Model
             });
 
             OnModelCreatingPartial(modelBuilder);
+        }
+
+        public override int SaveChanges()
+        {
+            // Generate audit logs before saving changes
+            GenerateAuditLogs();
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            // Generate audit logs before saving changes asynchronously
+            GenerateAuditLogs();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void GenerateAuditLogs()
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Unchanged && e.State != EntityState.Detached)
+                .ToList();
+
+            foreach (var entry in entries)
+            {
+                // Skip the Log entity itself to avoid infinite loops
+                if (entry.Entity is Log)
+                    continue;
+
+                var entityName = entry.Entity.GetType().Name;
+                var primaryKey = GetPrimaryKeyValue(entry);
+                var action = GetActionName(entry.State);
+
+                // Create the log record
+                var log = new Log
+                {
+                    Action = action,
+                    Timestamp = DateTime.Now,
+                    Source = entityName,
+                    AffectedData = GenerateAffectedDataJson(entry, primaryKey),
+                    Exception = null // Will be filled if there's an exception
+                };
+
+                // Add the log to the context
+                Logs.Add(log);
+            }
+        }
+
+        private string GetActionName(EntityState state)
+        {
+            switch (state)
+            {
+                case EntityState.Added:
+                    return "Insert";
+                case EntityState.Modified:
+                    return "Update";
+                case EntityState.Deleted:
+                    return "Delete";
+                default:
+                    return "Unknown";
+            }
+        }
+
+        private string GetPrimaryKeyValue(EntityEntry entry)
+        {
+            var keyName = entry.Metadata.FindPrimaryKey().Properties.Select(p => p.Name).Single();
+            return entry.Property(keyName).CurrentValue?.ToString();
+        }
+
+        private string GenerateAffectedDataJson(EntityEntry entry, string primaryKey)
+        {
+            var data = new Dictionary<string, object>();
+
+            data["PrimaryKey"] = primaryKey;
+            data["EntityName"] = entry.Entity.GetType().Name;
+
+            if (entry.State == EntityState.Added)
+            {
+                // For new entities, log all the property values
+                foreach (var property in entry.Properties)
+                {
+                    data[property.Metadata.Name] = property.CurrentValue?.ToString();
+                }
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                // For modified entities, log the changed properties
+                var changes = new Dictionary<string, object>();
+                foreach (var property in entry.Properties.Where(p => p.IsModified))
+                {
+                    changes[property.Metadata.Name] = new
+                    {
+                        OldValue = property.OriginalValue?.ToString(),
+                        NewValue = property.CurrentValue?.ToString()
+                    };
+                }
+                data["Changes"] = changes;
+            }
+
+            return System.Text.Json.JsonSerializer.Serialize(data);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

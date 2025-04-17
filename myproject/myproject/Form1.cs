@@ -51,12 +51,16 @@ namespace myproject
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             new Returned_RecordPage().Show();
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            new Logs().Show();
         }
     }
 }

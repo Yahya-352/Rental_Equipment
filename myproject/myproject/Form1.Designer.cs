@@ -33,7 +33,8 @@
             label1 = new Label();
             panelContainer = new Panel();
             panel2 = new Panel();
-            button5 = new Button();
+            btnLogs = new Button();
+            btnLog = new Button();
             button4 = new Button();
             button3 = new Button();
             button2 = new Button();
@@ -49,7 +50,7 @@
             panel1.Controls.Add(label1);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(923, 68);
+            panel1.Size = new Size(1097, 68);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
             // 
@@ -79,31 +80,42 @@
             // 
             panelContainer.Location = new Point(0, 102);
             panelContainer.Name = "panelContainer";
-            panelContainer.Size = new Size(923, 402);
+            panelContainer.Size = new Size(1097, 402);
             panelContainer.TabIndex = 2;
             // 
             // panel2
             // 
             panel2.BackColor = SystemColors.ControlDarkDark;
-            panel2.Controls.Add(button5);
+            panel2.Controls.Add(btnLogs);
+            panel2.Controls.Add(btnLog);
             panel2.Controls.Add(button4);
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
             panel2.Location = new Point(0, 68);
             panel2.Name = "panel2";
-            panel2.Size = new Size(901, 35);
+            panel2.Size = new Size(1097, 35);
             panel2.TabIndex = 3;
             // 
-            // button5
+            // btnLogs
             // 
-            button5.Location = new Point(750, 3);
-            button5.Name = "button5";
-            button5.Size = new Size(129, 29);
-            button5.TabIndex = 4;
-            button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            btnLogs.Location = new Point(923, -1);
+            btnLogs.Name = "btnLogs";
+            btnLogs.Size = new Size(174, 36);
+            btnLogs.TabIndex = 5;
+            btnLogs.Text = "Logs";
+            btnLogs.UseVisualStyleBackColor = true;
+            btnLogs.Click += button5_Click_1;
+            // 
+            // btnLog
+            // 
+            btnLog.Location = new Point(740, -1);
+            btnLog.Name = "btnLog";
+            btnLog.Size = new Size(177, 36);
+            btnLog.TabIndex = 4;
+            btnLog.Text = "Return Requests";
+            btnLog.UseVisualStyleBackColor = true;
+            btnLog.Click += button5_Click;
             // 
             // button4
             // 
@@ -148,7 +160,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(913, 502);
+            ClientSize = new Size(1097, 502);
             Controls.Add(panel2);
             Controls.Add(panelContainer);
             Controls.Add(panel1);
@@ -172,6 +184,7 @@
         private Button button3;
         private Button button2;
         private Button button1;
-        private Button button5;
+        private Button btnLog;
+        private Button btnLogs;
     }
 }

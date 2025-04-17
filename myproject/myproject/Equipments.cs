@@ -99,7 +99,7 @@ namespace myproject
         private void Delete_Click(object sender, EventArgs e)
         {
             int firstcell = Convert.ToInt32(dataGridView1.SelectedCells[0].OwningRow.Cells[0].Value);
-            Equipment equipment = dbContext.Equipment.Single(x => x.EquipmentId == firstcell);
+            Equipment equipment = dbContext.Equipment.Where(x => x.EquipmentId == firstcell).FirstOrDefault();
             dbContext.Remove(equipment);
             dbContext.SaveChanges();
             refreshOrdersGridView();
