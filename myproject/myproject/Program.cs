@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace myproject
 {
     internal static class Program
@@ -5,6 +7,7 @@ namespace myproject
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
+        
         [STAThread]
         static void Main()
         {

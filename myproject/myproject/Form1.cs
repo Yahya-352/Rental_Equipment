@@ -7,6 +7,8 @@ namespace myproject
         public Form1()
         {
             InitializeComponent();
+            LoadPage(new Dashboard());
+
         }
 
         private void LoadPage(UserControl page)
@@ -51,8 +53,11 @@ namespace myproject
 
 
         private void button1_Click(object sender, EventArgs e)
-        { }
-            
+        {
+            LoadPage(new Dashboard());
+        
+        }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -62,6 +67,11 @@ namespace myproject
         private void button5_Click(object sender, EventArgs e)
         {
             new Returned_RecordPage().Show();
+        }
+
+        private void panelContainer_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
