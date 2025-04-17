@@ -55,6 +55,10 @@ namespace myproject
                     rentalRequests = rentalRequests.Where(x => x.RequestStatusId == selectedStatus.RequestStatusId);
                 }
             }
+            if (txtfilterno.Text != "")
+            {
+                rentalRequests = rentalRequests.Where(x => x.User.Username == txtfilterno.Text);
+            }
 
             dataGridView1.DataSource = rentalRequests.Select(e => new
             {
@@ -95,9 +99,9 @@ namespace myproject
             var request = dbcontext.RentalRequests.Include(r => r.Equipment)
                                                   .FirstOrDefault(r => r.RequestId == requestId);
 
-            if (request == null)
+            if (request.RequestStatus.RequestStatusId != 1)
             {
-                MessageBox.Show("Rental request not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -175,6 +179,12 @@ namespace myproject
             var request = dbcontext.RentalRequests.Include(r => r.Equipment)
                                                   .FirstOrDefault(r => r.RequestId == requestId);
 
+            if (request.RequestStatus.RequestStatusId != 1)
+            {
+                MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (request == null)
             {
                 MessageBox.Show("Rental request not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -193,9 +203,19 @@ namespace myproject
                 MessageBox.Show("Please select a rental request to create a transaction.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
             int requestId = Convert.ToInt32(dataGridView1.CurrentCell.OwningRow.Cells["ID"].Value);
-
+            var request = dbcontext.RentalRequests.FirstOrDefault(r => r.RequestId == requestId);
+            if (request.RequestStatusId != 2)
+            {
+                MessageBox.Show("Only approved requests can have a transaction.", "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            bool hasTransaction = dbcontext.RentalTransactions.Any(t => t.RequestId == requestId);
+            if (hasTransaction)
+            {
+                MessageBox.Show("This request already has a transaction.", "Duplicate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             CreateTransactionPage transactionPage = new CreateTransactionPage(requestId);
             transactionPage.ShowDialog();
         }

@@ -112,6 +112,7 @@ namespace myproject
                     returnRecord.ActualReturnDate = dateTimePicker1.Value;
                     returnRecord.LateReturnFees = fee;
                     returnRecord.ConditionId = (int)codition_cb.SelectedValue;
+                    context.ReturnRecords.Update(returnRecord);
                 }
                 else
                 {

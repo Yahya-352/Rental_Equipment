@@ -34,13 +34,14 @@
             Add = new Button();
             Edit = new Button();
             Delete = new Button();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // ddlequipmentfilter
             // 
             ddlequipmentfilter.FormattingEnabled = true;
-            ddlequipmentfilter.Location = new Point(91, 30);
+            ddlequipmentfilter.Location = new Point(224, 31);
             ddlequipmentfilter.Name = "ddlequipmentfilter";
             ddlequipmentfilter.Size = new Size(151, 28);
             ddlequipmentfilter.TabIndex = 0;
@@ -104,11 +105,21 @@
             Delete.UseVisualStyleBackColor = false;
             Delete.Click += Delete_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(133, 34);
+            label1.Name = "label1";
+            label1.Size = new Size(72, 20);
+            label1.TabIndex = 6;
+            label1.Text = "Category:";
+            // 
             // Equipments
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(label1);
             Controls.Add(Delete);
             Controls.Add(Edit);
             Controls.Add(Add);
@@ -120,6 +131,7 @@
             Load += Equipments_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -130,5 +142,6 @@
         private Button Add;
         private Button Edit;
         private Button Delete;
+        private Label label1;
     }
 }

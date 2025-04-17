@@ -19,6 +19,7 @@ namespace myproject
         private int _requestId;
         private EquipmentDBContext dbcontext;
         RentalTransaction transaction;
+        private decimal rentalPrice;
         public CreateTransactionPage(int requestid)
         {
             InitializeComponent();
@@ -30,8 +31,11 @@ namespace myproject
         {
             InitializeComponent();
             dbcontext = new EquipmentDBContext();
-            transaction = rentalTransaction;
-        }
+            transaction = dbcontext.RentalTransactions
+            .Include(t => t.Equipment)
+            .Include(t => t.PaymentStatus)
+            .FirstOrDefault(t => t.TransactionId == rentalTransaction.TransactionId);
+            }
 
         private void CreateTransactionPage_Load(object sender, EventArgs e)
         {
@@ -47,7 +51,7 @@ namespace myproject
                 MessageBox.Show("Error loading payment statuses: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            if (transaction != null) 
+            if (transaction != null)
             {
                 txtStartDate.Text = transaction.RentalStartDate?.ToString("yyyy-MM-dd") ?? "N/A";
                 txtReturnDate.Text = transaction.RentalReturnDate?.ToString("yyyy-MM-dd") ?? "N/A";
@@ -60,16 +64,17 @@ namespace myproject
 
                 if (transaction.Equipment != null)
                 {
-                    EquipmentTextBox.Text = transaction.Equipment.EquipmentName;
+                    rentalPrice = transaction.Equipment.RentalPrice.GetValueOrDefault();
                 }
 
                 HighlightRentedDatesForEquipment(transaction.EquipmentId.Value);
             }
-            else 
+            else
             {
                 var request = dbcontext.RentalRequests.FirstOrDefault(r => r.RequestId == _requestId);
                 if (request != null)
                 {
+
                     txtStartDate.Text = request.StartDate?.ToString("yyyy-MM-dd") ?? "N/A";
                     txtReturnDate.Text = request.ReturnDate?.ToString("yyyy-MM-dd") ?? "N/A";
                     txtTotalCost.Text = request.TotalCost?.ToString("C") ?? "N/A";
@@ -82,21 +87,13 @@ namespace myproject
                     {
                         TimeSpan rentalPeriod = request.ReturnDate.Value - request.StartDate.Value;
                         RentalPeriodTextBox.Text = rentalPeriod.Days.ToString();
+                        rentalPrice = equipment.RentalPrice.GetValueOrDefault(); 
+
 
                         decimal rentalFee = equipment.RentalPrice.GetValueOrDefault() * rentalPeriod.Days;
                         txtTotalCost.Text = rentalFee.ToString("C");
                     }
-                    else
-                    {
-                        RentalPeriodTextBox.Text = "N/A";
-                        txtTotalCost.Text = "N/A";
-                    }
-
                     HighlightRentedDatesForEquipment(request.EquipmentId.GetValueOrDefault());
-                }
-                else
-                {
-                    MessageBox.Show("Request not found for the provided RequestId.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -133,7 +130,7 @@ namespace myproject
                         rentedDates.AddRange(Enumerable.Range(0, (returnDate - startDate).Days + 1)
                                                            .Select(d => startDate.AddDays(d)));
 
-                    }   
+                    }
                 }
 
                 if (rentedDates.Any())
@@ -164,7 +161,6 @@ namespace myproject
                 int equipmentId = int.Parse(EquipmentTextBox.Text);
                 var equipment = dbcontext.Equipment.FirstOrDefault(e => e.EquipmentId == equipmentId);
 
-                decimal rentalPrice = equipment.RentalPrice ?? 0; 
 
                 int rentalPeriod = int.Parse(RentalPeriodTextBox.Text);
                 decimal rentalFee = rentalPrice * rentalPeriod;
@@ -185,12 +181,14 @@ namespace myproject
 
                 if (transaction != null)
                 {
-                    validateTransaction(equipmentId, transaction.RequestId.Value);
+                    if (!validateTransaction(equipmentId, transaction.RequestId.Value)) {
+                        return;
+                    }
 
                     var existingTransaction = dbcontext.RentalTransactions
                         .FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
 
-                    
+
                     existingTransaction.RentalStartDate = DateTime.Parse(txtStartDate.Text);
                     existingTransaction.RentalReturnDate = DateTime.Parse(txtReturnDate.Text);
                     existingTransaction.RentalPeriod = rentalPeriod;
@@ -198,16 +196,17 @@ namespace myproject
                     existingTransaction.Deposit = decimal.Parse(Deposit.Text);
                     existingTransaction.EquipmentId = equipmentId;
                     existingTransaction.PaymentStatusId = paymentStatusId;
-                    existingTransaction.RequestId = int.Parse(RequestTextBox.Text); 
+                    existingTransaction.RequestId = int.Parse(RequestTextBox.Text);
 
                     // Optional: avoid tracking error if navigation properties exist
                     dbcontext.Entry(existingTransaction).State = EntityState.Modified;
                     MessageBox.Show("Transaction Updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                 }
                 else
                 {
-                    validateTransaction(equipmentId, _requestId);
+                    if (!validateTransaction(equipmentId, _requestId)) {
+                        return;
+                    }
 
                     dbcontext.RentalTransactions.Add(newTransaction);
                     MessageBox.Show("Transaction added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -215,7 +214,7 @@ namespace myproject
 
                 dbcontext.SaveChanges();
                 this.Close();
-              
+
             }
             catch (Exception ex)
             {
@@ -223,20 +222,20 @@ namespace myproject
             }
         }
 
-        private void validateTransaction(int equipmentId, int requestId)
+        private bool validateTransaction(int equipmentId, int requestId)
         {
             if (string.IsNullOrEmpty(txtStartDate.Text) || string.IsNullOrEmpty(txtReturnDate.Text) ||
                     string.IsNullOrEmpty(RentalPeriodTextBox.Text) || string.IsNullOrEmpty(EquipmentTextBox.Text))
             {
                 MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             if (PaymentComboBox.SelectedValue == null)
             {
                 MessageBox.Show("Please select valid values from the payment combobox.",
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             DateTime startDate = DateTime.Parse(txtStartDate.Text);
@@ -245,7 +244,7 @@ namespace myproject
             if (startDate > returnDate)
             {
                 MessageBox.Show("Start date cannot be after end date");
-                return;
+                return false;
             }
 
             var approvedRequests = dbcontext.RentalRequests
@@ -276,10 +275,34 @@ namespace myproject
                 if (checkStartDate <= returnDate && checkEndDate >= startDate)
                 {
                     MessageBox.Show("Equipment is already reserved during this period.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    return false;
                 }
             }
+            return true;
 
+        }
+        private void AutoUpdateRentalInfo()
+        {
+            if (DateTime.TryParse(txtStartDate.Text, out DateTime startDate) &&
+                DateTime.TryParse(txtReturnDate.Text, out DateTime returnDate))
+            {
+                if (returnDate >= startDate)
+                {
+                    int days = (returnDate - startDate).Days;
+                    RentalPeriodTextBox.Text = days.ToString();
+                    txtTotalCost.Text = (rentalPrice * days).ToString("C");
+                }
+            }
+        }
+
+        private void txtReturnDate_TextChanged(object sender, EventArgs e)
+        {
+            AutoUpdateRentalInfo();
+        }
+
+        private void txtStartDate_TextChanged(object sender, EventArgs e)
+        {
+            AutoUpdateRentalInfo();
         }
     }
 }

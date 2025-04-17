@@ -82,6 +82,7 @@
             panelContainer.Name = "panelContainer";
             panelContainer.Size = new Size(1097, 402);
             panelContainer.TabIndex = 2;
+            panelContainer.Paint += panelContainer_Paint;
             // 
             // panel2
             // 
@@ -155,6 +156,7 @@
             button1.TabIndex = 0;
             button1.Text = "Dashboard";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // Form1
             // 
