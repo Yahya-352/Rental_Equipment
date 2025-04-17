@@ -88,47 +88,62 @@ namespace myproject
 
         private void Approve_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentCell == null)
+            try
             {
-                MessageBox.Show("Please select a rental request to approve.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                if (dataGridView1.CurrentCell == null)
+                {
+                    MessageBox.Show("Please select a rental request to approve.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            int requestId = Convert.ToInt32(dataGridView1.CurrentCell.OwningRow.Cells["ID"].Value);
+                int requestId = Convert.ToInt32(dataGridView1.CurrentCell.OwningRow.Cells["ID"].Value);
 
-            var request = dbcontext.RentalRequests.Include(r => r.Equipment)
-                                                  .FirstOrDefault(r => r.RequestId == requestId);
+                var request = dbcontext.RentalRequests.Include(r => r.Equipment)
+                                                      .FirstOrDefault(r => r.RequestId == requestId);
 
-            if (request.RequestStatus.RequestStatusId != 1)
-            {
-                MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                if (request.RequestStatus.RequestStatusId != 1)
+                {
+                    MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            DateTime requestedStartDate = request.StartDate.Value;
-            DateTime requestedReturnDate = request.ReturnDate.Value;
-            int equipmentId = request.EquipmentId.Value;
+                DateTime requestedStartDate = request.StartDate.Value;
+                DateTime requestedReturnDate = request.ReturnDate.Value;
+                int equipmentId = request.EquipmentId.Value;
 
-            bool hasOverlappingTransaction = dbcontext.RentalTransactions
-            .Any(t => t.EquipmentId == equipmentId &&
-                      t.RequestId != requestId &&
-                      t.RentalStartDate <= request.ReturnDate &&
-                      t.RentalReturnDate >= request.StartDate);
-
-           
-
-            if (HasOverlappingApprovedRequest(equipmentId, requestId, requestedStartDate, requestedReturnDate))
-            {
-                MessageBox.Show("Equipment is already requested (Approved Request dates overlap).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                bool hasOverlappingTransaction = dbcontext.RentalTransactions
+                .Any(t => t.EquipmentId == equipmentId &&
+                          t.RequestId != requestId &&
+                          t.RentalStartDate <= request.ReturnDate &&
+                          t.RentalReturnDate >= request.StartDate);
 
 
-            request.RequestStatusId = 2;  // Assuming 2 is the "Approved" status ID
+
+                if (HasOverlappingApprovedRequest(equipmentId, requestId, requestedStartDate, requestedReturnDate))
+                {
+                    MessageBox.Show("Equipment is already requested (Approved Request dates overlap).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+
+                request.RequestStatusId = 2;  // Assuming 2 is the "Approved" status ID
                 dbcontext.SaveChanges();
                 MessageBox.Show("Request approved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 refreshOrdersGridView(); // Refresh the grid after approval
-            
+            }
+            catch (Exception ex) {
+                dbcontext.Logs.Add(new Log
+                {
+                    Action = "Approve Request Error",
+                    Exception = ex.Message,
+                    Timestamp = DateTime.Now,
+                    Source = "Rental_Requests",
+                    UserId = -1,
+                    AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
+                });
+
+                dbcontext.SaveChanges();
+            }
         }
         private bool HasOverlappingApprovedRequest(int equipmentId, int requestId, DateTime start, DateTime end)
         {
@@ -168,32 +183,47 @@ namespace myproject
 
         private void Reject_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentCell == null)
+            try
             {
-                MessageBox.Show("Please select a rental request to Reject.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                if (dataGridView1.CurrentCell == null)
+                {
+                    MessageBox.Show("Please select a rental request to Reject.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int requestId = Convert.ToInt32(dataGridView1.CurrentCell.OwningRow.Cells["ID"].Value);
+
+                var request = dbcontext.RentalRequests.Include(r => r.Equipment)
+                                                      .FirstOrDefault(r => r.RequestId == requestId);
+
+                if (request.RequestStatus.RequestStatusId != 1)
+                {
+                    MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (request == null)
+                {
+                    MessageBox.Show("Rental request not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                request.RequestStatusId = 3;  // Assuming 3 is the "Rejeced" status ID
+                dbcontext.SaveChanges();
+                MessageBox.Show("Request Rejected successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshOrdersGridView();
+            } catch (Exception ex) {
+                dbcontext.Logs.Add(new Log
+                {
+                    Action = "Reject Request Error",
+                    Exception = ex.Message,
+                    Timestamp = DateTime.Now,
+                    Source = "Rental_Requests",
+                    UserId = -1,
+                    AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
+                });
+
+                dbcontext.SaveChanges();
             }
-
-            int requestId = Convert.ToInt32(dataGridView1.CurrentCell.OwningRow.Cells["ID"].Value);
-
-            var request = dbcontext.RentalRequests.Include(r => r.Equipment)
-                                                  .FirstOrDefault(r => r.RequestId == requestId);
-
-            if (request.RequestStatus.RequestStatusId != 1)
-            {
-                MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (request == null)
-            {
-                MessageBox.Show("Rental request not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            request.RequestStatusId = 3;  // Assuming 3 is the "Rejeced" status ID
-            dbcontext.SaveChanges();
-            MessageBox.Show("Request Rejected successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            refreshOrdersGridView();
         }
 
         private void button2_Click(object sender, EventArgs e)

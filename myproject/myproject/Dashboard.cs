@@ -39,12 +39,12 @@ namespace myproject
 
                 LblLateReturns.Text = dbContext.ReturnRecords.Count().ToString();
 
-                LblMostRentedEquipment.Text = dbContext.Equipment.OrderByDescending(x => x.RentalTransactions.Sum(y => y.RentalFee)).FirstOrDefault().EquipmentName.ToString();
+                //LblMostRentedEquipment.Text = dbContext.Equipment.OrderByDescending(x => x.RentalTransactions.Sum(y => y.RentalFee)).FirstOrDefault().EquipmentName.ToString();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw; 
+                throw;
             }
         }
     }

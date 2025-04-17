@@ -218,6 +218,17 @@ namespace myproject
             }
             catch (Exception ex)
             {
+                dbcontext.Logs.Add(new Log
+                {
+                    Action = "Error",
+                    Exception = ex.Message,
+                    Timestamp = DateTime.Now,
+                    Source = "Rental_Transaction",
+                    UserId = -1,
+                    AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
+                });
+
+                dbcontext.SaveChanges();
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

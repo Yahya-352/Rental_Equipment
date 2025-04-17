@@ -136,6 +136,17 @@ namespace myproject
             }
             catch (Exception ex)
             {
+                context.Logs.Add(new Log
+                {
+                    Action = "Error",
+                    Exception = ex.Message,
+                    Timestamp = DateTime.Now,
+                    Source = "Return_Record",
+                    UserId = -1,
+                    AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
+                });
+
+                context.SaveChanges();
                 MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

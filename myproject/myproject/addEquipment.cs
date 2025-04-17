@@ -114,7 +114,19 @@ namespace myproject
             }
             catch (Exception ex)
             {
+                dbContext.Logs.Add(new Log
+                {
+                    Action = "Error",
+                    Exception = ex.Message,
+                    Timestamp = DateTime.Now,
+                    Source = "Equipment",
+                    UserId = -1,
+                    AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
+                });
+
+                dbContext.SaveChanges();
                 MessageBox.Show("An unexpected error occurred:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
 
