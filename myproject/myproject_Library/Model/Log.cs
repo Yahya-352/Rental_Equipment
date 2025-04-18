@@ -20,8 +20,8 @@ namespace myproject_Library.Model
         [Unicode(false)]
         public string? Exception { get; set; }
         public DateTime? Timestamp { get; set; }
-        [Column("affected_data")]
-        [StringLength(50)]
+        [Column("affected_data", TypeName = "varchar(max)")]
+        [StringLength(int.MaxValue)]
         [Unicode(false)]
         public string? AffectedData { get; set; }
         [StringLength(50)]
