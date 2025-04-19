@@ -95,6 +95,8 @@ namespace myproject_Library.Model
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Logs_User");
+
+                entity.Property(e => e.AffectedData).HasColumnType("varchar(MAX)");
             });
 
             modelBuilder.Entity<Notification>(entity =>
