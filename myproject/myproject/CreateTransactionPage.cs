@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using myproject.configs;
+using myproject.services;
 using myproject_Library.Model;
 
 namespace myproject
@@ -20,11 +22,14 @@ namespace myproject
         private EquipmentDBContext dbcontext;
         RentalTransaction transaction;
         private decimal rentalPrice;
+        private AuthService _authService;
+
         public CreateTransactionPage(int requestid)
         {
             InitializeComponent();
             _requestId = requestid;
             dbcontext = new EquipmentDBContext();
+            _authService = ServiceConfigurator.GetService<AuthService>();
         }
 
         public CreateTransactionPage(RentalTransaction rentalTransaction)
@@ -224,7 +229,7 @@ namespace myproject
                     Exception = ex.Message,
                     Timestamp = DateTime.Now,
                     Source = "Rental_Transaction",
-                    UserId = -1,
+                    UserId = _authService.CurrentUser.Id,
                     AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                 });
 

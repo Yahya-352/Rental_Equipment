@@ -39,6 +39,7 @@
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
+            btnLogout = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -46,6 +47,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(19, 15, 64);
+            panel1.Controls.Add(btnLogout);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(label1);
             panel1.Location = new Point(0, 0);
@@ -59,7 +61,7 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(75, 21);
+            label2.Location = new Point(14, 21);
             label2.Name = "label2";
             label2.Size = new Size(230, 25);
             label2.TabIndex = 1;
@@ -70,7 +72,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(694, 21);
+            label1.Location = new Point(555, 21);
             label1.Name = "label1";
             label1.Size = new Size(68, 25);
             label1.TabIndex = 0;
@@ -78,9 +80,9 @@
             // 
             // panelContainer
             // 
-            panelContainer.Location = new Point(0, 102);
+            panelContainer.Location = new Point(0, 101);
             panelContainer.Name = "panelContainer";
-            panelContainer.Size = new Size(1097, 402);
+            panelContainer.Size = new Size(1097, 403);
             panelContainer.TabIndex = 2;
             panelContainer.Paint += panelContainer_Paint;
             // 
@@ -110,7 +112,7 @@
             // 
             // btnLog
             // 
-            btnLog.Location = new Point(740, -1);
+            btnLog.Location = new Point(741, -1);
             btnLog.Name = "btnLog";
             btnLog.Size = new Size(177, 36);
             btnLog.TabIndex = 4;
@@ -158,11 +160,25 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // btnLogout
+            // 
+            btnLogout.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
+            btnLogout.ForeColor = Color.FromArgb(19, 15, 64);
+            btnLogout.Location = new Point(971, 16);
+            btnLogout.Margin = new Padding(0);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(114, 38);
+            btnLogout.TabIndex = 2;
+            btnLogout.Text = "Logout";
+            btnLogout.UseMnemonic = false;
+            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.Click += btnLogout_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1097, 502);
+            ClientSize = new Size(1097, 501);
             Controls.Add(panel2);
             Controls.Add(panelContainer);
             Controls.Add(panel1);
@@ -188,5 +204,6 @@
         private Button button1;
         private Button btnLog;
         private Button btnLogs;
+        private Button btnLogout;
     }
 }

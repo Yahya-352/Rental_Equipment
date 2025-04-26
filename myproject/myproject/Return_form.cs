@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Transactions;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using myproject.configs;
+using myproject.services;
 using myproject_Library.Model;
 
 namespace myproject
@@ -17,6 +19,7 @@ namespace myproject
     {
         RentalTransaction transc;
         EquipmentDBContext context;
+        private AuthService _authService;
 
         bool Update = false;
         int return_id = -1;
@@ -25,6 +28,7 @@ namespace myproject
         {
             InitializeComponent();
             context = new EquipmentDBContext();
+            _authService = ServiceConfigurator.GetService<AuthService>();
         }
 
         public Return_form(int Return, bool update)
@@ -142,7 +146,7 @@ namespace myproject
                     Exception = ex.Message,
                     Timestamp = DateTime.Now,
                     Source = "Return_Record",
-                    UserId = -1,
+                    UserId = _authService.CurrentUser.Id,
                     AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                 });
 

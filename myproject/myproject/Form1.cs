@@ -1,12 +1,16 @@
+using myproject.configs;
+using myproject.services;
 using myproject_Library.Model;
 
 namespace myproject
 {
     public partial class Form1 : Form
     {
+        private AuthService _authService;
         public Form1()
         {
             InitializeComponent();
+            _authService = ServiceConfigurator.GetService<AuthService>();
             LoadPage(new Dashboard());
 
         }
@@ -55,7 +59,7 @@ namespace myproject
         private void button1_Click(object sender, EventArgs e)
         {
             LoadPage(new Dashboard());
-        
+
         }
 
 
@@ -72,10 +76,18 @@ namespace myproject
         {
             new Logs().Show();
         }
-        
+
         private void panelContainer_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            _authService.Logout();
+            Login login = new();
+            this.Hide();
+            login.Show();
         }
     }
 }
