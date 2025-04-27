@@ -100,10 +100,9 @@ namespace myproject
 
                 var request = dbcontext.RentalRequests.Include(r => r.Equipment)
                                                       .FirstOrDefault(r => r.RequestId == requestId);
-
-                if (request.RequestStatus.RequestStatusId != 1)
+                if (request.RequestStatus == null || request.RequestStatus.RequestStatusId != 1)
                 {
-                    MessageBox.Show("Rental request already processed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Invalid or missing request status.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

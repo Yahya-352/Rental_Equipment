@@ -21,6 +21,8 @@ namespace myproject
         bool Update = false;
         int return_id = -1;
         Decimal fee;
+        private int _finalConditionId = -1;
+
         public Return_form()
         {
             InitializeComponent();
@@ -95,12 +97,14 @@ namespace myproject
             try
             {
                 ReturnRecord returnRecord;
-
                 if (this.Update)
                 {
-                    // Get the existing return record
                     int returnId = this.return_id;
-                    returnRecord = context.ReturnRecords.Find(returnId);
+
+                    // Load ReturnRecord + Transaction ONLY (no Equipment here)
+                    returnRecord = context.ReturnRecords
+                        .Include(r => r.Transaction)
+                        .FirstOrDefault(r => r.ReturnId == returnId);
 
                     if (returnRecord == null)
                     {
@@ -108,12 +112,60 @@ namespace myproject
                         return;
                     }
 
-                    // Update its properties
+                    if (_finalConditionId == -1)
+                    {
+                        MessageBox.Show("Condition not selected.");
+                        return;
+                    }
+
+                    // Reload Equipment separately to avoid tracking conflicts
+                    var equipment = context.Equipment
+                        .FirstOrDefault(e => e.EquipmentId == returnRecord.Transaction.EquipmentId);
+
+                    if (equipment == null)
+                    {
+                        MessageBox.Show("Equipment not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // ✅ Apply user-chosen updates
                     returnRecord.ActualReturnDate = dateTimePicker1.Value;
                     returnRecord.LateReturnFees = fee;
-                    returnRecord.ConditionId = (int)codition_cb.SelectedValue;
-                    context.ReturnRecords.Update(returnRecord);
+                    returnRecord.ConditionId = _finalConditionId;
+
+                    equipment.ConditionId = _finalConditionId;
+
+                    // 🔒 Explicitly mark both as modified
+                    context.Entry(returnRecord).Property(r => r.ConditionId).IsModified = true;
+                    context.Entry(returnRecord).Property(r => r.ActualReturnDate).IsModified = true;
+                    context.Entry(returnRecord).Property(r => r.LateReturnFees).IsModified = true;
+
+                    context.Entry(equipment).Property(e => e.ConditionId).IsModified = true;
+
+                    // 🧠 Optional debug tracking output
+                    var tracker = context.ChangeTracker.Entries()
+                        .Where(e => e.State != EntityState.Unchanged)
+                        .ToList();
+
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var entry in tracker)
+                    {
+                        sb.AppendLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}");
+                        foreach (var prop in entry.Properties)
+                        {
+                            if (prop.IsModified)
+                            {
+                                sb.AppendLine($"  {prop.Metadata.Name}: {prop.OriginalValue} → {prop.CurrentValue}");
+                            }
+                        }
+                    }
+                    MessageBox.Show(sb.ToString());
+
+                    // ✅ Save changes
+                    int rows = context.SaveChanges();
+                    MessageBox.Show("Rows affected: " + rows);
                 }
+
                 else
                 {
                     // Create a new return record
@@ -231,6 +283,7 @@ namespace myproject
                 if (this.transc?.Equipment == null) return;
 
                 var selectedValue = codition_cb.SelectedValue.ToString();
+                 _finalConditionId = int.Parse(selectedValue);
                 calculateLateDays();
 
                 if (selectedValue == "2")
