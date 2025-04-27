@@ -1,12 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace myproject_Library.Model
 {
-    public partial class EquipmentDBContext : DbContext
+    public partial class EquipmentDBContext : IdentityDbContext<
+        User, 
+        Role, 
+        int,
+        IdentityUserClaim<int>,
+        IdentityUserRole<int>,
+        IdentityUserLogin<int>,
+        IdentityRoleClaim<int>,
+        IdentityUserToken<int>
+        >
     {
         public EquipmentDBContext()
         {
@@ -30,8 +41,6 @@ namespace myproject_Library.Model
         public virtual DbSet<RentalTransaction> RentalTransactions { get; set; } = null!;
         public virtual DbSet<RequestStatus> RequestStatuses { get; set; } = null!;
         public virtual DbSet<ReturnRecord> ReturnRecords { get; set; } = null!;
-        public virtual DbSet<Role> Roles { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,6 +57,19 @@ namespace myproject_Library.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder); // Call the base implementation first
+
+            // Configure the Identity tables to use your custom table names
+            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Role>().ToTable("Role");
+
+            // Configure the additional Identity tables (these will be new tables)
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("AspNetUserRoles");
+            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("AspNetUserClaims");
+            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("AspNetUserLogins");
+            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("AspNetRoleClaims");
+            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("AspNetUserTokens");
+
             modelBuilder.Entity<Document>(entity =>
             {
                 entity.HasOne(d => d.User)
@@ -99,6 +121,8 @@ namespace myproject_Library.Model
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Logs_User");
+
+                entity.Property(e => e.AffectedData).HasColumnType("varchar(MAX)");
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -158,14 +182,6 @@ namespace myproject_Library.Model
                     .HasConstraintName("FK_Return_Record_Rental_Transaction");
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK_User_Role");
-            });
-
             OnModelCreatingPartial(modelBuilder);
         }
 
@@ -203,6 +219,7 @@ namespace myproject_Library.Model
                 // Create the log record
                 var log = new Log
                 {
+                    UserId = CurrentUserService.GetCurrentUserId(),
                     Action = action,
                     Timestamp = DateTime.Now,
                     Source = entityName,

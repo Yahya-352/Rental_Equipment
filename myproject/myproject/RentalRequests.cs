@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using myproject.configs;
+using myproject.services;
 using myproject_Library.Model;
 
 namespace myproject
@@ -15,10 +17,13 @@ namespace myproject
     public partial class RentalRequests : UserControl
     {
         EquipmentDBContext dbcontext;
+        AuthService _authService;
+
         public RentalRequests()
         {
             InitializeComponent();
             dbcontext = new EquipmentDBContext();
+            _authService = ServiceConfigurator.GetService<AuthService>();
         }
 
         private void RentalRequests_Load(object sender, EventArgs e)
@@ -57,7 +62,7 @@ namespace myproject
             }
             if (txtfilterno.Text != "")
             {
-                rentalRequests = rentalRequests.Where(x => x.User.Username == txtfilterno.Text);
+                rentalRequests = rentalRequests.Where(x => x.User.UserName == txtfilterno.Text);
             }
 
             dataGridView1.DataSource = rentalRequests.Select(e => new
@@ -137,7 +142,7 @@ namespace myproject
                     Exception = ex.Message,
                     Timestamp = DateTime.Now,
                     Source = "Rental_Requests",
-                    UserId = -1,
+                    UserId = _authService.CurrentUser.Id,
                     AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                 });
 
@@ -217,7 +222,7 @@ namespace myproject
                     Exception = ex.Message,
                     Timestamp = DateTime.Now,
                     Source = "Rental_Requests",
-                    UserId = -1,
+                    UserId = _authService.CurrentUser.Id,
                     AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                 });
 

@@ -59,7 +59,7 @@ namespace myproject
                 var query = logsQuery.Select(l => new
                 {
                     LogId = l.LogId.ToString(),
-                    Username = l.User != null ? l.User.Username : "-",
+                    Username = l.User != null ? l.User.UserName : "-",
                     Source = l.Source != null ? l.Source.ToString() : "-",
                     Action = l.Action != null ? l.Action.ToString() : "-",
                     Date = l.Timestamp.HasValue ? l.Timestamp.Value : DateTime.Now,

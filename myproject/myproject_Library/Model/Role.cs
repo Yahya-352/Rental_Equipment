@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO.Pipes;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace myproject_Library.Model
 {
     [Table("Role")]
-    public partial class Role
+    public partial class Role: IdentityRole<int>
     {
         public Role()
         {
@@ -17,11 +19,11 @@ namespace myproject_Library.Model
 
         [Key]
         [Column("Role_ID")]
-        public int RoleId { get; set; }
+        public override int Id { get => base.Id; set => base.Id = value; }
         [Column("Role_Name")]
         [StringLength(50)]
         [Unicode(false)]
-        public string? RoleName { get; set; }
+        public override string Name { get => base.Name; set => base.Name = value; }
 
         [InverseProperty("Role")]
         public virtual ICollection<User> Users { get; set; }

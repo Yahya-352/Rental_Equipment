@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using myproject.configs;
+using myproject.services;
 using myproject_Library.Model;
 
 namespace myproject
@@ -15,11 +17,13 @@ namespace myproject
     {
         EquipmentDBContext dbContext;
         Equipment equipment1;
+        AuthService _authService;
 
         public addEquipment()
         {
             InitializeComponent();
             dbContext = new EquipmentDBContext();
+            _authService = ServiceConfigurator.GetService<AuthService>();
 
         }
 
@@ -120,7 +124,7 @@ namespace myproject
                     Exception = ex.Message,
                     Timestamp = DateTime.Now,
                     Source = "Equipment",
-                    UserId = -1,
+                    UserId = _authService.CurrentUser.Id,
                     AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                 });
 

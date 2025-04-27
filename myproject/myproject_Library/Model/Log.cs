@@ -16,12 +16,11 @@ namespace myproject_Library.Model
         [StringLength(50)]
         [Unicode(false)]
         public string? Action { get; set; }
-        [StringLength(50)]
+        [Column(TypeName = "varchar(MAX)")]
         [Unicode(false)]
         public string? Exception { get; set; }
         public DateTime? Timestamp { get; set; }
-        [Column("affected_data", TypeName = "varchar(max)")]
-        [StringLength(int.MaxValue)]
+        [Column("affected_data")]
         [Unicode(false)]
         public string? AffectedData { get; set; }
         [StringLength(50)]

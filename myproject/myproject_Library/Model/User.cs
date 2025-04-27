@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace myproject_Library.Model
 {
     [Table("User")]
-    public partial class User
+    public partial class User: IdentityUser<int>
     {
         public User()
         {
@@ -21,19 +22,18 @@ namespace myproject_Library.Model
 
         [Key]
         [Column("User_ID")]
-        public int UserId { get; set; }
+        public override int Id { get => base.Id; set => base.Id = value; }
         [Column("username")]
         [StringLength(50)]
         [Unicode(false)]
-        public string? Username { get; set; }
-        [Column("password")]
-        [StringLength(50)]
+        public override string UserName { get => base.UserName; set => base.UserName = value; }
+        [Column("password", TypeName = "varchar(MAX)")]
         [Unicode(false)]
-        public string? Password { get; set; }
+        public string Password { get => PasswordHash; set => PasswordHash = value; }
         [Column("email")]
         [StringLength(50)]
         [Unicode(false)]
-        public string? Email { get; set; }
+        public override string Email { get => base.Email; set => base.Email = value; }
         [Column("Role_ID")]
         public int? RoleId { get; set; }
 

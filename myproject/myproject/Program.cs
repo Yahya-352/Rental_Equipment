@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using myproject.configs;
 
 namespace myproject
 {
@@ -14,7 +15,9 @@ namespace myproject
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            ServiceConfigurator.ConfigureServices();
+
+            Application.Run(new Login());
         }
     }
 }

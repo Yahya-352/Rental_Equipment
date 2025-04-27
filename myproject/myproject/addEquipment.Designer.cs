@@ -193,7 +193,7 @@
             Controls.Add(name_textbox);
             Controls.Add(label1);
             Name = "addEquipment";
-            Text = "addEquipment";
+            Text = " E";
             Load += addEquipment_Load;
             ResumeLayout(false);
             PerformLayout();

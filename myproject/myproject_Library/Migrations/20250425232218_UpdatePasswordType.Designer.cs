@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myproject_Library.Model;
 
@@ -11,9 +12,10 @@ using myproject_Library.Model;
 namespace myproject_Library.Migrations
 {
     [DbContext(typeof(EquipmentDBContext))]
-    partial class EquipmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250425232218_UpdatePasswordType")]
+    partial class UpdatePasswordType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -342,8 +344,9 @@ namespace myproject_Library.Migrations
                         .HasColumnName("affected_data");
 
                     b.Property<string>("Exception")
+                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(MAX)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Source")
                         .HasMaxLength(50)
