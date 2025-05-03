@@ -43,9 +43,8 @@
             panel1.BackColor = Color.FromArgb(19, 15, 64);
             panel1.Controls.Add(label2);
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(704, 51);
+            panel1.Size = new Size(805, 68);
             panel1.TabIndex = 1;
             // 
             // label2
@@ -53,9 +52,9 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(66, 16);
+            label2.Location = new Point(75, 21);
             label2.Name = "label2";
-            label2.Size = new Size(48, 20);
+            label2.Size = new Size(59, 25);
             label2.TabIndex = 1;
             label2.Text = "Login";
             label2.Click += label2_Click_1;
@@ -64,35 +63,37 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(273, 108);
+            label1.Location = new Point(312, 144);
             label1.Name = "label1";
-            label1.Size = new Size(60, 15);
+            label1.Size = new Size(78, 20);
             label1.TabIndex = 2;
             label1.Text = "Username";
             label1.Click += label1_Click_1;
             // 
             // txtUsername
             // 
-            txtUsername.Location = new Point(273, 126);
+            txtUsername.Location = new Point(312, 168);
+            txtUsername.Margin = new Padding(3, 4, 3, 4);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(203, 23);
+            txtUsername.Size = new Size(231, 27);
             txtUsername.TabIndex = 3;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(273, 164);
+            label3.Location = new Point(312, 219);
             label3.Name = "label3";
-            label3.Size = new Size(57, 15);
+            label3.Size = new Size(73, 20);
             label3.TabIndex = 4;
             label3.Text = "Password";
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(273, 182);
+            txtPassword.Location = new Point(312, 243);
+            txtPassword.Margin = new Padding(3, 4, 3, 4);
             txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(203, 23);
+            txtPassword.Size = new Size(231, 27);
             txtPassword.TabIndex = 5;
             // 
             // btnConfirm
@@ -100,10 +101,10 @@
             btnConfirm.BackColor = SystemColors.WindowText;
             btnConfirm.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             btnConfirm.ForeColor = SystemColors.ControlLightLight;
-            btnConfirm.Location = new Point(273, 228);
+            btnConfirm.Location = new Point(312, 304);
             btnConfirm.Margin = new Padding(0);
             btnConfirm.Name = "btnConfirm";
-            btnConfirm.Size = new Size(203, 27);
+            btnConfirm.Size = new Size(232, 36);
             btnConfirm.TabIndex = 6;
             btnConfirm.Tag = "";
             btnConfirm.Text = "Confirm";
@@ -112,18 +113,18 @@
             // 
             // Login
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(705, 338);
+            ClientSize = new Size(806, 451);
             Controls.Add(btnConfirm);
             Controls.Add(txtPassword);
             Controls.Add(label3);
             Controls.Add(txtUsername);
             Controls.Add(label1);
             Controls.Add(panel1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "Login";
             Text = "Login";
+            Load += Login_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);

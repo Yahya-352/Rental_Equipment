@@ -1,0 +1,147 @@
+﻿@model myproject_Library.Model.RentalTransaction
+
+@{
+    ViewData["Title"] = "Confirm Return";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Return Form</h2>
+
+<style>
+    fieldset {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    legend {
+        font-weight: bold;
+        font-size: 1.1rem;
+        padding: 0 10px;
+    }
+
+    label {
+        display: block;
+        margin-top: 12px;
+    }
+
+    input, select {
+        width: 300px;
+        padding: 8px;
+        margin-top: 4px;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 30px;
+    }
+</style>
+
+<form method="post" action="/Return/SubmitReturn">
+
+    <fieldset>
+        <legend>Transaction Info</legend>
+        <label>
+            Transaction ID:
+            <input type="text" name="TransactionId" value="@Model.TransactionId" readonly />
+        </label>
+        <label>
+            Equipment:
+            <input type="text" value="@Model.Equipment.EquipmentName" readonly />
+        </label>
+        <label>
+            Equipment Cost:
+            <input type="text" id="equip_cost" value="@Model.Equipment?.Cost" readonly />
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Rental Dates</legend>
+        <label>
+            Rental Start Date:
+            <input type="date" id="RentalStartDate" name="RentalStartDate"
+                   value="@Model.RentalStartDate?.ToString("yyyy-MM-dd")" readonly />
+        </label>
+
+        <label>
+            Rental End Date:
+            <input type="date" id="RentalEndDate" name="RentalEndDate"
+                   value="@Model.RentalReturnDate?.ToString("yyyy-MM-dd")" readonly />
+        </label>
+
+        <label>
+            Return Date (Today):
+            <input type="date" name="ReturnDate" id="returnDate" value="@ViewBag.ReturnDay" readonly />
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Fee Summary</legend>
+
+        <label>
+            Number of Planned Days:
+            <input type="number" name="PlannedDays" value="@ViewBag.EarlyDays" readonly />
+        </label>
+
+        <label>
+            Number of Late Days (each costs 20% extra):
+            <input type="number" name="LateDays" value="@ViewBag.LateDays" readonly />
+        </label>
+
+        <label>
+            Calculated Early Fee:
+            <input name="CalculatedEarlyFee" value="@ViewBag.EarlyFees" readonly />
+        </label>
+
+        <label>
+            Calculated Late Fee:
+            <input name="CalculatedLateFee" value="@ViewBag.LateFees" readonly />
+        </label>
+
+        <label>
+            Total Fee:
+            <input type="number" name="TotalFee" id="TotalFee" value="@ViewBag.TotalFee" readonly />
+        </label>
+
+        <label>
+            Deposit:
+            <input type="number" name="Deposit" value="@Model.Deposit ?? 0" readonly />
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Return Condition</legend>
+        <label>
+            Condition (affects total fee):
+            <select name="Condition" id="condition">
+                <option value="Healthy-1">Healthy</option>
+                <option value="Damaged-2">Damaged (adds 60%)</option>
+                <option value="Lost-3">Lost (adds 100%)</option>
+            </select>
+        </label>
+    </fieldset>
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    const condition_dd = document.getElementById("condition");
+    const totatlFee = document.getElementById("TotalFee");
+    const totatlFeeVal = document.getElementById("TotalFee").value;
+    const equipcost = document.getElementById("equip_cost").value;
+
+    condition_dd.addEventListener("change", () => {
+        if (condition_dd.value === "Damaged-2") {
+            totatlFee.value = Number(totatlFeeVal) + (Number(equipcost) * 60 / 100);
+
+        } else if (condition_dd.value === "Lost-3") {
+            totatlFee.value = Number(totatlFeeVal) + (Number(equipcost));
+
+        }else{
+            totatlFee.value = Number(totatlFeeVal);
+        }
+    });
+
+
+</script>

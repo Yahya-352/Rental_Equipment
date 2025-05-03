@@ -1,0 +1,55 @@
+﻿@model List<myproject_Library.Model.ReturnRecord>
+
+@{
+    ViewData["Title"] = "Returned Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Returned Items</h2>
+
+<form method="post" action="/Return/ShowPayment">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Return ID</th>
+                <th>Transaction ID</th>
+                <th>Equipment</th>
+                <th>Return Date</th>
+                <th>Late Days</th>
+                <th>Late Fee</th>
+                <th>Condition</th>
+                <th>Amount Paid</th>
+                <th>Total Fees</th>
+                <th>Is Fully paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var is_paid = item.Transaction?.PaymentStatusId != 1 ? "No" : "Yes";
+                <tr>
+                    <td>
+                        @if (item.Transaction != null && is_paid == "No")
+                        {
+                            <input type="radio" name="selectedReturnId" value="@item.TransactionId" />
+                        }
+                    </td>
+                    <td>@item.ReturnId</td>
+                    <td>@item.TransactionId</td>
+                    <td>@item.Transaction?.Equipment?.EquipmentName</td>
+                    <td>@item.ActualReturnDate?.ToString("yyyy-MM-dd")</td>
+                    <td>@item.LateReturnDays</td>
+                    <td>@item.LateReturnFees</td>
+                    <td>@item.Condition?.ConditionName</td>
+                    <td>@item.Transaction?.AmountPaid</td>
+                    <td>@item.Transaction?.TotalFee</td>
+                    <td>@is_paid</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Submit Selection</button>
+</form>

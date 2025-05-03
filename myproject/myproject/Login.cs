@@ -58,8 +58,11 @@ namespace myproject
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            //await _authService.RegisterUserAsync("admin", "admin@gmail.com", "Admin@123", "Administrator");
+
             try
             {
+
                 // Disable controls during login attempt
                 btnConfirm.Enabled = false;
                 txtUsername.Enabled = false;
@@ -156,6 +159,13 @@ namespace myproject
                 txtUsername.Enabled = true;
                 txtPassword.Enabled = true;
             }
+
+
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

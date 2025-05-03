@@ -36,6 +36,16 @@ namespace myproject_Library.Model
         [Column("Payment_Status_ID")]
         public int? PaymentStatusId { get; set; }
 
+        //NEW
+        [Column("Amount_Paid", TypeName = "numeric(18, 0)")]
+        public decimal? AmountPaid { get; set; }
+
+        [Column("Total_Fee", TypeName = "numeric(18, 0)")]
+        public decimal? TotalFee { get; set; }
+
+
+
+
         [ForeignKey("EquipmentId")]
         [InverseProperty("RentalTransactions")]
         public virtual Equipment? Equipment { get; set; }

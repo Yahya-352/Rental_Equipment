@@ -1,0 +1,55 @@
+﻿@model IEnumerable<myproject_Library.Model.RentalTransaction>
+@{
+    ViewData["Title"] = "index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Your Transactions</h2>
+
+<form asp-action="ProcessReturn" asp-controller="Return" method="post">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Transaction ID</th>
+                <th>Equipment Name</th>
+                <th>Rental Start</th>
+                <th>Rental Return</th>
+                <th>Rental Fee</th>
+                <th>Deposit</th>
+                <th>Payment Status</th>
+                <th>Is Returned</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model)
+            {
+
+             
+    var is_return = transaction.RequestId != null ? "Yes" : "No";
+
+                           <tr>
+                    <td>
+                        @if (is_return == "No")
+                        {
+                            <input type="radio" name="transactionId" value="@transaction.TransactionId" />
+                        }
+
+                    </td>
+                    <td>@transaction.TransactionId</td>
+                    <td>@transaction.Equipment?.EquipmentName</td>
+                    <td>@(transaction.RentalStartDate?.ToString("dd/MM/yyyy"))</td>
+                    <td>@(transaction.RentalReturnDate?.ToString("dd/MM/yyyy"))</td>
+                    <td>@transaction.RentalFee</td>
+                    <td>@transaction.Deposit</td>
+                    <td>@transaction.PaymentStatus?.PaymentStatusName</td>
+                    <td>@is_return</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <input type="submit" value="Mark as Returned" />
+</form>

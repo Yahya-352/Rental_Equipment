@@ -25,6 +25,12 @@ namespace myproject_Library.Model
         [Column("Transaction_ID")]
         public int? TransactionId { get; set; }
 
+        //New
+        [Column("Late_Return_Days")]
+        public int? LateReturnDays { get; set; }
+
+
+
         [ForeignKey("ConditionId")]
         [InverseProperty("ReturnRecords")]
         public virtual EquipmentCondition? Condition { get; set; }

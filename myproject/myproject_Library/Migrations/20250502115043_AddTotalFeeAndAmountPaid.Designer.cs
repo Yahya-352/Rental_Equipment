@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myproject_Library.Model;
 
@@ -11,9 +12,10 @@ using myproject_Library.Model;
 namespace myproject_Library.Migrations
 {
     [DbContext(typeof(EquipmentDBContext))]
-    partial class EquipmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250502115043_AddTotalFeeAndAmountPaid")]
+    partial class AddTotalFeeAndAmountPaid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -563,10 +565,6 @@ namespace myproject_Library.Migrations
                     b.Property<int?>("ConditionId")
                         .HasColumnType("int")
                         .HasColumnName("Condition_ID");
-
-                    b.Property<int?>("LateReturnDays")
-                        .HasColumnType("int")
-                        .HasColumnName("Late_Return_Days");
 
                     b.Property<decimal?>("LateReturnFees")
                         .HasColumnType("numeric(18,0)")
