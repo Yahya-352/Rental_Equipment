@@ -34,8 +34,6 @@
             label2 = new Label();
             fee_textbox = new TextBox();
             label3 = new Label();
-            textBox8 = new TextBox();
-            label4 = new Label();
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
@@ -93,26 +91,10 @@
             label3.TabIndex = 4;
             label3.Text = "Rental Fee";
             // 
-            // textBox8
-            // 
-            textBox8.Location = new Point(212, 198);
-            textBox8.Name = "textBox8";
-            textBox8.Size = new Size(125, 27);
-            textBox8.TabIndex = 7;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(41, 201);
-            label4.Name = "label4";
-            label4.Size = new Size(165, 20);
-            label4.TabIndex = 6;
-            label4.Text = "Late Penalty Percentage";
-            // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(57, 252);
+            label5.Location = new Point(57, 202);
             label5.Name = "label5";
             label5.Size = new Size(83, 20);
             label5.TabIndex = 8;
@@ -121,7 +103,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(57, 302);
+            label6.Location = new Point(57, 252);
             label6.Name = "label6";
             label6.Size = new Size(74, 20);
             label6.TabIndex = 9;
@@ -130,7 +112,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(57, 351);
+            label7.Location = new Point(57, 301);
             label7.Name = "label7";
             label7.Size = new Size(69, 20);
             label7.TabIndex = 10;
@@ -139,7 +121,7 @@
             // availabilityComboBox
             // 
             availabilityComboBox.FormattingEnabled = true;
-            availabilityComboBox.Location = new Point(212, 244);
+            availabilityComboBox.Location = new Point(212, 194);
             availabilityComboBox.Name = "availabilityComboBox";
             availabilityComboBox.Size = new Size(151, 28);
             availabilityComboBox.TabIndex = 11;
@@ -147,7 +129,7 @@
             // conditionComboBox
             // 
             conditionComboBox.FormattingEnabled = true;
-            conditionComboBox.Location = new Point(212, 299);
+            conditionComboBox.Location = new Point(212, 249);
             conditionComboBox.Name = "conditionComboBox";
             conditionComboBox.Size = new Size(151, 28);
             conditionComboBox.TabIndex = 12;
@@ -155,7 +137,7 @@
             // categoryComboBox
             // 
             categoryComboBox.FormattingEnabled = true;
-            categoryComboBox.Location = new Point(212, 343);
+            categoryComboBox.Location = new Point(212, 293);
             categoryComboBox.Name = "categoryComboBox";
             categoryComboBox.Size = new Size(151, 28);
             categoryComboBox.TabIndex = 13;
@@ -184,8 +166,6 @@
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
-            Controls.Add(textBox8);
-            Controls.Add(label4);
             Controls.Add(fee_textbox);
             Controls.Add(label3);
             Controls.Add(description_textbox);
@@ -207,8 +187,6 @@
         private Label label2;
         private TextBox fee_textbox;
         private Label label3;
-        private TextBox textBox8;
-        private Label label4;
         private Label label5;
         private Label label6;
         private Label label7;

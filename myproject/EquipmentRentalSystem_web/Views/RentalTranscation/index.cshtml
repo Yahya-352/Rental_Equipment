@@ -1,6 +1,7 @@
-﻿@model IEnumerable<myproject_Library.Model.RentalTransaction>
+﻿@model IEnumerable<dynamic>
+
 @{
-    ViewData["Title"] = "index";
+    ViewData["Title"] = "Your Transactions";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -22,34 +23,31 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var transaction in Model)
+            @foreach (var item in Model)
             {
+                var transaction = item.Transaction;
 
-             
-    var is_return = transaction.RequestId != null ? "Yes" : "No";
-
-                           <tr>
+                <tr>
                     <td>
-                        @if (is_return == "No")
+                        @if (!item.IsReturned)
                         {
                             <input type="radio" name="transactionId" value="@transaction.TransactionId" />
                         }
-
                     </td>
                     <td>@transaction.TransactionId</td>
                     <td>@transaction.Equipment?.EquipmentName</td>
-                    <td>@(transaction.RentalStartDate?.ToString("dd/MM/yyyy"))</td>
-                    <td>@(transaction.RentalReturnDate?.ToString("dd/MM/yyyy"))</td>
+                    <td>@transaction.RentalStartDate?.ToString("dd/MM/yyyy")</td>
+                    <td>@transaction.RentalReturnDate?.ToString("dd/MM/yyyy")</td>
                     <td>@transaction.RentalFee</td>
                     <td>@transaction.Deposit</td>
                     <td>@transaction.PaymentStatus?.PaymentStatusName</td>
-                    <td>@is_return</td>
-
+                    <td>@(item.IsReturned ? "Yes" : "No")</td>
                 </tr>
             }
         </tbody>
     </table>
 
     <br />
+
     <input type="submit" value="Mark as Returned" />
 </form>

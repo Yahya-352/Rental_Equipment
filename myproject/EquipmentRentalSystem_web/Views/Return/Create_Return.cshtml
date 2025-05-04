@@ -36,6 +36,32 @@
         margin-top: 20px;
         padding: 10px 30px;
     }
+
+    .rate {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+    }
+
+        .rate input {
+            display: none;
+        }
+
+        .rate label {
+            font-size: 2em;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0 5px;
+        }
+
+            .rate input:checked ~ label,
+            .rate label:hover,
+            .rate label:hover ~ label {
+                color: gold;
+            }
+
+
 </style>
 
 <form method="post" action="/Return/SubmitReturn">
@@ -106,7 +132,7 @@
 
         <label>
             Deposit:
-            <input type="number" name="Deposit" value="@Model.Deposit ?? 0" readonly />
+            <input type="number" name="Deposit" value="@Model.Deposit" readonly />
         </label>
     </fieldset>
 
@@ -122,6 +148,23 @@
         </label>
     </fieldset>
 
+
+    <label for="comment">Your Feedback:</label>
+<textarea id="comment" name="CommentText" maxlength="150" rows="4" cols="50" placeholder="Write your feedback here..."></textarea>
+
+    <div class="rate">
+        <input type="radio" id="star5" name="rate" value="5" />
+        <label for="star5" title="5 stars">★</label>
+        <input type="radio" id="star4" name="rate" value="4" />
+        <label for="star4" title="4 stars">★</label>
+        <input type="radio" id="star3" name="rate" value="3" />
+        <label for="star3" title="3 stars">★</label>
+        <input type="radio" id="star2" name="rate" value="2" />
+        <label for="star2" title="2 stars">★</label>
+        <input type="radio" id="star1" name="rate" value="1" />
+        <label for="star1" title="1 star">★</label>
+    </div>
+
     <button type="submit">Submit</button>
 </form>
 
@@ -134,14 +177,10 @@
     condition_dd.addEventListener("change", () => {
         if (condition_dd.value === "Damaged-2") {
             totatlFee.value = Number(totatlFeeVal) + (Number(equipcost) * 60 / 100);
-
         } else if (condition_dd.value === "Lost-3") {
             totatlFee.value = Number(totatlFeeVal) + (Number(equipcost));
-
-        }else{
+        } else {
             totatlFee.value = Number(totatlFeeVal);
         }
     });
-
-
 </script>

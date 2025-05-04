@@ -72,7 +72,8 @@ namespace myproject
                     rentalPrice = transaction.Equipment.RentalPrice.GetValueOrDefault();
                 }
 
-                HighlightRentedDatesForEquipment(transaction.EquipmentId.Value);
+                if (transaction.EquipmentId != null)
+                    HighlightRentedDatesForEquipment(transaction.EquipmentId.Value);
             }
             else
             {
@@ -98,7 +99,8 @@ namespace myproject
                         decimal rentalFee = equipment.RentalPrice.GetValueOrDefault() * rentalPeriod.Days;
                         txtTotalCost.Text = rentalFee.ToString("C");
                     }
-                    HighlightRentedDatesForEquipment(request.EquipmentId.GetValueOrDefault());
+                    if (transaction.EquipmentId != null)
+                        HighlightRentedDatesForEquipment(transaction.EquipmentId.Value);
                 }
             }
         }
@@ -145,7 +147,8 @@ namespace myproject
                 }
                 else
                 {
-                    MessageBox.Show("No rented dates found for the selected equipment.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //This is pointless
+                    //MessageBox.Show("No rented dates found for the selected equipment.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -163,13 +166,30 @@ namespace myproject
         {
             try
             {
-                int equipmentId = int.Parse(EquipmentTextBox.Text);
+                if (!int.TryParse(EquipmentTextBox.Text, out int equipmentId))
+                {
+                    MessageBox.Show("Invalid equipment ID.");
+                    return;
+                }
+
                 var equipment = dbcontext.Equipment.FirstOrDefault(e => e.EquipmentId == equipmentId);
 
+                if (!int.TryParse(RentalPeriodTextBox.Text, out int rentalPeriod))
+                {
+                    MessageBox.Show("Invalid rental period.");
+                    return;
+                }
 
-                int rentalPeriod = int.Parse(RentalPeriodTextBox.Text);
                 decimal rentalFee = rentalPrice * rentalPeriod;
-                int paymentStatusId = (int)PaymentComboBox.SelectedValue;
+
+                if (!(PaymentComboBox.SelectedValue is int paymentStatusId))
+                {
+                    MessageBox.Show("Please select a payment status.");
+                    return;
+                }
+
+                decimal deposit = 0;
+                decimal.TryParse(Deposit.Text, out deposit); 
 
                 var newTransaction = new RentalTransaction
                 {
@@ -178,40 +198,40 @@ namespace myproject
                     RentalReturnDate = DateTime.Parse(txtReturnDate.Text),
                     RentalPeriod = rentalPeriod,
                     RentalFee = rentalFee,
-                    Deposit = decimal.Parse(Deposit.Text),
+                    Deposit = deposit,
                     EquipmentId = equipmentId,
                     PaymentStatusId = paymentStatusId
                 };
 
-
                 if (transaction != null)
                 {
-                    if (!validateTransaction(equipmentId, transaction.RequestId.Value)) {
+                    if (!validateTransaction(equipmentId, transaction.RequestId ?? 0))
                         return;
-                    }
 
                     var existingTransaction = dbcontext.RentalTransactions
                         .FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
 
+                    if (existingTransaction != null)
+                    {
+                        existingTransaction.RentalStartDate = DateTime.Parse(txtStartDate.Text);
+                        existingTransaction.RentalReturnDate = DateTime.Parse(txtReturnDate.Text);
+                        existingTransaction.RentalPeriod = rentalPeriod;
+                        existingTransaction.RentalFee = rentalFee;
+                        existingTransaction.Deposit = deposit;
+                        existingTransaction.EquipmentId = equipmentId;
+                        existingTransaction.PaymentStatusId = paymentStatusId;
 
-                    existingTransaction.RentalStartDate = DateTime.Parse(txtStartDate.Text);
-                    existingTransaction.RentalReturnDate = DateTime.Parse(txtReturnDate.Text);
-                    existingTransaction.RentalPeriod = rentalPeriod;
-                    existingTransaction.RentalFee = rentalFee;
-                    existingTransaction.Deposit = decimal.Parse(Deposit.Text);
-                    existingTransaction.EquipmentId = equipmentId;
-                    existingTransaction.PaymentStatusId = paymentStatusId;
-                    existingTransaction.RequestId = int.Parse(RequestTextBox.Text);
+                        if (int.TryParse(RequestTextBox.Text, out int reqId))
+                            existingTransaction.RequestId = reqId;
 
-                    // Optional: avoid tracking error if navigation properties exist
-                    dbcontext.Entry(existingTransaction).State = EntityState.Modified;
-                    MessageBox.Show("Transaction Updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        dbcontext.Entry(existingTransaction).State = EntityState.Modified;
+                        MessageBox.Show("Transaction updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else
                 {
-                    if (!validateTransaction(equipmentId, _requestId)) {
+                    if (!validateTransaction(equipmentId, _requestId))
                         return;
-                    }
 
                     dbcontext.RentalTransactions.Add(newTransaction);
                     MessageBox.Show("Transaction added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -219,7 +239,6 @@ namespace myproject
 
                 dbcontext.SaveChanges();
                 this.Close();
-
             }
             catch (Exception ex)
             {
@@ -229,7 +248,7 @@ namespace myproject
                     Exception = ex.Message,
                     Timestamp = DateTime.Now,
                     Source = "Rental_Transaction",
-                    UserId = _authService.CurrentUser.Id,
+                    UserId = _authService.CurrentUser?.Id ?? 0,
                     AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                 });
 

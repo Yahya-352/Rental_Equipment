@@ -15,9 +15,11 @@ namespace EquipmentRentalSystem_web.Controllers
         public IActionResult Index()
         {
             var returnedItems = _context.ReturnRecords
-                .Include(r => r.Transaction)
-                    .ThenInclude(t => t.Equipment)
-                .ToList();
+              .Include(r => r.Transaction)
+                  .ThenInclude(t => t.Equipment)
+                  .Include(z => z.Condition)
+              .ToList();
+
 
             return View(returnedItems);
         }
@@ -97,6 +99,7 @@ namespace EquipmentRentalSystem_web.Controllers
             int conditionId = int.Parse(conditionParts[1]);
 
             var transaction = _context.RentalTransactions
+                .Include(z=> z.Equipment)
        .FirstOrDefault(t => t.TransactionId == transactionId);
             var returnRecord = new ReturnRecord
             {
@@ -108,6 +111,18 @@ namespace EquipmentRentalSystem_web.Controllers
             };
             _context.ReturnRecords.Add(returnRecord);
             transaction.TotalFee = totalFee;
+
+            var feedback = new Feedback
+            {
+                UserId = 7,
+                TransactionId = transactionId,
+                Rating = int.TryParse(form["rate"], out var r) ? r : 0,
+                Date = returnDate.Date,           
+                Time = DateTime.Now.TimeOfDay,
+                CommentText = form["CommentText"].ToString() ?? null
+            };
+            transaction.Equipment.AvailabilityStatusId = conditionId;
+            _context.Feedbacks.Add(feedback);
 
             _context.SaveChanges();
             return RedirectToAction("Index", "Payment", new

@@ -14,17 +14,23 @@ namespace EquipmentRentalSystem_web.Controllers
             _context = context;
         }
 
-    
+
 
         public IActionResult Index()
         {
-            IEnumerable<RentalTransaction> Rental_Transactions = _context.RentalTransactions
-    .Include(y => y.Equipment)
+            var Rental_Transactions = _context.RentalTransactions
+                .Include(y => y.Equipment)
+                .Include(x => x.PaymentStatus)
+                .ToList();
 
-    .Include(x => x.PaymentStatus)
-    .ToList();
+            var result = Rental_Transactions.Select(t => new
+            {
+                Transaction = t,
+                IsReturned = _context.ReturnRecords.Any(r => r.TransactionId == t.TransactionId)
+            }).ToList();
 
-            return View(Rental_Transactions);
+            return View(result);
         }
+
     }
 }

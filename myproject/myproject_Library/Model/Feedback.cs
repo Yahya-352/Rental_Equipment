@@ -15,15 +15,19 @@ namespace myproject_Library.Model
         [Column("Feedback_ID")]
         public int FeedbackId { get; set; }
         [Column(TypeName = "date")]
+
+
         public DateTime? Date { get; set; }
         [Column("time")]
         public TimeSpan? Time { get; set; }
         [Column("Comment_Text")]
-        [StringLength(150)]
         [Unicode(false)]
         public string? CommentText { get; set; }
         [Column("User_ID")]
         public int? UserId { get; set; }
+
+        [Column("Rating")]
+        public int? Rating { get; set; }
         [Column("Transaction_ID")]
         public int? TransactionId { get; set; }
 

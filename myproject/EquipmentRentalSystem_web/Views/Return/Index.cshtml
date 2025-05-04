@@ -5,51 +5,85 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Returned Items</h2>
+<h2 class="text-center mb-4">Returned Items</h2>
 
 <form method="post" action="/Return/ShowPayment">
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-hover table-sm">
+        <thead class="table-secondary text-center">
             <tr>
                 <th>Select</th>
                 <th>Return ID</th>
                 <th>Transaction ID</th>
                 <th>Equipment</th>
-                <th>Return Date</th>
+                <th>Rental Start</th>
+                <th>Planned Return</th>
+                <th>Actual Return</th>
+                <th>Planned Days</th>
                 <th>Late Days</th>
+                <th>Planned Fee</th>
                 <th>Late Fee</th>
                 <th>Condition</th>
+                <th>Deposit</th>
                 <th>Amount Paid</th>
+                <th>Amount Left</th>
                 <th>Total Fees</th>
-                <th>Is Fully paid</th>
+                <th>Fully Paid</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                var is_paid = item.Transaction?.PaymentStatusId != 1 ? "No" : "Yes";
+                var transaction = item.Transaction;
+                var equipment = transaction?.Equipment;
+                var isPaid = transaction?.PaymentStatusId != 1 ? "No" : "Yes";
+
+                var startDate = transaction?.RentalStartDate;
+                var returnDate = transaction?.RentalReturnDate;
+                var actualDate = item.ActualReturnDate;
+
+                var plannedDays = (returnDate.HasValue && startDate.HasValue)
+                ? (returnDate.Value - startDate.Value).Days
+                : 0;
+
+                var rentalRate = equipment?.Cost ?? 0;
+                var plannedFee = plannedDays * rentalRate;
+
+                var deposit = transaction?.Deposit ?? 0;
+                var paid = transaction?.AmountPaid ?? 0;
+                var totalFee = transaction?.TotalFee ?? 0;
+
+                var amountLeft = totalFee - paid - deposit;
+                var lateDays = item.LateReturnDays;
+                var lateFee = item.LateReturnFees;
                 <tr>
-                    <td>
-                        @if (item.Transaction != null && is_paid == "No")
+                    <td class="text-center">
+                        @if (transaction != null && isPaid == "No")
                         {
-                            <input type="radio" name="selectedReturnId" value="@item.TransactionId" />
+                            <input type="radio" name="selectedReturnId" value="@transaction.TransactionId" />
                         }
                     </td>
                     <td>@item.ReturnId</td>
                     <td>@item.TransactionId</td>
-                    <td>@item.Transaction?.Equipment?.EquipmentName</td>
-                    <td>@item.ActualReturnDate?.ToString("yyyy-MM-dd")</td>
-                    <td>@item.LateReturnDays</td>
-                    <td>@item.LateReturnFees</td>
+                    <td>@equipment?.EquipmentName</td>
+                    <td>@(startDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                    <td>@(returnDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                    <td>@(actualDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                    <td class="text-center">@plannedDays</td>
+                    <td class="text-center">@lateDays</td>
+                    <td class="text-end">@($"{plannedFee:C}")</td>
+                    <td class="text-end">@($"{lateFee:C}")</td>
                     <td>@item.Condition?.ConditionName</td>
-                    <td>@item.Transaction?.AmountPaid</td>
-                    <td>@item.Transaction?.TotalFee</td>
-                    <td>@is_paid</td>
+                    <td class="text-end">@($"{deposit:C}")</td>
+                    <td class="text-end">@($"{paid:C}")</td>
+                    <td class="text-end">@($"{amountLeft:C}")</td>
+                    <td class="text-end">@($"{totalFee:C}")</td>
+                    <td class="text-center">@isPaid</td>
                 </tr>
             }
-
         </tbody>
     </table>
 
-    <button type="submit" class="btn btn-primary">Submit Selection</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-dark px-4">Submit</button>
+    </div>
 </form>

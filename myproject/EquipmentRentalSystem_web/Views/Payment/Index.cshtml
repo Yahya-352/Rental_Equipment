@@ -1,5 +1,6 @@
 ﻿@model myproject_Library.Model.RentalTransaction
 
+
 <h2>Make Payment</h2>
 
 <div>
@@ -35,11 +36,16 @@
         CVV:
         <input type="password" name="CVV" maxlength="4" required />
     </label>
+    @{
+        var maxAmount = Model.TotalFee - ((Model.AmountPaid ?? 0) + (Model.Deposit ?? 0));
+    }
+    <input type="number" id="amountInput" name="Amount" step="0.01"
+           value="@maxAmount"
+           max="@maxAmount"
+           min="0"
+           required />
 
-    <label>
-        Amount:
-        <input type="number" name="Amount" step="0.01"
-               value="@(Model.TotalFee - ((Model.AmountPaid ?? 0) + (Model.Deposit ?? 0)))" required />
+
     </label>
 
     <button type="submit">Pay Now</button>

@@ -68,7 +68,6 @@ namespace myproject
                 Status = e.AvailabilityStatus.AvailabilityStatusName,
                 Category = e.Category.CategoryName,
                 condition = e.Condition.ConditionName,
-                penalty = e.LatePenaltyPercentage
             }
                             )
 
