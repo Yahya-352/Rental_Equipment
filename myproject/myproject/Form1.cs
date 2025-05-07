@@ -22,11 +22,6 @@ namespace myproject
             panelContainer.Controls.Add(page);
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void logsAndAuditToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -63,8 +58,25 @@ namespace myproject
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+            bool isAdmin = await _authService.IsInRoleAsync("Administrator");
+
+            // Handle ManageUsersButton - hide for non-admin users
+            ManageUsersButton.Visible = isAdmin;  // Hide instead of just disable
+
+            // Handle btnLogs - change color and enabled state based on user role
+            if (isAdmin)
+            {
+                btnLogs.Enabled = true;
+                btnLogs.BackColor = SystemColors.Control;  // Default button color
+            }
+            else
+            {
+                btnLogs.Enabled = false;
+                btnLogs.BackColor = Color.Gray;  // Gray color for disabled state
+                label1.Text = "Staff";
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -88,6 +100,12 @@ namespace myproject
             Login login = new();
             this.Hide();
             login.Show();
+        }
+
+        private void ManageUsersButton_Click(object sender, EventArgs e)
+        {
+            var usersForm = new Admin_ManageUsers();
+            usersForm.Show();
         }
     }
 }

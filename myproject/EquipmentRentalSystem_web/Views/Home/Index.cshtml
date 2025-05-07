@@ -2,7 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Create button -->
+<button id="createNotificationBtn" class="btn btn-primary mt-3">
+    Create Dummy Notification
+</button>
+
+<script>
+
+    document.getElementById("createNotificationBtn").addEventListener("click", function () {
+        const notificationData = {
+            messageContent: "This is a dummy notification. It contains a long message for testing purposes to see if it will be truncated properly. Even more text to push over the line limit and force truncation visually.",
+            type: "Test",
+            status: "Unread",
+            userId: userId
+        };
+
+        console.log("Sending notification data:", notificationData);
+
+        fetch("/Notification/CreateNotification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(notificationData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error("Error creating notification:", text);
+                });
+            }
+            return response.text();
+        })
+        .then(result => {
+            console.log("Notification creation result:", result);
+        })
+        .catch(error => {
+            console.error("Error creating notification:", error);
+        });
+    });
+</script>
+
+
+@await Html.PartialAsync("_NotificationPopup")
+<link rel="stylesheet" href="~/css/notification-popup.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="~/js/notification-popup.js"></script>

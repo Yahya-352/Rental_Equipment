@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
-
+using EquipmentRentalSystem_web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<EquipmentDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 
+// Register SignalR service
+builder.Services.AddSignalR();
+builder.Services.AddScoped<NotificationService>();
 
 var app = builder.Build();
 
@@ -19,16 +21,19 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseSession();
+app.UseWebSockets();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapControllerRoute(
     name: "default",
