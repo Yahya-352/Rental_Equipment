@@ -137,7 +137,7 @@ namespace myproject
             }
         }
 
-        private void B_Update_Click(object sender, EventArgs e)
+        private async void B_Update_Click(object sender, EventArgs e)
         {
             if (_selectedUser == null)
             {
@@ -164,6 +164,12 @@ namespace myproject
                     return;
                 }
 
+                // Store old values to compare with new ones
+                string oldUsername = _selectedUser.UserName;
+                string oldEmail = _selectedUser.Email;
+                string oldRole = _dbContext.Roles.FirstOrDefault(r => r.Id == _selectedUser.RoleId)?.Name;
+
+                // Update user details
                 _selectedUser.UserName = newUsername;
                 _selectedUser.Email = newEmail;
 
@@ -206,6 +212,35 @@ namespace myproject
                     transaction.Commit();
 
                     MessageBox.Show("User updated successfully.", "Success");
+
+                    // Build the notification message
+                    var changedFields = new List<string>();
+
+                    if (oldUsername != newUsername)
+                        changedFields.Add($"Username: {oldUsername} -> {newUsername}");
+
+                    if (oldEmail != newEmail)
+                        changedFields.Add($"Email: {oldEmail} -> {newEmail}");
+
+                    if (oldRole != newRole)
+                        changedFields.Add($"Role: {oldRole} -> {newRole}");
+
+                    if (!string.IsNullOrEmpty(newPassword))
+                        changedFields.Add("Password: Changed");
+
+                    string message = $"The following details were updated for your account: {string.Join(", ", changedFields)}.";
+
+                    // Ensure the message is under 500 characters
+                    if (message.Length > 500)
+                        message = message.Substring(0, 500);
+
+                    // Send the notification
+                    await NotificationSender.SendNotificationAsync(
+                        userId: _selectedUser.Id,
+                        message: message,
+                        type: "Update"
+                    );
+
                     LoadUsers();
                     ClearFields();
                     DisableFields();
@@ -216,6 +251,7 @@ namespace myproject
                 MessageBox.Show($"Error updating user: {ex.Message}", "Error");
             }
         }
+
 
         private void EnableFields()
         {
