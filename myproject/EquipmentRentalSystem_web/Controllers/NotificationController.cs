@@ -25,7 +25,7 @@ namespace EquipmentRentalSystem_web.Controllers
         public IActionResult Index()
         {
             // Set a dummy user ID for session
-            HttpContext.Session.SetInt32("UserId", 1);
+            //HttpContext.Session.SetInt32("UserId", 1);
 
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
