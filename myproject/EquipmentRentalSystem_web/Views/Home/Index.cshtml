@@ -8,13 +8,12 @@
 </button>
 
 <script>
-
     document.getElementById("createNotificationBtn").addEventListener("click", function () {
         const notificationData = {
             messageContent: "This is a dummy notification. It contains a long message for testing purposes to see if it will be truncated properly. Even more text to push over the line limit and force truncation visually.",
             type: "Test",
             status: "Unread",
-            userId: userId
+            userId: 1
         };
 
         console.log("Sending notification data:", notificationData);
@@ -42,7 +41,3 @@
 </script>
 
 
-@await Html.PartialAsync("_NotificationPopup")
-<link rel="stylesheet" href="~/css/notification-popup.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-<script src="~/js/notification-popup.js"></script>
