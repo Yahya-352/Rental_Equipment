@@ -12,8 +12,8 @@ using myproject_Library.Model;
 namespace myproject_Library.Migrations
 {
     [DbContext(typeof(EquipmentDBContext))]
-    [Migration("20250425231527_UpdateTypes2")]
-    partial class UpdateTypes2
+    [Migration("20250503130118_NewDB")]
+    partial class NewDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -344,9 +344,8 @@ namespace myproject_Library.Migrations
                         .HasColumnName("affected_data");
 
                     b.Property<string>("Exception")
-                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("varchar(MAX)");
 
                     b.Property<string>("Source")
                         .HasMaxLength(50)
@@ -476,6 +475,10 @@ namespace myproject_Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"), 1L, 1);
 
+                    b.Property<decimal?>("AmountPaid")
+                        .HasColumnType("numeric(18,0)")
+                        .HasColumnName("Amount_Paid");
+
                     b.Property<decimal?>("Deposit")
                         .HasColumnType("numeric(18,0)");
 
@@ -506,6 +509,10 @@ namespace myproject_Library.Migrations
                     b.Property<int?>("RequestId")
                         .HasColumnType("int")
                         .HasColumnName("Request_ID");
+
+                    b.Property<decimal?>("TotalFee")
+                        .HasColumnType("numeric(18,0)")
+                        .HasColumnName("Total_Fee");
 
                     b.HasKey("TransactionId");
 
@@ -558,6 +565,10 @@ namespace myproject_Library.Migrations
                     b.Property<int?>("ConditionId")
                         .HasColumnType("int")
                         .HasColumnName("Condition_ID");
+
+                    b.Property<int?>("LateReturnDays")
+                        .HasColumnType("int")
+                        .HasColumnName("Late_Return_Days");
 
                     b.Property<decimal?>("LateReturnFees")
                         .HasColumnType("numeric(18,0)")
@@ -652,9 +663,8 @@ namespace myproject_Library.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar(MAX)")
                         .HasColumnName("password");
 
                     b.Property<string>("PasswordHash")
@@ -680,7 +690,7 @@ namespace myproject_Library.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(MAX)")
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("username");
 
                     b.HasKey("Id");

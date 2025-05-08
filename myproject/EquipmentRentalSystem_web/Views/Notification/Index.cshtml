@@ -1,0 +1,272 @@
+﻿@model List<myproject_Library.Model.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var unreadNotifications = Model.Where(n => n.Status == "Unread").ToList();
+    var readNotifications = Model.Where(n => n.Status == "Read").ToList();
+}
+
+<h2>Notifications</h2>
+
+<h3>Unread Notifications</h3>
+@if (unreadNotifications.Any())
+{
+    <table class="table" id="unreadTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Message</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var notif in unreadNotifications)
+            {
+                <tr class="notificationRow"
+                    data-id="@notif.NotificationId"
+                    data-message="@System.Net.WebUtility.HtmlEncode(notif.MessageContent)"
+                    data-type="@System.Net.WebUtility.HtmlEncode(notif.Type)"
+                    data-status="@System.Net.WebUtility.HtmlEncode(notif.Status)">
+
+                    <td>@notif.NotificationId</td>
+                    <td>@notif.MessageContent</td>
+                    <td>@notif.Type</td>
+                    <td><span class="gold-asterisk" style="margin-right: 4px;">*</span>@notif.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No unread notifications.</p>
+}
+
+<h3>Read Notifications</h3>
+@if (readNotifications.Any())
+{
+    <table class="table" id="readTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Message</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var notif in readNotifications)
+            {
+                <tr class="notificationRow"
+                    data-id="@notif.NotificationId"
+                    data-message="@System.Net.WebUtility.HtmlEncode(notif.MessageContent)"
+                    data-type="@System.Net.WebUtility.HtmlEncode(notif.Type)"
+                    data-status="@System.Net.WebUtility.HtmlEncode(notif.Status)">
+
+                    <td>@notif.NotificationId</td>
+                    <td>@notif.MessageContent</td>
+                    <td>@notif.Type</td>
+                    <td>@notif.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No read notifications.</p>
+}
+
+<div id="notificationPopup" class="popup">
+    <div class="popup-content">
+        <span id="closePopup" class="close-btn">&times;</span>
+        <h3>Notification Details</h3>
+        <p><strong>ID:</strong> <span id="popupId"></span></p>
+        <p><strong>Message:</strong> <div id="popupMessage" class="message-content"></div></p>
+        <p><strong>Type:</strong> <span id="popupType"></span></p>
+        <p><strong>Status:</strong> <span id="popupStatus"></span></p>
+    </div>
+</div>
+
+<style>
+    .popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        inset: 0; 
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .popup-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        width: 50%;
+        max-width: 600px;
+        max-height: 90vh; /* limit vertical growth if content is very large */
+        overflow-y: auto; /* allow scrolling only if needed */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .message-content {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 5px;
+        border: 1px solid #eee;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        color: black;
+    }
+
+    /* Make all text in popup black */
+    .popup-content * {
+        color: black;
+    }
+
+    .close-btn {
+        font-size: 30px;
+        color: #aaa;
+        float: right;
+        cursor: pointer;
+    }
+
+        .close-btn:hover {
+            color: black;
+        }
+
+    .gold-asterisk {
+        color: gold;
+        font-weight: bold;
+    }
+
+    .notificationRow {
+        cursor: pointer;
+    }
+
+        .notificationRow:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("notificationPopup");
+        const closeBtn = document.getElementById("closePopup");
+
+        const popupId = document.getElementById("popupId");
+        const popupMessage = document.getElementById("popupMessage");
+        const popupType = document.getElementById("popupType");
+        const popupStatus = document.getElementById("popupStatus");
+
+        const rows = document.querySelectorAll(".notificationRow");
+
+        let popupNeedsRefresh = false; // track if read status changed
+
+        // Ensure the popup starts hidden when the page loads
+        modal.style.display = "none";
+
+        function showPopup(id, message, type, status) {
+            if (popupId && popupMessage && popupType && popupStatus) {
+                popupId.textContent = id;
+                popupMessage.textContent = message;
+                popupType.textContent = type;
+                popupStatus.textContent = status;
+                modal.style.display = "flex"; // Show popup when triggered by a row click
+            }
+        }
+
+        rows.forEach(row => {
+            row.addEventListener("click", () => {
+                const notifId = row.getAttribute("data-id");
+                const notifMessage = row.getAttribute("data-message");
+                const notifType = row.getAttribute("data-type");
+                const notifStatus = row.getAttribute("data-status");
+
+                if (notifStatus === "Unread") {
+                    fetch('/Notification/MarkNotificationAsRead', {
+                        method: 'POST',
+                        body: JSON.stringify({ NotificationId: notifId }),
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                popupNeedsRefresh = true;
+                                showPopup(notifId, notifMessage, notifType, "Read");
+                            } else {
+                                alert("Error: " + data.message);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                } else {
+                    showPopup(notifId, notifMessage, notifType, notifStatus);
+                }
+            });
+        });
+
+        function closePopup() {
+            modal.style.display = "none";
+
+            if (popupNeedsRefresh) {
+                location.reload(); // refresh only if marked as read
+            }
+        }
+
+        closeBtn.addEventListener("click", () => {
+            closePopup();
+        });
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                closePopup();
+            }
+        };
+
+        // Handle selectedId from query string
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedId = urlParams.get("selectedId");
+
+        if (selectedId) {
+            const row = document.querySelector(`.notificationRow[data-id="${selectedId}"]`);
+
+            if (row) {
+                const notifId = row.getAttribute("data-id");
+                const notifMessage = row.getAttribute("data-message");
+                const notifType = row.getAttribute("data-type");
+                const notifStatus = row.getAttribute("data-status");
+
+                const openAndClean = () => {
+                    showPopup(notifId, notifMessage, notifType, "Read");
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.delete("selectedId");
+                    window.history.replaceState({}, document.title, newUrl.toString());
+                };
+
+                if (notifStatus === "Unread") {
+                    fetch('/Notification/MarkNotificationAsRead', {
+                        method: 'POST',
+                        body: JSON.stringify({ NotificationId: notifId }),
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                popupNeedsRefresh = true;
+                                openAndClean();
+                            }
+                        });
+                } else {
+                    openAndClean();
+                }
+            }
+        }
+    });
+</script>

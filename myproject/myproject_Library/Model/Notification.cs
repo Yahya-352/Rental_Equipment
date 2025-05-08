@@ -14,7 +14,7 @@ namespace myproject_Library.Model
         [Column("Notification_ID")]
         public int NotificationId { get; set; }
         [Column("Message_content")]
-        [StringLength(50)]
+        [StringLength(500)]
         [Unicode(false)]
         public string? MessageContent { get; set; }
         [StringLength(50)]
