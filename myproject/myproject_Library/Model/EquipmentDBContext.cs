@@ -51,7 +51,7 @@ namespace myproject_Library.Model
 
 
                 //IDK whos's connection Data Source=STS_LAPTOP_02\\MSSQLSERVER02;Initial Catalog=EquipmentDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False
-                optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=EquipmentsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+                optionsBuilder.UseSqlServer(@"Data Source=STS_LAPTOP_02\MSSQLSERVER02;Initial Catalog=EquipmentDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
             }
         }
 
@@ -188,7 +188,7 @@ namespace myproject_Library.Model
         public override int SaveChanges()
         {
             // Generate audit logs before saving changes
-            //GenerateAuditLogs();
+            GenerateAuditLogs();
            //return 0;
             return base.SaveChanges();
         }
@@ -249,8 +249,20 @@ namespace myproject_Library.Model
 
         private string GetPrimaryKeyValue(EntityEntry entry)
         {
-            var keyName = entry.Metadata.FindPrimaryKey().Properties.Select(p => p.Name).Single();
-            return entry.Property(keyName).CurrentValue?.ToString();
+            // Handle composite keys
+            var primaryKey = entry.Metadata.FindPrimaryKey();
+            if (primaryKey.Properties.Count > 1)
+            {
+                // Composite key - combine the values
+                return string.Join(",", primaryKey.Properties.Select(p =>
+                    entry.Property(p.Name).CurrentValue?.ToString()));
+            }
+            else
+            {
+                // Single key
+                var keyName = primaryKey.Properties.Single().Name;
+                return entry.Property(keyName).CurrentValue?.ToString();
+            }
         }
 
         private string GenerateAffectedDataJson(EntityEntry entry, string primaryKey)

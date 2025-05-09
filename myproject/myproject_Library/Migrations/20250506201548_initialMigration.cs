@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace myproject_Library.Migrations
 {
-    public partial class InitialSchema : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -80,7 +80,9 @@ namespace myproject_Library.Migrations
                 {
                     Role_ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Role_Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true)
+                    Role_Name = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: false),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,8 +101,7 @@ namespace myproject_Library.Migrations
                     Cost = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
                     Availability_Status_ID = table.Column<int>(type: "int", nullable: true),
                     Category_ID = table.Column<int>(type: "int", nullable: true),
-                    Condition_ID = table.Column<int>(type: "int", nullable: true),
-                    Late_Penalty_Percentage = table.Column<decimal>(type: "numeric(18,0)", nullable: true)
+                    Condition_ID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -123,24 +124,142 @@ namespace myproject_Library.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Role_ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
                     User_ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    username = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    password = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    email = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    Role_ID = table.Column<int>(type: "int", nullable: true)
+                    username = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: false),
+                    password = table.Column<string>(type: "varchar(MAX)", unicode: false, nullable: false),
+                    email = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: false),
+                    Role_ID = table.Column<int>(type: "int", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.User_ID);
                     table.ForeignKey(
-                        name: "FK_User_Role",
+                        name: "FK_User_Role_Role_ID",
                         column: x => x.Role_ID,
                         principalTable: "Role",
                         principalColumn: "Role_ID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "User_ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "User_ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Role_ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "User_ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "User_ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -172,9 +291,9 @@ namespace myproject_Library.Migrations
                     Log_ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Action = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    Exception = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    Exception = table.Column<string>(type: "varchar(MAX)", unicode: false, nullable: true),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    affected_data = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    affected_data = table.Column<string>(type: "varchar(MAX)", unicode: false, nullable: true),
                     Source = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
                     User_ID = table.Column<int>(type: "int", nullable: true)
                 },
@@ -255,7 +374,9 @@ namespace myproject_Library.Migrations
                     Deposit = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
                     Equipment_ID = table.Column<int>(type: "int", nullable: true),
                     Request_ID = table.Column<int>(type: "int", nullable: true),
-                    Payment_Status_ID = table.Column<int>(type: "int", nullable: true)
+                    Payment_Status_ID = table.Column<int>(type: "int", nullable: true),
+                    Amount_Paid = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
+                    Total_Fee = table.Column<decimal>(type: "numeric(18,0)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -285,8 +406,9 @@ namespace myproject_Library.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(type: "date", nullable: true),
                     time = table.Column<TimeSpan>(type: "time", nullable: true),
-                    Comment_Text = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: true),
+                    Comment_Text = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     User_ID = table.Column<int>(type: "int", nullable: true),
+                    Rating = table.Column<int>(type: "int", nullable: true),
                     Transaction_ID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -314,7 +436,8 @@ namespace myproject_Library.Migrations
                     Late_Return_fees = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
                     Addtional_Charges = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
                     Condition_ID = table.Column<int>(type: "int", nullable: true),
-                    Transaction_ID = table.Column<int>(type: "int", nullable: true)
+                    Transaction_ID = table.Column<int>(type: "int", nullable: true),
+                    Late_Return_Days = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -330,6 +453,26 @@ namespace myproject_Library.Migrations
                         principalTable: "Rental_Transaction",
                         principalColumn: "Transaction_ID");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Document_User_ID",
@@ -412,13 +555,47 @@ namespace myproject_Library.Migrations
                 column: "Transaction_ID");
 
             migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "Role",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "User",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_Role_ID",
                 table: "User",
                 column: "Role_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "User",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
             migrationBuilder.DropTable(
                 name: "Document");
 

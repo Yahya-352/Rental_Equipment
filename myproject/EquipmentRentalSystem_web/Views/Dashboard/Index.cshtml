@@ -1,0 +1,395 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Equipment Rental Dashboard</h1>
+        <div>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-download me-1"></i> Export Data
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                    <li><a class="dropdown-item" href="@Url.Action("ExportEquipmentData", "Dashboard")">Equipment Data</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ExportTransactionData", "Dashboard")">Transaction Data</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Pending Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingRequestsCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Completed Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CompletedRequestsCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Overdue Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OverdueRequestsCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Damaged Equipment
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.DamagedEquipmentCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tools fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Equipment Status & Financial Summary Row -->
+    <div class="row">
+        <!-- Equipment Status Card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Equipment Status</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="equipmentStatusChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> Available (@Model.EquipmentStatusData.AvailableEquipment)
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> Rented (@Model.EquipmentStatusData.RentedEquipment)
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-warning"></i> Maintenance (@Model.EquipmentStatusData.MaintenanceEquipment)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Summary Card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Financial Summary</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Current Month Revenue</td>
+                                    <td>$@Model.FinancialSummary.CurrentMonthRevenue.ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <td>Pending Payments</td>
+                                    <td>$@Model.FinancialSummary.PendingPayments.ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Revenue</td>
+                                    <td>$@Model.FinancialSummary.TotalRevenue.ToString("N2")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Equipment & Requests by Category Row -->
+    <div class="row">
+        <!-- Top Rented Equipment -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top Rented Equipment</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="topEquipmentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests by Category -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Requests by Category</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="categoryRequestsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Transactions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Equipment</th>
+                                    <th>User</th>
+                                    <th>Rental Date</th>
+                                    <th>Return Due</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in Model.RecentTransactions)
+                                {
+                                    <tr>
+                                        <td>@transaction.TransactionId</td>
+                                        <td>@transaction.EquipmentName</td>
+                                        <td>@transaction.UserName</td>
+                                        <td>@transaction.RentalDate.ToShortDateString()</td>
+                                        <td>@transaction.ReturnDueDate.ToShortDateString()</td>
+                                        <td>$@transaction.Amount.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this inside the main dashboard view -->
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Category Dashboards</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card border-left-primary shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        @category.CategoryName
+                                                    </div>
+                                                    <a href="@Url.Action("CategoryDashboard", "Dashboard", new { categoryId = category.CategoryId })"
+                                                       class="btn btn-sm btn-primary mt-2">View Dashboard</a>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-folder fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Add this to the main dashboard view -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Reports</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a href="@Url.Action("DamagedEquipmentReport", "Dashboard")" class="btn btn-danger btn-block">
+                                <i class="fas fa-tools mr-1"></i> Damaged Equipment Report
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="@Url.Action("OverdueRentalsReport", "Dashboard")" class="btn btn-warning btn-block">
+                                <i class="fas fa-exclamation-triangle mr-1"></i> Overdue Rentals Report
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="@Url.Action("FinancialReport", "Dashboard")" class="btn btn-success btn-block">
+                                <i class="fas fa-chart-line mr-1"></i> Financial Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Equipment Status Chart
+        var statusCtx = document.getElementById('equipmentStatusChart').getContext('2d');
+        var statusChart = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Available', 'Rented', 'Maintenance'],
+                datasets: [{
+                    data: [
+        @Model.EquipmentStatusData.AvailableEquipment,
+        @Model.EquipmentStatusData.RentedEquipment,
+        @Model.EquipmentStatusData.MaintenanceEquipment
+                    ],
+                    backgroundColor: [
+                        '#1cc88a', // Green
+                        '#4e73df', // Blue
+                        '#f6c23e'  // Yellow
+                    ],
+                    hoverBackgroundColor: [
+                        '#17a673',
+                        '#2e59d9',
+                        '#dda20a'
+                    ],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 80
+            }
+        });
+
+        // Top Equipment Chart
+        var topEquipmentCtx = document.getElementById('topEquipmentChart').getContext('2d');
+        var topEquipmentChart = new Chart(topEquipmentCtx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.TopRentedEquipment.Select(e => $"'{e.EquipmentName}'")))],
+                datasets: [{
+                    label: 'Rental Count',
+                    data: [@string.Join(",", Model.TopRentedEquipment.Select(e => e.RentalCount))],
+                    backgroundColor: '#4e73df',
+                    hoverBackgroundColor: '#2e59d9',
+                    borderColor: '#4e73df',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        // Category Requests Chart
+        var categoryCtx = document.getElementById('categoryRequestsChart').getContext('2d');
+        var categoryChart = new Chart(categoryCtx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.RequestsByCategoryData.Select(c => $"'{c.CategoryName}'")))],
+                datasets: [{
+                    label: 'Request Count',
+                    data: [@string.Join(",", Model.RequestsByCategoryData.Select(c => c.RequestCount))],
+                    backgroundColor: '#1cc88a',
+                    hoverBackgroundColor: '#17a673',
+                    borderColor: '#1cc88a',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+}

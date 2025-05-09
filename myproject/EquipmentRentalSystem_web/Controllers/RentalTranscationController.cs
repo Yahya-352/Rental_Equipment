@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
 
@@ -15,7 +16,7 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
 
-
+        [Authorize]
         public IActionResult Index()
         {
             var Rental_Transactions = _context.RentalTransactions
