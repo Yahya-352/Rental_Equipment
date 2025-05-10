@@ -93,9 +93,6 @@ namespace myproject.services
             .Where(r => r.NormalizedName == roleName.ToUpper())
             .FirstOrDefault();
 
-            // Add this debug line to confirm it's getting here
-            System.Diagnostics.Debug.WriteLine("Role creation succeeded!");
-
             using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandText = $"INSERT INTO AspNetUserRoles (UserId, RoleId) VALUES ({user.Id}, {role.Id})";

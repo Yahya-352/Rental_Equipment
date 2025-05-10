@@ -71,7 +71,7 @@
             // 
             CB_Role.Enabled = false;
             CB_Role.FormattingEnabled = true;
-            CB_Role.Items.AddRange(new object[] { "Administrator", "Staff", "User" });
+            CB_Role.Items.AddRange(new object[] { "Administrator", "Manager", "User" });
             CB_Role.Location = new Point(798, 43);
             CB_Role.Name = "CB_Role";
             CB_Role.Size = new Size(182, 33);

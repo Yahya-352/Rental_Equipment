@@ -94,7 +94,7 @@ namespace myproject
                 if (loginSuccess)
                 {
                     // Check if user is Administrator or Staff
-                    if (await _authService.IsInRoleAsync("Administrator") || await _authService.IsInRoleAsync("Staff"))
+                    if (await _authService.IsInRoleAsync("Administrator") || await _authService.IsInRoleAsync("Staff") || await _authService.IsInRoleAsync("Manager"))
                     {
                         dbContext.Logs.Add(new Log
                         {

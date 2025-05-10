@@ -75,7 +75,7 @@ namespace myproject
             {
                 btnLogs.Enabled = false;
                 btnLogs.BackColor = Color.Gray;  // Gray color for disabled state
-                label1.Text = "Staff";
+                label1.Text = "Manager";
             }
         }
 
