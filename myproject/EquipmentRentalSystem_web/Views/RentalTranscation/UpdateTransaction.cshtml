@@ -1,0 +1,198 @@
+﻿@using myproject_Library.Model
+@model RentalTransaction
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+@{
+    ViewData["Title"] = "Update Rental Transaction";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var equipmentName = ViewData["EquipmentName"] as string;
+}
+
+<h2 class="mb-4 text-primary">Update Rental Transaction</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form asp-controller="RentalTranscation" asp-action="UpdateTransaction" method="post" >
+    <input type="hidden" asp-for="RequestId" />
+    <input type="hidden" asp-for="EquipmentId" />
+    <input type="hidden" asp-for="TransactionId" />
+
+
+    <div class="mb-3">
+        <label class="form-label">Equipment</label>
+        <input class="form-control" value="@equipmentName" disabled />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RentalStartDate" class="form-label"></label>
+        <input asp-for="RentalStartDate" class="form-control" id="startDate" type="date" />
+        <span asp-validation-for="RentalStartDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RentalReturnDate" class="form-label"></label>
+        <input asp-for="RentalReturnDate" class="form-control" id="endDate" type="date" />
+        <span asp-validation-for="RentalReturnDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RentalPeriod" class="form-label"></label>
+        <input asp-for="RentalPeriod" class="form-control" type="number" readonly id="rentalPeriod" />
+        <span asp-validation-for="RentalPeriod" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RentalFee" class="form-label"></label>
+        <input asp-for="RentalFee" class="form-control" type="number" step="0.01" readonly id="rentalFee" />
+        <span asp-validation-for="RentalFee" class="text-danger"></span>
+        <input type="hidden" id="equipmentRentalPrice" value="@ViewData["RentalPrice"]" />
+
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Deposit" class="form-label"></label>
+        <input asp-for="Deposit" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Deposit" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AmountPaid" class="form-label"></label>
+        <input asp-for="AmountPaid" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="AmountPaid" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TotalFee" class="form-label"></label>
+        <input asp-for="TotalFee" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="TotalFee" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PaymentStatusId" class="form-label"></label>
+        <select asp-for="PaymentStatusId" class="form-select" asp-items="ViewBag.PaymentStatusList">
+            <option value="">-- Select Payment Status --</option>
+        </select>
+        <span asp-validation-for="PaymentStatusId" class="text-danger"></span>
+    </div>
+    
+
+    <button type="submit" class="btn btn-primary">Save Transaction</button>
+</form>
+<h4 class="mt-5 mb-3 text-secondary">Equipment Booking Calendar</h4>
+<div id="calendar" class="border rounded p-3 bg-light shadow-sm"></div>
+
+@section Scripts {
+    <script>
+        // ===== FullCalendar Logic =====
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [],
+                eventColor: '#007bff',
+                eventTextColor: '#ffffff'
+            });
+
+            calendar.render();
+
+            var equipmentId = '@Model.EquipmentId';
+
+            if (equipmentId) {
+                $.ajax({
+                    url: '@Url.Action("GetEquipmentRentalDates", "RentalRequest")',
+                    data: { equipmentId: equipmentId },
+                    success: function (data) {
+                        var events = data.map(function (r) {
+                            return {
+                                title: r.title,
+                                start: r.start,
+                                end: r.end,
+                                allDay: true
+                            };
+                        });
+
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(events);
+                    },
+                    error: function () {
+                        console.error("Error fetching rental dates");
+                    }
+                });
+            }
+
+            // ===== Live Rental Calculation =====
+            function calculateRentalDetails() {
+                const start = new Date(document.getElementById("startDate").value);
+                const end = new Date(document.getElementById("endDate").value);
+                const pricePerDay = parseFloat(document.getElementById("equipmentRentalPrice").value);
+
+                if (!isNaN(start) && !isNaN(end) && end >= start) {
+                    const diffTime = Math.abs(end - start);
+                    const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+                    const total = days * pricePerDay;
+
+                    document.getElementById("rentalPeriod").value = days;
+                    document.getElementById("rentalFee").value = total.toFixed(2);
+                } else {
+                    document.getElementById("rentalPeriod").value = "";
+                    document.getElementById("rentalFee").value = "";
+                }
+            }
+
+            document.getElementById("startDate").addEventListener("change", calculateRentalDetails);
+            document.getElementById("endDate").addEventListener("change", calculateRentalDetails);
+        });
+    </script>
+}
+
+<style>
+    #calendar-wrapper {
+        background-color: #1e1e2f;
+        color: #ffffff;
+    }
+
+    .fc {
+        background-color: #1e1e2f;
+        color: #ffffff;
+    }
+
+        .fc .fc-toolbar-title,
+        .fc .fc-button {
+            color: #ffffff;
+        }
+
+        .fc .fc-button {
+            background-color: #333;
+            border: 1px solid #555;
+        }
+
+            .fc .fc-button:hover {
+                background-color: #444;
+            }
+
+    .fc-daygrid-event {
+        background-color: #007bff !important;
+        color: #ffffff !important;
+    }
+
+    .fc-daygrid-day-number {
+        color: #ffffff;
+    }
+
+    .fc-daygrid-day {
+        background-color: #2b2b3d;
+        border: 1px solid #444;
+    }
+</style>
+
