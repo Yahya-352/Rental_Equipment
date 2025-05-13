@@ -1,0 +1,103 @@
+﻿@model IEnumerable<myproject_Library.Model.RentalTransaction>
+@{
+    ViewData["Title"] = "Overdue Rentals Report";
+    Layout = "~/Views/Shared/_ReportLayout.cshtml"; // A simplified layout for printing
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Overdue Rentals Report</h1>
+        <div>
+            <button class="btn btn-primary me-2" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print Report
+            </button>
+            <a href="@Url.Action("ExportOverdueRentalsReport", "Dashboard")" class="btn btn-success">
+                <i class="fas fa-file-csv me-1"></i> Export CSV
+            </a>
+            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Overdue Rentals (@Model.Count() items)
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Equipment</th>
+                            <th>User</th>
+                            <th>Return Due Date</th>
+                            <th>Days Overdue</th>
+                            <th>Total Fee</th>
+                            <th>Contact Info</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model)
+                        {
+                            var daysOverdue = (DateTime.Today - transaction.RentalReturnDate)?.Days ?? 0;
+                            <tr>
+                                <td>@transaction.TransactionId</td>
+                                <td>@transaction.Equipment.EquipmentName</td>
+                                <td>@transaction.Request.User.UserName</td>
+                                <td>@transaction.RentalReturnDate?.ToShortDateString()</td>
+                                <td class="text-danger font-weight-bold">@daysOverdue</td>
+                                <td>@transaction.RentalFee?.ToString("C2")</td>
+                                <td>@transaction.Request.User.Email</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="text-muted small">
+                This report shows all rentals where the return due date has passed but no return record exists.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Potential Late Fees</h6>
+                </div>
+                <div class="card-body">
+                    <p>Based on your rental policy and current overdue items, estimated late fees are:</p>
+                    <h3 class="text-danger">@(Model.Sum(t => (DateTime.Today - t.RentalReturnDate)?.Days * (t.RentalFee / t.RentalPeriod))?.ToString("C2"))</h3>
+                    <small class="text-muted">Calculated as days overdue × daily rental rate</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Action Recommended</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Contact users with overdue rentals</li>
+                        <li>Send reminder notifications through the system</li>
+                        <li>Update equipment status if items are returned</li>
+                        <li>Apply appropriate late fees based on policy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row print-only">
+        <div class="col-12">
+            <p>Report generated on: @DateTime.Now.ToString("MMMM dd, yyyy HH:mm")</p>
+        </div>
+    </div>
+</div>

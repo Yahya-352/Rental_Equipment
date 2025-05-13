@@ -59,5 +59,9 @@ namespace myproject_Library.Model
         public virtual ICollection<Feedback> Feedbacks { get; set; }
         [InverseProperty("Transaction")]
         public virtual ICollection<ReturnRecord> ReturnRecords { get; set; }
+
+        [InverseProperty("Transaction")]
+        public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
+
     }
 }

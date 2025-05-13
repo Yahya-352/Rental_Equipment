@@ -1,0 +1,292 @@
+﻿@model IEnumerable<myproject_Library.Model.RentalTransaction>
+@{
+    ViewData["Title"] = "Financial Report";
+    Layout = "~/Views/Shared/_ReportLayout.cshtml"; // A simplified layout for printing
+    var startDate = ViewBag.StartDate;
+    var endDate = ViewBag.EndDate;
+    var totalRevenue = ViewBag.TotalRevenue;
+    var paidRevenue = ViewBag.PaidRevenue;
+    var pendingRevenue = ViewBag.PendingRevenue;
+    var categorySummary = ViewBag.CategorySummary;
+
+    // Create arrays for the chart data to avoid using lambdas on dynamic objects
+    var categoryNames = new List<string>();
+    var categoryRevenues = new List<decimal>();
+    var categoryColors = new List<string>();
+    
+    // Process the dynamic categorySummary to get the data we need
+    foreach (var category in categorySummary)
+    {
+        categoryNames.Add(category.CategoryName);
+        categoryRevenues.Add(category.Revenue);
+        categoryColors.Add(GetRandomColor(category.CategoryName));
+    }
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Financial Report</h1>
+        <div>
+            <button class="btn btn-primary me-2" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print Report
+            </button>
+            <a href="@Url.Action("ExportFinancialReport", "Dashboard", new { startDate = startDate, endDate = endDate })" class="btn btn-success">
+                <i class="fas fa-file-csv me-1"></i> Export CSV
+            </a>
+            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Report Parameters</h6>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="@Url.Action("FinancialReport", "Dashboard")" class="form-inline">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-2">
+                                    <label for="startDate" class="mr-2">Start Date:</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate" value="@startDate.ToString("yyyy-MM-dd")">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-2">
+                                    <label for="endDate" class="mr-2">End Date:</label>
+                                    <input type="date" class="form-control" id="endDate" name="endDate" value="@endDate.ToString("yyyy-MM-dd")">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary mb-2">Update Report</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Revenue
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@totalRevenue.ToString("C2")</div>
+                            <div class="text-xs mt-2">For period: @startDate.ToShortDateString() - @endDate.ToShortDateString()</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Paid Revenue
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@paidRevenue.ToString("C2")</div>
+                            <div class="text-xs mt-2">Percentage: @((totalRevenue > 0 ? (paidRevenue / totalRevenue) * 100 : 0).ToString("N1"))%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Revenue
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@pendingRevenue.ToString("C2")</div>
+                            <div class="text-xs mt-2">Percentage: @((totalRevenue > 0 ? (pendingRevenue / totalRevenue) * 100 : 0).ToString("N1"))%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Revenue by Category</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Transaction Count</th>
+                                    <th>Revenue</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in categorySummary)
+                                {
+                                    <tr>
+                                        <td>@category.CategoryName</td>
+                                        <td>@category.TransactionCount</td>
+                                        <td>@category.Revenue.ToString("C2")</td>
+                                        <td>@((totalRevenue > 0 ? (category.Revenue / totalRevenue) * 100 : 0).ToString("N1"))%</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Revenue Chart</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="revenueByCategoryChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        @foreach (var category in categorySummary)
+                        {
+                            <span class="mr-2">
+                                <i class="fas fa-circle" style="color: @GetRandomColor(category.CategoryName)"></i> @category.CategoryName
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Transaction Details</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Equipment</th>
+                            <th>Category</th>
+                            <th>User</th>
+                            <th>Rental Date</th>
+                            <th>Return Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model)
+                        {
+                            <tr>
+                                <td>@transaction.TransactionId</td>
+                                <td>@transaction.Equipment.EquipmentName</td>
+                                <td>@transaction.Equipment.Category.CategoryName</td>
+                                <td>@transaction.Request.User.UserName</td>
+                                <td>@transaction.RentalStartDate?.ToShortDateString()</td>
+                                <td>@transaction.RentalReturnDate?.ToShortDateString()</td>
+                                <td>@transaction.RentalFee?.ToString("C2")</td>
+                                <td>
+                                    <span class="badge @(transaction.PaymentStatusId == 1 ? "bg-success" : "bg-warning")">
+                                        @transaction.PaymentStatus.PaymentStatusName
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row print-only">
+        <div class="col-12">
+            <p>Report generated on: @DateTime.Now.ToString("MMMM dd, yyyy HH:mm")</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Revenue Chart
+        var revenueCtx = document.getElementById('revenueByCategoryChart').getContext('2d');
+        var revenueChart = new Chart(revenueCtx, {
+            type: 'pie',
+            data: {
+                // Use the pre-processed arrays
+                labels: [@Html.Raw(string.Join(",", categoryNames.Select(name => "'" + name.Replace("'", "\\'") + "'")))],
+                datasets: [{
+                    data: [@string.Join(",", categoryRevenues)],
+                    backgroundColor: [@Html.Raw(string.Join(",", categoryColors.Select(color => "'" + color + "'")))],
+                    hoverBackgroundColor: [@Html.Raw(string.Join(",", categoryColors.Select(color => "'" + color + "'")))],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            var dataset = data.datasets[tooltipItem.datasetIndex];
+                            var total = dataset.data.reduce(function(previousValue, currentValue) {
+                                return previousValue + currentValue;
+                            });
+                            var currentValue = dataset.data[tooltipItem.index];
+                            var percentage = Math.floor(((currentValue/total) * 100)+0.5);
+                            return data.labels[tooltipItem.index] + ': ' + currentValue.toFixed(2) + ' (' + percentage + "%)";
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+@functions {
+    string GetRandomColor(string input)
+    {
+        // Generate a deterministic color based on input string
+        int hash = 0;
+        foreach (char c in input)
+        {
+            hash = (hash * 31) + c;
+        }
+
+        string[] colors = new[] {
+            "#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b",
+            "#5a5c69", "#6610f2", "#fd7e14", "#20c9a6", "#858796"
+        };
+
+        return colors[Math.Abs(hash) % colors.Length];
+    }
+}

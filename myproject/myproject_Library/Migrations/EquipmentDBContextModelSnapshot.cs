@@ -155,9 +155,9 @@ namespace myproject_Library.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentId"), 1L, 1);
 
                     b.Property<string>("DocumentName")
-                        .HasMaxLength(50)
+                        .HasMaxLength(255)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("Document_Name");
 
                     b.Property<string>("FileType")
@@ -172,6 +172,10 @@ namespace myproject_Library.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("Storage_Path");
 
+                    b.Property<int?>("TransactionId")
+                        .HasColumnType("int")
+                        .HasColumnName("Transaction_ID");
+
                     b.Property<DateTime?>("UploadDate")
                         .HasColumnType("date")
                         .HasColumnName("Upload_Date");
@@ -181,6 +185,8 @@ namespace myproject_Library.Migrations
                         .HasColumnName("User_ID");
 
                     b.HasKey("DocumentId");
+
+                    b.HasIndex("TransactionId");
 
                     b.HasIndex("UserId");
 
@@ -762,10 +768,16 @@ namespace myproject_Library.Migrations
 
             modelBuilder.Entity("myproject_Library.Model.Document", b =>
                 {
+                    b.HasOne("myproject_Library.Model.RentalTransaction", "Transaction")
+                        .WithMany("Documents")
+                        .HasForeignKey("TransactionId");
+
                     b.HasOne("myproject_Library.Model.User", "User")
                         .WithMany("Documents")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Document_User");
+
+                    b.Navigation("Transaction");
 
                     b.Navigation("User");
                 });
@@ -941,6 +953,8 @@ namespace myproject_Library.Migrations
 
             modelBuilder.Entity("myproject_Library.Model.RentalTransaction", b =>
                 {
+                    b.Navigation("Documents");
+
                     b.Navigation("Feedbacks");
 
                     b.Navigation("ReturnRecords");

@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Equipment Rental System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        /* Fix the media query syntax by adding a space */
+        @@media print {
+            .no-print
+
+        {
+            display: none !important;
+        }
+
+        .print-only {
+            display: block !important;
+        }
+
+        a[href]:after {
+            content: none !important;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .container-fluid {
+            width: 100%;
+            padding: 0 !important
+        }
+
+        .card {
+            border: none;
+        }
+
+        .card-header {
+            background-color: #f8f9fc !important;
+            -webkit-print-color-adjust: exact;
+        }
+
+        button, .btn {
+            display: none !important;
+        }
+
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        .print-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .bg-success, .bg-warning {
+            color: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .bg-warning {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="print-only print-header">
+        <h2>Equipment Rental System</h2>
+        <p>@ViewData["Title"] - Generated on @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+        <hr />
+    </div>
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <div class="print-only">
+        <div class="footer text-center mt-4">
+            <p>© @DateTime.Now.Year - Equipment Rental System</p>
+            <p class="small">This is a system-generated report. For inquiries, please contact the administrator.</p>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
 
@@ -12,6 +13,7 @@ namespace EquipmentRentalSystem_web.Controllers
         {
             _context = context;
         }
+        [Authorize]
         public IActionResult Index()
         {
             var returnedItems = _context.ReturnRecords
