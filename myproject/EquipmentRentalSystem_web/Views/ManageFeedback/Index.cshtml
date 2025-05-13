@@ -1,0 +1,104 @@
+﻿@model List<myproject_Library.Model.Feedback>
+
+@{
+    ViewData["Title"] = "Equipment Feedback Management";
+}
+
+<h2>Equipment Feedback Management</h2>
+
+<!-- Search Form -->
+<div class="card mb-4">
+    <div class="card-header">Search Feedback</div>
+    <div class="card-body">
+        <form method="get">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Equipment Name</label>
+                        <input type="text" name="equipmentSearch" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Return ID</label>
+                        <input type="number" name="returnId" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Transaction ID</label>
+                        <input type="number" name="transactionId" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary btn-block">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<form asp-action="ProcessFeedbacks" asp-asp-controller="ManageFeedback">
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>FeedBack ID</th>
+                <th>Equipment Name</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Return ID</th>
+                <th>Transaction ID</th>
+                <th>Date</th>
+                <th>Visible</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+            <td>@(item.FeedbackId)</td>
+            <td>@(item.Transaction.Equipment.EquipmentName)</td>
+             <td>@(item.Rating)</td>
+             <td>@(item.CommentText)</td>
+            <td>
+                    @{
+                        var returnRecord = item.Transaction.ReturnRecords.FirstOrDefault(r => r.TransactionId == item.TransactionId);
+                        @(returnRecord != null ? returnRecord.ReturnId : 0)
+                    }
+            </td>
+            <td>
+                @(item.Transaction.TransactionId)
+            </td>
+            <td>
+                @(item.Date)
+            </td>
+            <td>
+                 <input type="hidden" name="originalValue_@item.FeedbackId" value="@item.IsVisible" />
+
+                            <select name="IsVisible" id="visibility-@item.FeedbackId" class="form-control form-control-sm">
+                        @if (item.IsVisible == true)
+                        {
+                        <option value="true" selected>True</option>
+                        <option value="false">False</option>
+                        }
+                        else
+                        {
+                        <option value="true">True</option>
+                        <option value="false" selected>False</option>
+                        }
+                </select>
+                            <input type="hidden" name="FeedbackId" value="@item.FeedbackId" />
+            </td>
+                </tr>
+
+            }
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+
+</form>
+
+        </tbody>
+    </table>
+</div>
