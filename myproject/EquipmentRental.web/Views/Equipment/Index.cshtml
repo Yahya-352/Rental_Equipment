@@ -1,0 +1,95 @@
+@model IEnumerable<myproject_Library.Model.Equipment>
+
+@{
+    ViewData["Title"] = "Equipment Management";
+}
+
+<h2>Equipment Management</h2>
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <form method="get" action="/Equipment" class="form-inline">
+            <div class="input-group mb-2 mr-sm-2">
+                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search equipment..." />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+            
+            <div class="input-group mb-2 mr-sm-2">
+                <select name="categoryId" id="categorySelect" class="form-control">
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        if (item.Selected)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+                <div class="input-group-append">
+                    <button type="button" onclick="applyFilter()" class="btn btn-secondary">Apply Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 text-right">
+        @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+        {
+            <a href="/Equipment/Create" class="btn btn-success">Create New Equipment</a>
+        }
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Equipment Name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Rental Price</th>
+            <th>Status</th>
+            <th>Condition</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.EquipmentName</td>
+                <td>@item.Description</td>
+                <td>@(item.Category?.CategoryName ?? "N/A")</td>
+                <td>@item.RentalPrice</td>
+                <td>@(item.AvailabilityStatus?.AvailabilityStatusName ?? "N/A")</td>
+                <td>@(item.Condition?.ConditionName ?? "N/A")</td>
+                <td>
+                    <a href="/Equipment/Details/@item.EquipmentId" class="btn btn-sm btn-info">Details</a>
+                    @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+                    {
+                        <a href="/Equipment/Edit/@item.EquipmentId" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="/Equipment/Delete/@item.EquipmentId" class="btn btn-sm btn-danger">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.NoData == true)
+{
+    <div class="alert alert-info mt-3">
+        <p>No equipment found matching your search criteria. Try a different search or category filter.</p>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function applyFilter() {
+            document.querySelector('form').submit();
+        }
+    </script>
+}
