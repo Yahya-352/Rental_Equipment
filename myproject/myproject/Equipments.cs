@@ -68,14 +68,8 @@ namespace myproject
                 Status = e.AvailabilityStatus.AvailabilityStatusName,
                 Category = e.Category.CategoryName,
                 condition = e.Condition.ConditionName,
-<<<<<<< HEAD
                 penalty = e.LatePenaltyPercentage
-=======
->>>>>>> aa118d5c06071f8f1a8f8ae438803dc7c0a075ba
-            }
-                            )
-
-                    .ToList();
+            }).ToList();
         }
 
         private void Filter_Click(object sender, EventArgs e)

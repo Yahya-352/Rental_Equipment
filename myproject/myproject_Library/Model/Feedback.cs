@@ -20,7 +20,6 @@ namespace myproject_Library.Model
         [Column("time")]
         public TimeSpan? Time { get; set; }
         [Column("Comment_Text")]
-        [StringLength(150)]
         [Unicode(false)]
         public string? CommentText { get; set; }
         [Column("User_ID")]

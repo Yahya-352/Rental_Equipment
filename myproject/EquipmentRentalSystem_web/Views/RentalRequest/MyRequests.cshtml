@@ -1,0 +1,52 @@
+﻿@model IEnumerable<myproject_Library.Model.RentalRequest>
+
+@{
+    ViewData["Title"] = "My Rental Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4 text-primary">My Rental Requests</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Request ID</th>
+            <th>Equipment</th>
+            <th>Start Date</th>
+            <th>Return Date</th>
+            <th>Total Cost</th>
+            <th>Status</th>
+            <th>Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in Model)
+        {
+            <tr>
+                <td>@request.RequestId</td>
+                <td>@request.Equipment?.EquipmentName</td>
+                <td>@request.StartDate?.ToString("yyyy-MM-dd")</td>
+                <td>@request.ReturnDate?.ToString("yyyy-MM-dd")</td>
+                <td>@request.TotalCost</td>
+                <td><span class="badge bg-secondary">@request.RequestStatus?.RequestStatusName</span></td>
+                <td>
+                    @if (request.RequestStatus?.RequestStatusName.ToLower() == "pending")
+                    {
+                        <div class="d-flex gap-2">
+                            <a asp-action="UpdateRequest" asp-controller="RentalRequest" asp-route-requestid="@request.RequestId" class="btn btn-primary btn-sm">Update</a>
+
+                            <form method="post" asp-action="UpdateStatus" asp-controller="RentalRequest" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="requestId" value="@request.RequestId" />
+                                <button type="submit" name="status" value="Cancelled" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                        </div>
+                    }
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,146 @@
+﻿@model CategoryDashboardViewModel
+@{
+    ViewData["Title"] = $"{Model.CategoryName} Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">@Model.CategoryName Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Equipment
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalEquipment</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Available Equipment
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.AvailableEquipment</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingRequests</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Revenue
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">$@Model.TotalRevenue.ToString("N2")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Utilization Rate -->
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <h6 class="m-0 font-weight-bold text-primary">Equipment Utilization Rate</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="small font-weight-bold">Utilization Rate <span class="float-right">@Model.UtilizationRate.ToString("N1")%</span></h4>
+                    <div class="progress mb-4">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: @Model.UtilizationRate%"
+                             aria-valuenow="@Model.UtilizationRate" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <p class="mb-0">Equipment utilization shows the percentage of equipment in this category that is currently rented out.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Transactions in @Model.CategoryName</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Equipment</th>
+                                    <th>Rental Date</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in Model.RecentTransactions)
+                                {
+                                    <tr>
+                                        <td>@transaction.TransactionId</td>
+                                        <td>@transaction.EquipmentName</td>
+                                        <td>@transaction.RentalDate.ToShortDateString()</td>
+                                        <td>$@transaction.Amount.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary">Back to Main Dashboard</a>
+        </div>
+    </div>
+</div>

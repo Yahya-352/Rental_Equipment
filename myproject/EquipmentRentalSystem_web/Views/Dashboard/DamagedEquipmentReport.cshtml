@@ -1,0 +1,74 @@
+﻿@model IEnumerable<myproject_Library.Model.Equipment>
+@{
+    ViewData["Title"] = "Damaged Equipment Report";
+    Layout = "~/Views/Shared/_ReportLayout.cshtml"; // A simplified layout for printing
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Damaged Equipment Report</h1>
+        <div>
+            <button class="btn btn-primary me-2" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print Report
+            </button>
+            <a href="@Url.Action("ExportDamagedEquipmentReport", "Dashboard")" class="btn btn-success">
+                <i class="fas fa-file-csv me-1"></i> Export CSV
+            </a>
+            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Equipment in Damaged Condition (@Model.Count() items)
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Rental Price</th>
+                            <th>Cost Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var equipment in Model)
+                        {
+                            <tr>
+                                <td>@equipment.EquipmentId</td>
+                                <td>@equipment.EquipmentName</td>
+                                <td>@equipment.Category.CategoryName</td>
+                                <td>@equipment.RentalPrice?.ToString("C2")</td>
+                                <td>@equipment.Cost?.ToString("C2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="6" class="text-right">Total Value:</th>
+                            <th>@Model.Sum(e => e.Cost)?.ToString("C2")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="text-muted small">
+                This report shows all equipment items in damaged condition. These items may require repair or replacement.
+            </div>
+        </div>
+    </div>
+
+    <div class="row print-only">
+        <div class="col-12">
+            <p>Report generated on: @DateTime.Now.ToString("MMMM dd, yyyy HH:mm")</p>
+        </div>
+    </div>
+</div>

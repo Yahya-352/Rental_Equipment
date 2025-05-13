@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35913.81
+VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myproject", "myproject\myproject.csproj", "{17831326-6495-434F-BD8D-14BC79EF7E5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "myproject", "myproject\myproject.csproj", "{17831326-6495-434F-BD8D-14BC79EF7E5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myproject_Library", "myproject_Library\myproject_Library.csproj", "{F2CE3043-01F6-4363-9882-5B8CDC50EA72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "myproject_Library", "myproject_Library\myproject_Library.csproj", "{F2CE3043-01F6-4363-9882-5B8CDC50EA72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentRental.web", "EquipmentRental.web\EquipmentRental.web.csproj", "{A166262E-3A01-4650-BAAA-C15FB2E0F904}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentRentalSystem_web", "EquipmentRentalSystem_web\EquipmentRentalSystem_web.csproj", "{4DF76519-5914-4E9E-9EAF-A25059B34F1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{F2CE3043-01F6-4363-9882-5B8CDC50EA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2CE3043-01F6-4363-9882-5B8CDC50EA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2CE3043-01F6-4363-9882-5B8CDC50EA72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A166262E-3A01-4650-BAAA-C15FB2E0F904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A166262E-3A01-4650-BAAA-C15FB2E0F904}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A166262E-3A01-4650-BAAA-C15FB2E0F904}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A166262E-3A01-4650-BAAA-C15FB2E0F904}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF76519-5914-4E9E-9EAF-A25059B34F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF76519-5914-4E9E-9EAF-A25059B34F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF76519-5914-4E9E-9EAF-A25059B34F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF76519-5914-4E9E-9EAF-A25059B34F1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

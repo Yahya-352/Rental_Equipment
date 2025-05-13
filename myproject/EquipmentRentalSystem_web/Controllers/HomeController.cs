@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using EquipmentRental.web.Models;
+using EquipmentRentalSystem_web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
-namespace EquipmentRental.web.Controllers
+namespace EquipmentRentalSystem_web.Controllers
 {
     public class HomeController : Controller
     {

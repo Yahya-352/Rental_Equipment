@@ -1,4 +1,4 @@
-namespace EquipmentRental.web.Models
+namespace EquipmentRentalSystem_web.Models
 {
     public class ErrorViewModel
     {

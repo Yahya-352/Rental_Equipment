@@ -1,0 +1,209 @@
+﻿@using myproject_Library.Model
+@model IEnumerable<RentalRequest>
+
+@{
+    ViewData["Title"] = "Rental Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var statuses = ViewData["StatusList"] as List<RequestStatus>;
+}
+
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Rental Requests</h2>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+    <form method="get" asp-action="Index" class="row g-3 align-items-center mb-4">
+        <div class="col-md-4">
+            <input type="text" value="@ViewData["SearchString"]" name="SearchString" class="form-control" placeholder="Search by equipment name" />
+        </div>
+        <div class="col-md-3">
+            <select name="SearchStatus" class="form-select">
+                <option value="-1" selected>All Statuses</option>
+                @foreach (var item in statuses)
+                {
+                    <option value="@item.RequestStatusId">@item.RequestStatusName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="submit" value="Search" class="btn btn-primary w-100" />
+        </div>
+    </form>
+
+    <div class="table-responsive mb-5">
+        <table class="table table-bordered table-striped text-center align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Total Cost</th>
+                    <th>Username</th>
+                    <th>Equipment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.StartDate</td>
+                        <td>@item.ReturnDate</td>
+                        <td>$@item.TotalCost</td>
+                        <td>@item.User.UserName</td> @* Replace with actual user if available *@
+                        <td>@item.Equipment.EquipmentName</td>
+                        <td>
+                            <span class="badge bg-secondary">@item.RequestStatus.RequestStatusName</span>
+                        </td>
+                        <td>
+                            @if (item.RequestStatus.RequestStatusName.ToLower() == "pending")
+                            {
+                                <form method="post" asp-action="UpdateStatus" asp-controller="RentalRequest" class="d-flex gap-2">
+                                    <input type="hidden" name="requestId" value="@item.RequestId" />
+                                    <input type="submit" name="status" value="Approved" class="btn btn-success btn-sm" />
+                                    <input type="submit" name="status" value="Rejected" class="btn btn-danger btn-sm" />
+                                </form>
+                            }
+                            else if (item.RequestStatus.RequestStatusName.ToLower() == "approved")
+                            {
+                                <form method="get" asp-controller="RentalTranscation" asp-action="CreateFromRequest">
+                                    <input type="hidden" name="requestId" value="@item.RequestId" />
+                                    <button type="submit" class="btn btn-outline-success btn-sm mt-2">Create Transaction</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <h4 class="text-secondary">View Rental Calendar</h4>
+    <form id="calendarForm" method="get" asp-action="GetEquipmentRentalDates" class="row g-3 align-items-center mb-4">
+        <div class="col-md-4">
+            <select name="equipmentId" class="form-select">
+                <option value="">Select Equipment</option>
+                @foreach (var equipment in (List<Equipment>)ViewData["EquipmentList"])
+                {
+                    <option value="@equipment.EquipmentId">@equipment.EquipmentName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="submit" value="Load Calendar" class="btn btn-outline-primary w-100" />
+        </div>
+    </form>
+
+    <div id="calendar-wrapper" class="rounded shadow-sm p-3 bg-white">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [],
+                        eventColor: '#007bff',
+        eventTextColor: '#ffffff'
+            });
+
+            calendar.render();
+
+            $('#calendarForm').submit(function (e) {
+                e.preventDefault();
+
+                var equipmentId = $('select[name="equipmentId"]').val();
+
+                if (equipmentId) {
+                    $.ajax({
+                        url: '@Url.Action("GetEquipmentRentalDates", "RentalRequest")',
+                        data: { equipmentId: equipmentId },
+                        success: function (data) {
+                            var events = data.map(function (r) {
+                                return {
+                                    title: r.title,
+                                    start: r.start,
+                                    end: r.end,
+                                    allDay: r.allDay
+                                };
+                            });
+
+                            calendar.removeAllEvents();
+                            calendar.addEventSource(events);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching rental dates: " + error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+<style>
+    #calendar-wrapper {
+        background-color: #1e1e2f;
+        color: #ffffff;
+    }
+
+    .fc {
+        background-color: #1e1e2f;
+        color: #ffffff;
+    }
+
+    .fc .fc-toolbar-title,
+    .fc .fc-button {
+        color: #ffffff;
+    }
+
+    .fc .fc-button {
+        background-color: #333;
+        border: 1px solid #555;
+    }
+
+    .fc .fc-button:hover {
+        background-color: #444;
+    }
+
+    .fc-daygrid-event {
+        background-color: #007bff !important;
+        color: #ffffff !important;
+    }
+
+    .fc-daygrid-day-number {
+        color: #ffffff;
+    }
+
+    .fc-daygrid-day {
+        background-color: #2b2b3d;
+        border: 1px solid #444;
+    }
+</style>
+
+
+<!-- Optional: If you're not using Bootstrap already, include it -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />

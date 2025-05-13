@@ -208,6 +208,7 @@ namespace myproject_Library.Model
         {
             // Generate audit logs before saving changes
             GenerateAuditLogs();
+           //return 0;
             return base.SaveChanges();
         }
 
