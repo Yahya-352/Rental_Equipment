@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
@@ -9,13 +11,40 @@ namespace EquipmentRentalSystem_web.Controllers
     {
 
         private readonly EquipmentDBContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public RentalTranscationController(EquipmentDBContext context)
+
+        public RentalTranscationController(EquipmentDBContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
+        public async Task<IActionResult>  MyTranscations()
+        {
 
+            var user = await _userManager.GetUserAsync(User);
+            var rentalTransactions = await _context.RentalTransactions
+            .Include(y => y.Equipment)
+            .Include(x => x.PaymentStatus)
+             .Include(p => p.ReturnRecords)
+
+            .Include(t => t.Documents)
+            .Include(t => t.Request)
+                .ThenInclude(Z => Z.User)
+            .Where(x => x.Request.UserId == user.Id) 
+            .ToListAsync();
+
+            var viewModel = rentalTransactions.Select(t => new
+            {
+                Transaction = t,
+                IsReturned = t.ReturnRecords.Any(r => r.TransactionId == t.TransactionId),
+                Documents = t.Documents
+            });
+            return View(viewModel);
+
+        }
 
         public IActionResult Index(string equipmentSearch, string requestSearch)
         {
@@ -52,6 +81,8 @@ namespace EquipmentRentalSystem_web.Controllers
 
             return View(result);
         }
+
+      
 
         [HttpGet]
         public IActionResult CreateFromRequest(int requestId)

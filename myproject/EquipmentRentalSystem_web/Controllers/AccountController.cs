@@ -58,6 +58,8 @@ namespace EquipmentRentalSystem_web.Controllers
             return View(model);
         }
 
+
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string? returnUrl = null)
@@ -259,5 +261,7 @@ namespace EquipmentRentalSystem_web.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
+
+
     }
 }

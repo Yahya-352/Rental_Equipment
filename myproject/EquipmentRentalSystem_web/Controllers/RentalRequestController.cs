@@ -1,23 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
-
 namespace EquipmentRentalSystem_web.Controllers
 {
     public class RentalRequestController : Controller
     {
         private readonly EquipmentDBContext _context;
-
-        public RentalRequestController(EquipmentDBContext context) { 
+        private readonly UserManager<User> _userManager;
+        public RentalRequestController(EquipmentDBContext context, UserManager<User> userManager) { 
             _context = context;
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index(String SearchString, int? SearchStatus)
         {
-            var requests = await _context.RentalRequests.Include(x => x.Equipment).Include(x => x.RequestStatus).ToListAsync();
+            var user = await _userManager.GetUserAsync(User);
+
+            var requests = await _context.RentalRequests.Include(x => x.Equipment)
+                .Include(z=> z.User)
+                .Include(x => x.RequestStatus).ToListAsync();
+
 
             var statusList = await _context.RequestStatuses.Distinct()
             .ToListAsync();
             var equipmentList = await _context.Equipment.ToListAsync();
+
             ViewData["StatusList"] = statusList;
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -32,9 +39,7 @@ namespace EquipmentRentalSystem_web.Controllers
             ViewData["SearchString"]= SearchString;
             ViewData["SearchStatus"] = SearchStatus;
             ViewData["EquipmentList"] = equipmentList;
-
-
-
+            
             return View(requests);
 
         }
@@ -78,8 +83,11 @@ namespace EquipmentRentalSystem_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RentalRequest request)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             request.RequestStatusId = 1; // pending
-            request.UserId = 1; // hardcoded for now
+
+            request.UserId = user.Id;
 
             if (!ModelState.IsValid || request.StartDate == null || request.ReturnDate == null)
             {
@@ -259,9 +267,11 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpGet]
-        public IActionResult MyRequests()
+        public async Task<IActionResult> MyRequests() // Add Task<> here
         {
-            int userId = 1; // TEMP: Replace with actual user authentication later
+            var user = await _userManager.GetUserAsync(User);
+
+            int userId = user.Id; // TEMP: Replace with actual user authentication later
 
             var userRequests = _context.RentalRequests
                 .Include(r => r.Equipment)

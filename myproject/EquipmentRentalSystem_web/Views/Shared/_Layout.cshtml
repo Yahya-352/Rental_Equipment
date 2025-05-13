@@ -22,18 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="RentalTranscation" asp-action="Index">Rental Transcation</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Return" asp-action="Index">Return</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="Index">Notifications</a>
-                        </li>
+                     
                         @if (User.IsInRole("Administrator") || User.IsInRole("CategoryManager"))
                         {
                             <li class="nav-item">
@@ -41,8 +30,44 @@
                                     <i class="fas fa-fw fa-tachometer-alt"></i>
                                     <span>Dashboard</span>
                                 </a>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalTranscation" asp-action="Index">Rental Transcation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Return" asp-action="Index">Return</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ManageFeedback" asp-action="Index">Manage Feedback</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="Index">Notifications</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalRequest" asp-action="Index">RentalRequest</a>
+                            </li>
+                            
                             </li>
                         }
+                        else if (User.IsInRole("User")){
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalRequest" asp-action="CreateRequest">Request Equipment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalRequest" asp-action="MyRequests">Request Equipment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalRequest" asp-action="MyRequests">My Request Equipment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalTranscation" asp-action="MyTranscations">My Transcation</a>
+                            </li>
+                            
+                              <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Return" asp-action="MyReturns">My Returns</a>
+                            </li>
+                        }
+                        
                     </ul>
 
                     <!-- Authentication section -->

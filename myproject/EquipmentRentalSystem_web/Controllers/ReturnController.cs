@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
@@ -8,11 +9,33 @@ namespace EquipmentRentalSystem_web.Controllers
     public class ReturnController : Controller
     {
         private readonly EquipmentDBContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public ReturnController(EquipmentDBContext context)
+        public ReturnController(EquipmentDBContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
+
+        public async Task<IActionResult> MyReturns(){
+            var user = await _userManager.GetUserAsync(User);
+
+            var returnedItems = await _context.ReturnRecords
+            .Include(r => r.Transaction)
+                .ThenInclude(t => t.Equipment)
+            .Include(r => r.Transaction)
+                .ThenInclude(t => t.PaymentStatus)
+            .Include(r => r.Condition)
+            .Where(f => f.Transaction.Request.UserId == user.Id)
+            .OrderByDescending(r => r.ActualReturnDate)
+            .ToListAsync();
+
+            ViewData["Title"] = "My Returned Items";
+            ViewData["TotalReturns"] = returnedItems.Count;
+            return View(returnedItems);
+        }
+
         [Authorize]
         public IActionResult Index()
         {
