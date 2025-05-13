@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myproject_Library.Model;
 
@@ -11,9 +12,10 @@ using myproject_Library.Model;
 namespace myproject_Library.Migrations
 {
     [DbContext(typeof(EquipmentDBContext))]
-    partial class EquipmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250513143711_bd5")]
+    partial class bd5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,10 +327,6 @@ namespace myproject_Library.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("Equipment_Name");
-
-                    b.Property<decimal?>("LatePenaltyPercentage")
-                        .HasColumnType("numeric(18,0)")
-                        .HasColumnName("Late_Penalty_Percentage");
 
                     b.Property<decimal?>("RentalPrice")
                         .HasColumnType("numeric(18,0)")

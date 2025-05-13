@@ -15,7 +15,7 @@ namespace myproject_Library.Model
         [Column("Document_ID")]
         public int DocumentId { get; set; }
         [Column("Document_Name")]
-        [StringLength(50)]
+        [StringLength(255)]
         [Unicode(false)]
         public string? DocumentName { get; set; }
         [Column("Upload_Date", TypeName = "date")]
@@ -34,5 +34,13 @@ namespace myproject_Library.Model
         [ForeignKey("UserId")]
         [InverseProperty("Documents")]
         public virtual User? User { get; set; }
+
+        [Column("Transaction_ID")]
+        public int? TransactionId { get; set; }
+
+        [ForeignKey("TransactionId")]
+        [InverseProperty("Documents")]
+        public virtual RentalTransaction? Transaction { get; set; }
+
     }
 }

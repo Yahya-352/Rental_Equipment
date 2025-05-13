@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myproject_Library.Model;
 
@@ -11,9 +12,10 @@ using myproject_Library.Model;
 namespace myproject_Library.Migrations
 {
     [DbContext(typeof(EquipmentDBContext))]
-    partial class EquipmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250510173021_AddTransactionIdToDocument3")]
+    partial class AddTransactionIdToDocument3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,38 +106,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 3,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            RoleId = 3
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -175,33 +145,6 @@ namespace myproject_Library.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryId = 1,
-                            CategoryName = "Audio Equipment"
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            CategoryName = "Video Equipment"
-                        },
-                        new
-                        {
-                            CategoryId = 3,
-                            CategoryName = "Lighting Equipment"
-                        },
-                        new
-                        {
-                            CategoryId = 4,
-                            CategoryName = "Computer Hardware"
-                        },
-                        new
-                        {
-                            CategoryId = 5,
-                            CategoryName = "Photography Equipment"
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.Document", b =>
@@ -250,44 +193,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Document");
-
-                    b.HasData(
-                        new
-                        {
-                            DocumentId = 1,
-                            DocumentName = "RentalAgreement_1.pdf",
-                            FileType = "PDF",
-                            StoragePath = "/documents/agreements/RentalAgreement_1.pdf",
-                            UploadDate = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
-                        },
-                        new
-                        {
-                            DocumentId = 2,
-                            DocumentName = "PaymentReceipt_1.pdf",
-                            FileType = "PDF",
-                            StoragePath = "/documents/receipts/PaymentReceipt_1.pdf",
-                            UploadDate = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
-                        },
-                        new
-                        {
-                            DocumentId = 3,
-                            DocumentName = "DamageReport_4.pdf",
-                            FileType = "PDF",
-                            StoragePath = "/documents/reports/DamageReport_4.pdf",
-                            UploadDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 1
-                        },
-                        new
-                        {
-                            DocumentId = 4,
-                            DocumentName = "UserID_3.jpg",
-                            FileType = "JPG",
-                            StoragePath = "/documents/ids/UserID_3.jpg",
-                            UploadDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.Equipment", b =>
@@ -326,10 +231,6 @@ namespace myproject_Library.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("Equipment_Name");
 
-                    b.Property<decimal?>("LatePenaltyPercentage")
-                        .HasColumnType("numeric(18,0)")
-                        .HasColumnName("Late_Penalty_Percentage");
-
                     b.Property<decimal?>("RentalPrice")
                         .HasColumnType("numeric(18,0)")
                         .HasColumnName("Rental_Price");
@@ -343,118 +244,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("ConditionId");
 
                     b.ToTable("Equipment");
-
-                    b.HasData(
-                        new
-                        {
-                            EquipmentId = 1,
-                            AvailabilityStatusId = 1,
-                            CategoryId = 5,
-                            ConditionId = 1,
-                            Cost = 3899.99m,
-                            Description = "Professional mirrorless camera",
-                            EquipmentName = "Canon EOS R5",
-                            RentalPrice = 150.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 2,
-                            AvailabilityStatusId = 2,
-                            CategoryId = 5,
-                            ConditionId = 1,
-                            Cost = 2199.99m,
-                            Description = "Full-frame mirrorless camera",
-                            EquipmentName = "Sony A7III",
-                            RentalPrice = 120.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 3,
-                            AvailabilityStatusId = 1,
-                            CategoryId = 3,
-                            ConditionId = 2,
-                            Cost = 1099.99m,
-                            Description = "LED light panel",
-                            EquipmentName = "Aputure 300D",
-                            RentalPrice = 75.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 4,
-                            AvailabilityStatusId = 2,
-                            CategoryId = 1,
-                            ConditionId = 1,
-                            Cost = 999.99m,
-                            Description = "Shotgun microphone",
-                            EquipmentName = "Sennheiser MKH 416",
-                            RentalPrice = 45.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 5,
-                            AvailabilityStatusId = 3,
-                            CategoryId = 4,
-                            ConditionId = 2,
-                            Cost = 2499.99m,
-                            Description = "16\" MacBook Pro with M1 Pro",
-                            EquipmentName = "MacBook Pro 16\"",
-                            RentalPrice = 120.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 6,
-                            AvailabilityStatusId = 1,
-                            CategoryId = 2,
-                            ConditionId = 1,
-                            Cost = 5995.00m,
-                            Description = "Cinema camera",
-                            EquipmentName = "RED Komodo 6K",
-                            RentalPrice = 350.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 7,
-                            AvailabilityStatusId = 2,
-                            CategoryId = 2,
-                            ConditionId = 2,
-                            Cost = 1999.99m,
-                            Description = "Professional gimbal stabilizer",
-                            EquipmentName = "DJI Ronin 2",
-                            RentalPrice = 85.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 8,
-                            AvailabilityStatusId = 1,
-                            CategoryId = 1,
-                            ConditionId = 1,
-                            Cost = 349.99m,
-                            Description = "Portable audio recorder",
-                            EquipmentName = "Zoom H6",
-                            RentalPrice = 35.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 9,
-                            AvailabilityStatusId = 2,
-                            CategoryId = 3,
-                            ConditionId = 3,
-                            Cost = 899.99m,
-                            Description = "Portable strobe light",
-                            EquipmentName = "Godox AD600Pro",
-                            RentalPrice = 60.00m
-                        },
-                        new
-                        {
-                            EquipmentId = 10,
-                            AvailabilityStatusId = 1,
-                            CategoryId = 4,
-                            ConditionId = 1,
-                            Cost = 3999.99m,
-                            Description = "Desktop computer for video editing",
-                            EquipmentName = "Mac Studio",
-                            RentalPrice = 150.00m
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.EquipmentAvailability", b =>
@@ -475,28 +264,6 @@ namespace myproject_Library.Migrations
                     b.HasKey("AvailabilityStatusId");
 
                     b.ToTable("Equipment_Availability");
-
-                    b.HasData(
-                        new
-                        {
-                            AvailabilityStatusId = 1,
-                            AvailabilityStatusName = "Available"
-                        },
-                        new
-                        {
-                            AvailabilityStatusId = 2,
-                            AvailabilityStatusName = "Rented"
-                        },
-                        new
-                        {
-                            AvailabilityStatusId = 3,
-                            AvailabilityStatusName = "Under Maintenance"
-                        },
-                        new
-                        {
-                            AvailabilityStatusId = 4,
-                            AvailabilityStatusName = "Reserved"
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.EquipmentCondition", b =>
@@ -518,33 +285,6 @@ namespace myproject_Library.Migrations
                         .HasName("PK_Condition_ID");
 
                     b.ToTable("Equipment_Condition");
-
-                    b.HasData(
-                        new
-                        {
-                            ConditionId = 1,
-                            ConditionName = "Excellent"
-                        },
-                        new
-                        {
-                            ConditionId = 2,
-                            ConditionName = "Good"
-                        },
-                        new
-                        {
-                            ConditionId = 3,
-                            ConditionName = "Damaged"
-                        },
-                        new
-                        {
-                            ConditionId = 4,
-                            ConditionName = "Under Repair"
-                        },
-                        new
-                        {
-                            ConditionId = 5,
-                            ConditionName = "Retired"
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.Feedback", b =>
@@ -563,10 +303,6 @@ namespace myproject_Library.Migrations
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("date");
-
-                    b.Property<bool?>("IsVisible")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsVisible");
 
                     b.Property<int?>("Rating")
                         .HasColumnType("int")
@@ -591,52 +327,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Feedback");
-
-                    b.HasData(
-                        new
-                        {
-                            FeedbackId = 1,
-                            CommentText = "Great camera, worked perfectly for my project!",
-                            Date = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsVisible = true,
-                            Rating = 5,
-                            Time = new TimeSpan(0, 14, 30, 0, 0),
-                            TransactionId = 1,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            FeedbackId = 2,
-                            CommentText = "Camera was excellent but sorry for the late return.",
-                            Date = new DateTime(2025, 4, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsVisible = true,
-                            Rating = 4,
-                            Time = new TimeSpan(0, 10, 15, 0, 0),
-                            TransactionId = 2,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            FeedbackId = 3,
-                            CommentText = "The stabilizer worked well but had some issues with battery life.",
-                            Date = new DateTime(2025, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsVisible = true,
-                            Rating = 3,
-                            Time = new TimeSpan(0, 16, 45, 0, 0),
-                            TransactionId = 5,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            FeedbackId = 4,
-                            CommentText = "Very sorry about the damage, but the recorder was excellent!",
-                            Date = new DateTime(2025, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsVisible = true,
-                            Rating = 4,
-                            Time = new TimeSpan(0, 9, 0, 0, 0),
-                            TransactionId = 6,
-                            UserId = 4
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.Log", b =>
@@ -679,62 +369,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Logs");
-
-                    b.HasData(
-                        new
-                        {
-                            LogId = 1,
-                            Action = "Insert",
-                            AffectedData = "{\"entityType\":\"RentalRequest\",\"id\":1}",
-                            Source = "RentalRequestController",
-                            Timestamp = new DateTime(2025, 4, 14, 9, 32, 15, 0, DateTimeKind.Unspecified),
-                            UserId = 3
-                        },
-                        new
-                        {
-                            LogId = 2,
-                            Action = "Update",
-                            AffectedData = "{\"entityType\":\"RentalRequest\",\"id\":1,\"status\":\"Approved\"}",
-                            Source = "AdminController",
-                            Timestamp = new DateTime(2025, 4, 14, 10, 15, 30, 0, DateTimeKind.Unspecified),
-                            UserId = 1
-                        },
-                        new
-                        {
-                            LogId = 3,
-                            Action = "Insert",
-                            AffectedData = "{\"entityType\":\"RentalTransaction\",\"id\":1}",
-                            Source = "TransactionController",
-                            Timestamp = new DateTime(2025, 4, 14, 10, 20, 45, 0, DateTimeKind.Unspecified),
-                            UserId = 1
-                        },
-                        new
-                        {
-                            LogId = 4,
-                            Action = "Update",
-                            AffectedData = "{\"entityType\":\"Equipment\",\"id\":1,\"status\":\"Available\"}",
-                            Source = "ReturnController",
-                            Timestamp = new DateTime(2025, 4, 20, 16, 45, 22, 0, DateTimeKind.Unspecified),
-                            UserId = 1
-                        },
-                        new
-                        {
-                            LogId = 5,
-                            Action = "Insert",
-                            AffectedData = "{\"entityType\":\"ReturnRecord\",\"id\":1}",
-                            Source = "ReturnController",
-                            Timestamp = new DateTime(2025, 4, 20, 16, 50, 10, 0, DateTimeKind.Unspecified),
-                            UserId = 1
-                        },
-                        new
-                        {
-                            LogId = 6,
-                            Action = "Insert",
-                            AffectedData = "{\"entityType\":\"Feedback\",\"id\":1}",
-                            Source = "FeedbackController",
-                            Timestamp = new DateTime(2025, 4, 21, 14, 30, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.Notification", b =>
@@ -747,9 +381,9 @@ namespace myproject_Library.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"), 1L, 1);
 
                     b.Property<string>("MessageContent")
-                        .HasMaxLength(500)
+                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("Message_content");
 
                     b.Property<string>("Status")
@@ -771,56 +405,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
-
-                    b.HasData(
-                        new
-                        {
-                            NotificationId = 1,
-                            MessageContent = "Your rental request for Canon EOS R5 has been approved.",
-                            Status = "Read",
-                            Type = "Approval",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            NotificationId = 2,
-                            MessageContent = "Your rental request for Sony A7III has been approved.",
-                            Status = "Read",
-                            Type = "Approval",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            NotificationId = 3,
-                            MessageContent = "Your rental for Zoom H6 is due for return tomorrow.",
-                            Status = "Read",
-                            Type = "Reminder",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            NotificationId = 4,
-                            MessageContent = "Your rental for Aputure 300D has been approved.",
-                            Status = "Unread",
-                            Type = "Approval",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            NotificationId = 5,
-                            MessageContent = "Thank you for your feedback on the Canon EOS R5 rental.",
-                            Status = "Unread",
-                            Type = "Feedback",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            NotificationId = 6,
-                            MessageContent = "Your rental request for Godox AD600Pro has been rejected.",
-                            Status = "Unread",
-                            Type = "Rejection",
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.PaymentStatus", b =>
@@ -841,28 +425,6 @@ namespace myproject_Library.Migrations
                     b.HasKey("PaymentStatusId");
 
                     b.ToTable("Payment_Status");
-
-                    b.HasData(
-                        new
-                        {
-                            PaymentStatusId = 1,
-                            PaymentStatusName = "Paid"
-                        },
-                        new
-                        {
-                            PaymentStatusId = 2,
-                            PaymentStatusName = "Pending"
-                        },
-                        new
-                        {
-                            PaymentStatusId = 3,
-                            PaymentStatusName = "Cancelled"
-                        },
-                        new
-                        {
-                            PaymentStatusId = 4,
-                            PaymentStatusName = "Refunded"
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.RentalRequest", b =>
@@ -907,108 +469,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Rental_Request");
-
-                    b.HasData(
-                        new
-                        {
-                            RequestId = 1,
-                            EquipmentId = 1,
-                            RequestStatusId = 3,
-                            ReturnDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 750.00m,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            RequestId = 2,
-                            EquipmentId = 2,
-                            RequestStatusId = 3,
-                            ReturnDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 840.00m,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            RequestId = 3,
-                            EquipmentId = 3,
-                            RequestStatusId = 2,
-                            ReturnDate = new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 300.00m,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            RequestId = 4,
-                            EquipmentId = 4,
-                            RequestStatusId = 2,
-                            ReturnDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 315.00m,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            RequestId = 5,
-                            EquipmentId = 5,
-                            RequestStatusId = 1,
-                            ReturnDate = new DateTime(2025, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 840.00m,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            RequestId = 6,
-                            EquipmentId = 6,
-                            RequestStatusId = 1,
-                            ReturnDate = new DateTime(2025, 5, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 2450.00m,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            RequestId = 7,
-                            EquipmentId = 7,
-                            RequestStatusId = 3,
-                            ReturnDate = new DateTime(2025, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 595.00m,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            RequestId = 8,
-                            EquipmentId = 8,
-                            RequestStatusId = 3,
-                            ReturnDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 175.00m,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            RequestId = 9,
-                            EquipmentId = 9,
-                            RequestStatusId = 4,
-                            ReturnDate = new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 480.00m,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            RequestId = 10,
-                            EquipmentId = 10,
-                            RequestStatusId = 1,
-                            ReturnDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalCost = 1050.00m,
-                            UserId = 4
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.RentalTransaction", b =>
@@ -1068,92 +528,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("RequestId");
 
                     b.ToTable("Rental_Transaction");
-
-                    b.HasData(
-                        new
-                        {
-                            TransactionId = 1,
-                            AmountPaid = 750.00m,
-                            Deposit = 500.00m,
-                            EquipmentId = 1,
-                            PaymentStatusId = 1,
-                            RentalFee = 750.00m,
-                            RentalPeriod = 5,
-                            RentalReturnDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStartDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestId = 1,
-                            TotalFee = 750.00m
-                        },
-                        new
-                        {
-                            TransactionId = 2,
-                            AmountPaid = 840.00m,
-                            Deposit = 500.00m,
-                            EquipmentId = 2,
-                            PaymentStatusId = 1,
-                            RentalFee = 840.00m,
-                            RentalPeriod = 7,
-                            RentalReturnDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStartDate = new DateTime(2025, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestId = 2,
-                            TotalFee = 840.00m
-                        },
-                        new
-                        {
-                            TransactionId = 3,
-                            AmountPaid = 0.00m,
-                            Deposit = 300.00m,
-                            EquipmentId = 3,
-                            PaymentStatusId = 2,
-                            RentalFee = 300.00m,
-                            RentalPeriod = 4,
-                            RentalReturnDate = new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestId = 3,
-                            TotalFee = 300.00m
-                        },
-                        new
-                        {
-                            TransactionId = 4,
-                            AmountPaid = 0.00m,
-                            Deposit = 250.00m,
-                            EquipmentId = 4,
-                            PaymentStatusId = 2,
-                            RentalFee = 315.00m,
-                            RentalPeriod = 7,
-                            RentalReturnDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStartDate = new DateTime(2025, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestId = 4,
-                            TotalFee = 315.00m
-                        },
-                        new
-                        {
-                            TransactionId = 5,
-                            AmountPaid = 595.00m,
-                            Deposit = 400.00m,
-                            EquipmentId = 7,
-                            PaymentStatusId = 1,
-                            RentalFee = 595.00m,
-                            RentalPeriod = 7,
-                            RentalReturnDate = new DateTime(2025, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStartDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestId = 7,
-                            TotalFee = 595.00m
-                        },
-                        new
-                        {
-                            TransactionId = 6,
-                            AmountPaid = 175.00m,
-                            Deposit = 100.00m,
-                            EquipmentId = 8,
-                            PaymentStatusId = 1,
-                            RentalFee = 175.00m,
-                            RentalPeriod = 5,
-                            RentalReturnDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RequestId = 8,
-                            TotalFee = 175.00m
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.RequestStatus", b =>
@@ -1174,33 +548,6 @@ namespace myproject_Library.Migrations
                     b.HasKey("RequestStatusId");
 
                     b.ToTable("Request_Status");
-
-                    b.HasData(
-                        new
-                        {
-                            RequestStatusId = 1,
-                            RequestStatusName = "Pending"
-                        },
-                        new
-                        {
-                            RequestStatusId = 2,
-                            RequestStatusName = "Approved"
-                        },
-                        new
-                        {
-                            RequestStatusId = 3,
-                            RequestStatusName = "Completed"
-                        },
-                        new
-                        {
-                            RequestStatusId = 4,
-                            RequestStatusName = "Rejected"
-                        },
-                        new
-                        {
-                            RequestStatusId = 5,
-                            RequestStatusName = "Cancelled"
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.ReturnRecord", b =>
@@ -1243,48 +590,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("TransactionId");
 
                     b.ToTable("Return_Record");
-
-                    b.HasData(
-                        new
-                        {
-                            ReturnId = 1,
-                            ActualReturnDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AddtionalCharges = 0.00m,
-                            ConditionId = 1,
-                            LateReturnDays = 0,
-                            LateReturnFees = 0.00m,
-                            TransactionId = 1
-                        },
-                        new
-                        {
-                            ReturnId = 2,
-                            ActualReturnDate = new DateTime(2025, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AddtionalCharges = 0.00m,
-                            ConditionId = 1,
-                            LateReturnDays = 1,
-                            LateReturnFees = 120.00m,
-                            TransactionId = 2
-                        },
-                        new
-                        {
-                            ReturnId = 3,
-                            ActualReturnDate = new DateTime(2025, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AddtionalCharges = 0.00m,
-                            ConditionId = 2,
-                            LateReturnDays = 0,
-                            LateReturnFees = 0.00m,
-                            TransactionId = 5
-                        },
-                        new
-                        {
-                            ReturnId = 4,
-                            ActualReturnDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AddtionalCharges = 50.00m,
-                            ConditionId = 3,
-                            LateReturnDays = 0,
-                            LateReturnFees = 0.00m,
-                            TransactionId = 6
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.Role", b =>
@@ -1319,29 +624,6 @@ namespace myproject_Library.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConcurrencyStamp = "af1255c9-ef67-4324-beec-eae03bf14713",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ConcurrencyStamp = "0e462049-6047-4e1e-ae6d-96a53cabce296",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ConcurrencyStamp = "c6ac44ab-cc96-489f-8e1f-3cef3b89276c",
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        });
                 });
 
             modelBuilder.Entity("myproject_Library.Model.User", b =>
@@ -1429,76 +711,6 @@ namespace myproject_Library.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "e27a817e-08e0-4b11-8dcc-786f2768ce51",
-                            Email = "admin@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "ADMIN",
-                            Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "229fe287-8a02-46eb-921b-0111359ab1ca",
-                            TwoFactorEnabled = false,
-                            UserName = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "03ff4be2-d43a-4547-b98d-0f10d1477bed",
-                            Email = "user@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER@EXAMPLE.COM",
-                            NormalizedUserName = "USER",
-                            Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "99dae363-9bdf-460a-a9fa-08ce79422b86",
-                            TwoFactorEnabled = false,
-                            UserName = "User"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "8d7f1f35-e6da-4e2e-8f5d-29e16006d1c4",
-                            Email = "manager@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "MANAGER@EXAMPLE.COM",
-                            NormalizedUserName = "MANAGER",
-                            Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "7ff9c73f-fc3f-4086-8046-b7d674990f2c",
-                            TwoFactorEnabled = false,
-                            UserName = "Manager"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "7a8e57cc-e1c1-41cf-8a54-635abe9e68e6",
-                            Email = "rehan@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "REHAN@EXAMPLE.COM",
-                            NormalizedUserName = "REHAN",
-                            Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "7f714bb0-2a5f-4cad-a9e2-adf4459c2515",
-                            TwoFactorEnabled = false,
-                            UserName = "Rehan"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

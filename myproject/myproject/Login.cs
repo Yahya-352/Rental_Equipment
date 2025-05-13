@@ -58,6 +58,19 @@ namespace myproject
 
         private async void button1_Click(object sender, EventArgs e)
         {
+
+            //await _authService.RegisterUserAsync("Mahdi", "Mahdi@gmail.com", "Xxxx@123", "User");
+            //await _authService.RegisterUserAsync("Ahmed", "Ahmed@gmail.com", "Xxxx@123", "User");
+            //await _authService.RegisterUserAsync("Rehan", "Rehan@gmail.com", "Xxxx@123", "User");
+            //await _authService.RegisterUserAsync("Hassan", "Hassan@gmail.com", "Xxxx@123", "User");
+
+            //await _authService.RegisterUserAsync("Admin2", "Admin2@gmail.com", "Xxxx@222", "Administrator");
+            //await _authService.RegisterUserAsync("Admin3", "Admin3@gmail.com", "Xxxx@333", "Administrator");
+            //await _authService.RegisterUserAsync("Manager", "Manager@gmail.com", "Xxxx@123", "Staff");
+            //await _authService.RegisterUserAsync("Staff1", "Staff1@gmail.com", "Xxxx@123", "Staff");
+            //await _authService.RegisterUserAsync("Staff2", "Staff2@gmail.com", "Xxxx@123", "Staff");
+            //await _authService.RegisterUserAsync("Staff3", "Staff3@gmail.com", "Xxxx@123", "Staff");
+
             try
             {
                 // Disable controls during login attempt
@@ -80,8 +93,8 @@ namespace myproject
 
                 if (loginSuccess)
                 {
-                    // Check role and navigate to appropriate form
-                    if (await _authService.IsInRoleAsync("Administrator"))
+                    // Check if user is Administrator or Staff
+                    if (await _authService.IsInRoleAsync("Administrator") || await _authService.IsInRoleAsync("Staff") || await _authService.IsInRoleAsync("Manager"))
                     {
                         dbContext.Logs.Add(new Log
                         {
@@ -105,13 +118,12 @@ namespace myproject
                             Action = "UnAuthorized",
                             Timestamp = DateTime.Now,
                             Source = "User",
-                            Exception = "Only Admins are allowed to access this application"
+                            Exception = "Only Admins and Staff are allowed to access this application"
                         });
                         dbContext.SaveChanges();
 
-                        MessageBox.Show("Only Admins are allowed to access this application!", "UnAuthorized", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Only Admins and Staff are allowed to access this application!", "UnAuthorized", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-
                 }
                 else
                 {
@@ -152,10 +164,26 @@ namespace myproject
             {
                 // Re-enable controls after login attempt
                 btnConfirm.Enabled = true;
-                btnConfirm.Enabled = true;
                 txtUsername.Enabled = true;
                 txtPassword.Enabled = true;
             }
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint_1(object sender, PaintEventArgs e)
+        {}
+
+        private async void button1_Click_1(object sender, EventArgs e)
+        {
+            await NotificationSender.SendNotificationAsync(
+                userId: 1,
+                message: "Your payment was processed successfully.",
+                type: "Success"
+            );
         }
     }
 }

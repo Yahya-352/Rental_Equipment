@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,11 @@ namespace myproject_Library.Model
         public string? CommentText { get; set; }
         [Column("User_ID")]
         public int? UserId { get; set; }
+
+        [Column("Rating")]
+        public int? Rating { get; set; }
+        [Column("IsVisible")]
+        public bool? IsVisible { get; set; } = true;
         [Column("Transaction_ID")]
         public int? TransactionId { get; set; }
 

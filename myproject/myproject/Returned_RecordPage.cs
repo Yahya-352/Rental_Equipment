@@ -62,9 +62,6 @@ namespace myproject
                 context.ReturnRecords.Remove((context.ReturnRecords.Find(selectedRecord)));
 
                 context.SaveChanges();
-            refresh();
-
-
         }
     }
 }
