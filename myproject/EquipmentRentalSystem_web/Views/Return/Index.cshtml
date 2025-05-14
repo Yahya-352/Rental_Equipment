@@ -70,13 +70,13 @@
                     <td>@(actualDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                     <td class="text-center">@plannedDays</td>
                     <td class="text-center">@lateDays</td>
-                    <td class="text-end">@($"{plannedFee:C}")</td>
-                    <td class="text-end">@($"{lateFee:C}")</td>
+                    <td class="text-end">$@(plannedFee.ToString("0.00"))</td>
+                    <td class="text-end">$@(lateFee)</td>
                     <td>@item.Condition?.ConditionName</td>
-                    <td class="text-end">@($"{deposit:C}")</td>
-                    <td class="text-end">@($"{paid:C}")</td>
-                    <td class="text-end">@($"{amountLeft:C}")</td>
-                    <td class="text-end">@($"{totalFee:C}")</td>
+                    <td class="text-end">$@(deposit.ToString("0.00"))</td>
+                    <td class="text-end">$@(paid.ToString("0.00"))</td>
+                    <td class="text-end">$@(amountLeft.ToString("0.00"))</td>
+                    <td class="text-end">$@(totalFee.ToString("0.00"))</td>
                     <td class="text-center">@isPaid</td>
                 </tr>
             }
