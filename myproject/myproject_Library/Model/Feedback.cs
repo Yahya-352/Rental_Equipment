@@ -16,7 +16,6 @@ namespace myproject_Library.Model
         [Column("Feedback_ID")]
         public int FeedbackId { get; set; }
         [Column(TypeName = "date")]
-
         public DateTime? Date { get; set; }
         [Column("time")]
         public TimeSpan? Time { get; set; }

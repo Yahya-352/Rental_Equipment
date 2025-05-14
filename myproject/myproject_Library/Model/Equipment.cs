@@ -42,7 +42,8 @@ namespace myproject_Library.Model
        
 
         public int? ConditionId { get; set; }
-     
+        [Column("Late_Penalty_Percentage", TypeName = "numeric(18, 0)")]
+        public decimal? LatePenaltyPercentage { get; set; }
 
         [ForeignKey("AvailabilityStatusId")]
         [InverseProperty("Equipment")]

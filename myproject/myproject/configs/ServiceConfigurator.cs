@@ -14,7 +14,6 @@ namespace myproject.configs
 {
     internal class ServiceConfigurator
     {
-
         private static IServiceProvider _serviceProvider;
 
         public static IServiceProvider ConfigureServices()

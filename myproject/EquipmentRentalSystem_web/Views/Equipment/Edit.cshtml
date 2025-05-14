@@ -1,0 +1,99 @@
+@model myproject_Library.Model.Equipment
+
+@{
+    ViewData["Title"] = "Edit Equipment";
+}
+
+<h2>Edit Equipment</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Edit Equipment Details</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="EquipmentId" />
+
+                    <div class="form-group">
+                        <label asp-for="EquipmentName" class="control-label">Equipment Name</label>
+                        <input asp-for="EquipmentName" class="form-control" />
+                        <span asp-validation-for="EquipmentName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CategoryId" class="control-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control">
+                            @foreach (var item in ViewBag.Categories)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="RentalPrice" class="control-label">Rental Price</label>
+                            <input asp-for="RentalPrice" class="form-control" type="number" step="0.01" />
+                            <span asp-validation-for="RentalPrice" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cost" class="control-label">Cost</label>
+                            <input asp-for="Cost" class="form-control" type="number" step="0.01" />
+                            <span asp-validation-for="Cost" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AvailabilityStatusId" class="control-label">Availability Status</label>
+                            <select asp-for="AvailabilityStatusId" class="form-control">
+                                @foreach (var item in ViewBag.AvailabilityStatuses)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AvailabilityStatusId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label asp-for="ConditionId" class="control-label">Condition</label>
+                            <select asp-for="ConditionId" class="form-control">
+                                @foreach (var item in ViewBag.Conditions)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="ConditionId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="LatePenaltyPercentage" class="control-label">Late Penalty Percentage</label>
+                        <input asp-for="LatePenaltyPercentage" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="LatePenaltyPercentage" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

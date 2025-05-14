@@ -49,6 +49,11 @@ namespace myproject
                     return;
                 }
 
+                if (!decimal.TryParse(textBox8.Text, out decimal penaltyPercentage))
+                {
+                    MessageBox.Show("Please enter a valid penalty percentage.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 if (availabilityComboBox.SelectedItem == null)
                 {
                     MessageBox.Show("Please select a valid availability status.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -76,6 +81,7 @@ namespace myproject
                         equipment1.EquipmentName = name_textbox.Text;
                         equipment1.Description = description_textbox.Text;
                         equipment1.RentalPrice = rentalPrice;
+                        equipment1.LatePenaltyPercentage = penaltyPercentage;
                         equipment1.AvailabilityStatusId = Convert.ToInt32(availabilityComboBox.SelectedValue);
                         equipment1.CategoryId = Convert.ToInt32(categoryComboBox.SelectedValue);
                         equipment1.ConditionId = Convert.ToInt32(conditionComboBox.SelectedValue);
@@ -96,6 +102,7 @@ namespace myproject
                         EquipmentName = name_textbox.Text,
                         Description = description_textbox.Text,
                         RentalPrice = rentalPrice,
+                        LatePenaltyPercentage = penaltyPercentage,
                         AvailabilityStatusId = Convert.ToInt32(availabilityComboBox.SelectedValue),
                         CategoryId = Convert.ToInt32(categoryComboBox.SelectedValue),
                         ConditionId = Convert.ToInt32(conditionComboBox.SelectedValue)
@@ -177,6 +184,7 @@ namespace myproject
                 name_textbox.Text = equipment1.EquipmentName;
                 description_textbox.Text = equipment1.Description;
                 fee_textbox.Text = equipment1.RentalPrice.ToString();
+                textBox8.Text = equipment1.LatePenaltyPercentage.ToString();
                 categoryComboBox.SelectedValue = equipment1.CategoryId;
                 conditionComboBox.SelectedValue = equipment1.ConditionId;
                 availabilityComboBox.SelectedValue = equipment1.AvailabilityStatusId;

@@ -22,6 +22,11 @@ namespace myproject_Library.Model
         [Unicode(false)]
         public string? CategoryName { get; set; }
 
+        [Column("Category_Description")]
+        [StringLength(255)]
+        [Unicode(false)]
+        public string? Description { get; set; }  // ✅ New description field
+
         [InverseProperty("Category")]
         public virtual ICollection<Equipment> Equipment { get; set; }
     }

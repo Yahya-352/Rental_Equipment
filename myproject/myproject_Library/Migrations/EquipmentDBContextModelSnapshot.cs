@@ -326,6 +326,10 @@ namespace myproject_Library.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("Equipment_Name");
 
+                    b.Property<decimal?>("LatePenaltyPercentage")
+                        .HasColumnType("numeric(18,0)")
+                        .HasColumnName("Late_Penalty_Percentage");
+
                     b.Property<decimal?>("RentalPrice")
                         .HasColumnType("numeric(18,0)")
                         .HasColumnName("Rental_Price");
