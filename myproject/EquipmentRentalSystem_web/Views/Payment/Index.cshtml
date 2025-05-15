@@ -6,12 +6,12 @@
 <div>
     <p><strong>Transaction ID:</strong> @Model.TransactionId</p>
     <p><strong>Equipment:</strong> @Model.Equipment.EquipmentName</p>
-    <p><strong>Total Fee:</strong> @(Model.TotalFee ?? 0) BHD</p>
-    <p><strong>Deposit:</strong> @(Model.Deposit ?? 0) BHD</p>
-    <p><strong>Already Paid:</strong> @(Model.AmountPaid ?? 0) BHD</p>
+    <p><strong>Total Fee:</strong> $@(Model.TotalFee ?? 0) </p>
+    <p><strong>Deposit:</strong> $@(Model.Deposit ?? 0) </p>
+    <p><strong>Already Paid:</strong> $@(Model.AmountPaid ?? 0) </p>
 
 
-    <p><strong>Remaining:</strong> @(Model.TotalFee - ((Model.AmountPaid ?? 0) + (Model.Deposit ?? 0))) BHD</p>
+    <p><strong>Remaining:</strong> $@(Model.TotalFee - ((Model.AmountPaid ?? 0) + (Model.Deposit ?? 0))) </p>
 </div>
 
 <form method="post" action="/Payment/Submit">

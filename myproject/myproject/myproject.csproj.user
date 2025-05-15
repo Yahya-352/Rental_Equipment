@@ -5,6 +5,9 @@
     <Compile Update="addEquipment.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Admin-ManageUsers.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="CreateTransaction.cs">
       <SubType>UserControl</SubType>
     </Compile>
