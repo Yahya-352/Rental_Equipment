@@ -33,18 +33,91 @@ namespace EquipmentRentalSystem_web.Controllers
 
             ViewData["Title"] = "My Returned Items";
             ViewData["TotalReturns"] = returnedItems.Count;
+
             return View(returnedItems);
         }
+        [HttpGet]
+        public async Task<IActionResult> FilterReturnUser(int? ispaid)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var query = _context.ReturnRecords
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.Equipment)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.Request)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.PaymentStatus)
+                .Include(r => r.Condition)
+                .Where(f => f.Transaction.Request.UserId == user.Id)
+                .OrderByDescending(r => r.ActualReturnDate)
+                .AsQueryable();
+
+            if (ispaid.HasValue)
+            {
+                bool isPaid = ispaid.Value == 1;
+                query = query.Where(x => x.Transaction.PaymentStatusId == (isPaid ? 1 : 2));
+            }
+
+            var result = await query.ToListAsync();
+
+            ViewData["user"] = _context.Users.ToList();
+            ViewData["TotalReturns"] = result.Count;
+            ViewData["Title"] = "My Filtered Returns";
+
+            return View("MyReturns", result);
+        }
+
+
+        [HttpGet]
+        public IActionResult FilterReturn(int user, int? ispaid)
+        {
+            var returnedItems = _context.ReturnRecords
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.Request)
+                        .ThenInclude(r => r.User)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.Equipment)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.PaymentStatus)
+                .Include(r => r.Condition)
+                .AsQueryable();
+
+            // Filter by user if selected (user >= 0)
+            if (user >= 0)
+            {
+                returnedItems = returnedItems.Where(x => x.Transaction.Request.User.Id == user);
+            }
+
+            // Add payment status filter
+            if (ispaid.HasValue)
+            {
+                bool isPaid = ispaid.Value == 1;
+                returnedItems = returnedItems.Where(x => x.Transaction.PaymentStatusId == (isPaid ? 1 : 2));
+            }
+
+            var result = returnedItems.ToList();
+            ViewData["user"] = _context.Users.ToList();
+            return View("Index", result);
+        }
+
+        
 
         [Authorize]
         public IActionResult Index()
         {
             var returnedItems = _context.ReturnRecords
-              .Include(r => r.Transaction)
-                  .ThenInclude(t => t.Equipment)
-                  .Include(z => z.Condition)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.Request)
+                        .ThenInclude(r => r.User)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.Equipment)
+                .Include(r => r.Transaction)
+                    .ThenInclude(t => t.PaymentStatus)
+                .Include(r => r.Condition)
               .ToList();
 
+            ViewData["user"] =  _context.Users.ToList();
 
             return View(returnedItems);
         }
@@ -68,13 +141,20 @@ namespace EquipmentRentalSystem_web.Controllers
 
         [HttpPost]
         public IActionResult ProcessReturn(int transactionId)
+
         {
+            if (transactionId > 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             if ((_context.ReturnRecords.Any(x => x.TransactionId == transactionId)))
             {
 
                 return RedirectToAction("Index");
 
             }
+
             var transaction = _context.RentalTransactions
                 .Include(t => t.Equipment)
                 .Include(t => t.PaymentStatus)
@@ -147,6 +227,7 @@ namespace EquipmentRentalSystem_web.Controllers
                 CommentText = form["CommentText"].ToString() ?? null
             };
             transaction.Equipment.AvailabilityStatusId = conditionId;
+            transaction.Equipment.ConditionId = conditionId;
             _context.Feedbacks.Add(feedback);
 
             _context.SaveChanges();

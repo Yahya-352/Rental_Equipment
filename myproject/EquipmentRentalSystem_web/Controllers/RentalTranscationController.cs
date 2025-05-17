@@ -131,7 +131,8 @@ namespace EquipmentRentalSystem_web.Controllers
         
         public async Task<IActionResult> CreateFromRequest(RentalTransaction transaction, IFormFile? RentalDocument)
         {
-            // Step 1: Check for date conflicts
+            var user = await _userManager.GetUserAsync(User);
+
             if (await HasDateConflict(
                 transaction.EquipmentId ?? 0,
                 transaction.RequestId,
@@ -139,23 +140,20 @@ namespace EquipmentRentalSystem_web.Controllers
                 transaction.RentalReturnDate ?? DateTime.MaxValue))
             {
                 TempData["Error"] = "Conflict with another booking during the selected dates.";
-                await LoadFormData(transaction); // Populate dropdowns and equipment info again
+                await LoadFormData(transaction);
                 return View(transaction);
             }
             if (transaction.RentalStartDate >= transaction.RentalReturnDate) {
                 TempData["Error"] = "return date must be after start date.";
-                await LoadFormData(transaction); // Populate dropdowns and equipment info again
+                await LoadFormData(transaction); 
                 return View(transaction);
             }
 
-            // Step 2: Proceed if model is valid
             if (ModelState.IsValid)
             {
-                // Save transaction first to get TransactionId
                 _context.RentalTransactions.Add(transaction);
                 await _context.SaveChangesAsync();
 
-                // Step 3: If a file is uploaded, save it
                 if (RentalDocument != null && RentalDocument.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents");
@@ -175,7 +173,7 @@ namespace EquipmentRentalSystem_web.Controllers
                         UploadDate = DateTime.Now,
                         FileType = Path.GetExtension(RentalDocument.FileName),
                         StoragePath = Path.Combine("documents", uniqueFileName),
-                        UserId = 1, // TEMP: Replace with actual user logic later
+                        UserId = user.Id, 
                         TransactionId = transaction.TransactionId
                     };
 
@@ -187,7 +185,6 @@ namespace EquipmentRentalSystem_web.Controllers
                 return RedirectToAction("Index", "RentalRequest");
             }
 
-            // Step 4: If invalid model, reload view
             await LoadFormData(transaction);
             return View(transaction);
         }

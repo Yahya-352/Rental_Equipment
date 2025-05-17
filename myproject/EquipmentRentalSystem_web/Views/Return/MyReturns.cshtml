@@ -3,7 +3,21 @@
 @{
     ViewData["Title"] = "Returned Items";
     Layout = "~/Views/Shared/_Layout.cshtml";
+        var user = ViewData["user"] as List<myproject_Library.Model.User>;
+
 }
+
+<form method="get" asp-controller="Return" asp-action="FilterReturnUser">
+    <div class="form-group">
+        <label for="ispaid">Payment Status:</label>
+        <select name="ispaid" id="ispaid" class="form-control">
+            <option value="">-- All --</option>
+            <option value="1">Is Paid</option>
+            <option value="0">Not Fully Paid</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
 
 <h2 class="text-center mb-4">Returned Items</h2>
 

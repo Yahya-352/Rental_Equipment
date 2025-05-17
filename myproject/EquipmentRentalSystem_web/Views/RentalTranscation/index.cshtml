@@ -36,7 +36,13 @@
 </form>
 
 <select>Transcation ID:</select>
-<form asp-action="ProcessReturn" asp-controller="Return" method="post">
+
+<div id="validation-alert" class="alert alert-danger alert-dismissible fade" role="alert" style="display: none;">
+    Please select a transaction to return.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<form asp-action="ProcessReturn" asp-controller="Return" method="post" id="returnForm">
     <div class="table-responsive">
         <table class="table table-striped table-bordered table-hover shadow-sm align-middle">
             <thead class="table-dark">
@@ -116,3 +122,35 @@
 </form>
 </div>
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const returnForm = document.getElementById('returnForm');
+            const validationAlert = document.getElementById('validation-alert');
+
+            if (returnForm) {
+                returnForm.addEventListener('submit', function(e) {
+                    const selectedRadio = document.querySelector('input[name="transactionId"]:checked');
+
+                    if (!selectedRadio) {
+                        e.preventDefault(); 
+                        validationAlert.style.display = 'block';
+                        validationAlert.classList.add('show');
+
+                        validationAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
+
+            if (validationAlert) {
+                const closeButton = validationAlert.querySelector('.btn-close');
+                if (closeButton) {
+                    closeButton.addEventListener('click', function() {
+                        validationAlert.style.display = 'none';
+                        validationAlert.classList.remove('show');
+                    });
+                }
+            }
+        });
+    </script>
+}
