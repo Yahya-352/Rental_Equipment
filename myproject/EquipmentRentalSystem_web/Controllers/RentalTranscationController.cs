@@ -21,6 +21,8 @@ namespace EquipmentRentalSystem_web.Controllers
 
         }
 
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult>  MyTranscations()
         {
 
@@ -46,6 +48,8 @@ namespace EquipmentRentalSystem_web.Controllers
 
         }
 
+        [HttpGet]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public IActionResult Index(string equipmentSearch, string requestSearch)
         {
             var rentalTransactions = _context.RentalTransactions
@@ -82,9 +86,8 @@ namespace EquipmentRentalSystem_web.Controllers
             return View(result);
         }
 
-      
-
         [HttpGet]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public IActionResult CreateFromRequest(int requestId)
         {
             var request = _context.RentalRequests
@@ -127,10 +130,12 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireDashboardAccess")]
         [ValidateAntiForgeryToken]
-        
         public async Task<IActionResult> CreateFromRequest(RentalTransaction transaction, IFormFile? RentalDocument)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             // Step 1: Check for date conflicts
             if (await HasDateConflict(
                 transaction.EquipmentId ?? 0,
@@ -175,7 +180,7 @@ namespace EquipmentRentalSystem_web.Controllers
                         UploadDate = DateTime.Now,
                         FileType = Path.GetExtension(RentalDocument.FileName),
                         StoragePath = Path.Combine("documents", uniqueFileName),
-                        UserId = 1, // TEMP: Replace with actual user logic later
+                        UserId = user.Id, 
                         TransactionId = transaction.TransactionId
                     };
 
@@ -236,6 +241,7 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> UpdateTransaction(int id)
         {
             var transaction = await _context.RentalTransactions
@@ -256,6 +262,7 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireDashboardAccess")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTransaction(RentalTransaction transaction)
         {
@@ -318,13 +325,5 @@ namespace EquipmentRentalSystem_web.Controllers
             TempData["Success"] = "Transaction updated successfully.";
             return RedirectToAction("Index", "RentalTranscation");
         }
-        
-
-
-
-
-
-
-
     }
 }

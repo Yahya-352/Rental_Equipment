@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using myproject_Library.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EquipmentRental.web.Controllers
 {
+    [Authorize(Policy = "RequireDashboardAccess")]
     public class CategoryController : Controller
     {
         private readonly EquipmentDBContext _context;

@@ -1,4 +1,5 @@
 ﻿@using myproject_Library.Model
+@using System.Security.Claims
 @model RentalRequest
 
 @{
@@ -48,7 +49,7 @@
     </div>
 
     <input type="hidden" id="equipmentRentalPrice" value="@Model.Equipment?.RentalPrice ?? 0" />
-    <input type="hidden" asp-for="UserId" value="1" />
+    <input type="hidden" asp-for="UserId" value="@(User.Identity.IsAuthenticated && int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId) ? userId : 0)" />
     <input type="hidden" asp-for="RequestStatusId" value="1" />
     <input type="hidden" asp-for="RequestId" />
 

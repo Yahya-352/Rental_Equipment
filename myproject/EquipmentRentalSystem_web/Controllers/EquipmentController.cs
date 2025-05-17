@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EquipmentRental.web.Controllers
 {
+    [Authorize(Policy = "RequireDashboardAccess")]
     public class EquipmentController : Controller
     {
         private readonly EquipmentDBContext _context;

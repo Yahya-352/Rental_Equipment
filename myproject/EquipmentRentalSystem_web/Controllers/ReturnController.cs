@@ -18,6 +18,8 @@ namespace EquipmentRentalSystem_web.Controllers
 
         }
 
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> MyReturns(){
             var user = await _userManager.GetUserAsync(User);
 
@@ -36,6 +38,7 @@ namespace EquipmentRentalSystem_web.Controllers
             return View(returnedItems);
         }
 
+        [HttpGet]
         [Authorize]
         public IActionResult Index()
         {
@@ -49,6 +52,7 @@ namespace EquipmentRentalSystem_web.Controllers
             return View(returnedItems);
         }
         [HttpPost]
+        [Authorize]
         public IActionResult ShowPayment(int? selectedReturnId)
         {
             if (selectedReturnId == null)
@@ -67,6 +71,7 @@ namespace EquipmentRentalSystem_web.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public IActionResult ProcessReturn(int transactionId)
         {
             if ((_context.ReturnRecords.Any(x => x.TransactionId == transactionId)))
@@ -110,8 +115,10 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpPost]
-        public IActionResult SubmitReturn(IFormCollection form)
+        [Authorize]
+        public async Task<IActionResult> SubmitReturn(IFormCollection form)
         {
+            var user = await _userManager.GetUserAsync(User);
             int transactionId = int.Parse(form["TransactionId"]);
             DateTime returnDate = DateTime.Parse(form["ReturnDate"]);
             int lateDays = int.Parse(form["LateDays"]);
@@ -139,7 +146,7 @@ namespace EquipmentRentalSystem_web.Controllers
 
             var feedback = new Feedback
             {
-                UserId = 7,
+                UserId = user.Id,
                 TransactionId = transactionId,
                 Rating = int.TryParse(form["rate"], out var r) ? r : 0,
                 Date = returnDate.Date,           

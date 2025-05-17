@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
@@ -12,6 +13,9 @@ namespace EquipmentRentalSystem_web.Controllers
             _context = context;
             _userManager = userManager;
         }
+
+        [HttpGet]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> Index(String SearchString, int? SearchStatus)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -43,7 +47,9 @@ namespace EquipmentRentalSystem_web.Controllers
             return View(requests);
 
         }
+
         [HttpGet]
+        [Authorize]        
         public JsonResult GetEquipmentRentalDates(int equipmentId)
         {
             var rentalRequests = _context.RentalRequests
@@ -71,15 +77,15 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult CreateRequest()
         {
             ViewData["equipments"] = _context.Equipment.ToList(); // ✅ This is needed
             return View();
         }
 
-
-
         [HttpPost]
+        [Authorize]        
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RentalRequest request)
         {
@@ -143,8 +149,8 @@ namespace EquipmentRentalSystem_web.Controllers
             return false;
         }
 
-
-
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> UpdateRequest(int requestid)
         {
             var request = _context.RentalRequests.Find(requestid);
@@ -158,7 +164,9 @@ namespace EquipmentRentalSystem_web.Controllers
             return View(request);
 
         }
+
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(RentalRequest request)
         {
@@ -195,10 +203,8 @@ namespace EquipmentRentalSystem_web.Controllers
             return RedirectToAction("MyRequests");
         }
 
-
-
-
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UpdateStatus(int requestId, string status)
         {
             var request = await _context.RentalRequests.FindAsync(requestId);
@@ -267,11 +273,12 @@ namespace EquipmentRentalSystem_web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> MyRequests() // Add Task<> here
         {
             var user = await _userManager.GetUserAsync(User);
 
-            int userId = user.Id; // TEMP: Replace with actual user authentication later
+            int userId = user.Id;
 
             var userRequests = _context.RentalRequests
                 .Include(r => r.Equipment)

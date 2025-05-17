@@ -180,7 +180,7 @@ namespace myproject
         private async void button1_Click_1(object sender, EventArgs e)
         {
             await NotificationSender.SendNotificationAsync(
-                userId: 1,
+                userId: _authService.CurrentUser.Id,
                 message: "Your payment was processed successfully.",
                 type: "Success"
             );

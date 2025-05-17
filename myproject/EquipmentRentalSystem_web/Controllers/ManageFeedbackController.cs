@@ -49,11 +49,6 @@ namespace EquipmentRentalSystem_web.Controllers
 
             _context.SaveChanges();
 
-
-
-
-
-
             return RedirectToAction("Index");
         }
 

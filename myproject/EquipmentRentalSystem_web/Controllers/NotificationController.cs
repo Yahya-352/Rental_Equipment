@@ -4,6 +4,8 @@ using myproject_Library.Model;
 using EquipmentRentalSystem_web.Hubs;
 using Microsoft.EntityFrameworkCore;
 using EquipmentRentalSystem_web.Classes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EquipmentRentalSystem_web.Controllers
 {
@@ -12,24 +14,29 @@ namespace EquipmentRentalSystem_web.Controllers
         private readonly EquipmentDBContext _context;
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly NotificationService _notificationService;
+        private readonly UserManager<User> _userManager;
 
         // Constructor with dependency injection
-        public NotificationController(EquipmentDBContext context, IHubContext<NotificationHub> hubContext, NotificationService notificationService)
+        public NotificationController(EquipmentDBContext context, IHubContext<NotificationHub> hubContext, NotificationService notificationService, UserManager<User> userManager)
         {
             _context = context;
             _hubContext = hubContext;
             _notificationService = notificationService;
+            _userManager = userManager;
         }
 
         // Action for viewing notifications
-        public IActionResult Index()
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
-            // Set a dummy user ID for session
-            //HttpContext.Session.SetInt32("UserId", 1);
+            var user = await _userManager.GetUserAsync(User);
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            if (user == null)
                 return RedirectToAction("Index", "Home");
+
+            var userId = user.Id;
+
+            HttpContext.Session.SetInt32("UserId", userId);
 
             var notifications = _context.Notifications
                 .Where(n => n.UserId == userId)
@@ -42,10 +49,12 @@ namespace EquipmentRentalSystem_web.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckForNewNotification()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            var user = await _userManager.GetUserAsync(User);
 
-            if (userId == null)
+            if (user == null)
                 return Json(new { showNotification = false });
+
+            var userId = user.Id;
 
             var notification = _context.Notifications
                 .Where(n => n.UserId == userId)
