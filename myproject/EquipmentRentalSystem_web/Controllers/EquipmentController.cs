@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace EquipmentRental.web.Controllers
 {
-    [Authorize(Policy = "RequireDashboardAccess")]
     public class EquipmentController : Controller
     {
         private readonly EquipmentDBContext _context;
@@ -111,7 +110,7 @@ namespace EquipmentRental.web.Controllers
         }
 
         // GET: /Equipment/Create
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> Create()
         {
             // Load dropdown data
@@ -122,7 +121,7 @@ namespace EquipmentRental.web.Controllers
         // POST: /Equipment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> Create(Equipment equipment)
         {
             if (ModelState.IsValid)
@@ -138,7 +137,7 @@ namespace EquipmentRental.web.Controllers
         }
 
         // GET: /Equipment/Edit/5
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -192,7 +191,7 @@ namespace EquipmentRental.web.Controllers
         // POST: /Equipment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> Edit(int id, Equipment equipment)
         {
             if (id != equipment.EquipmentId) return NotFound();
@@ -220,7 +219,7 @@ namespace EquipmentRental.web.Controllers
         }
 
         // GET: /Equipment/Delete/5
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -239,7 +238,7 @@ namespace EquipmentRental.web.Controllers
         // POST: /Equipment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Policy = "RequireDashboardAccess")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var equipment = await _context.Equipment.FindAsync(id);
