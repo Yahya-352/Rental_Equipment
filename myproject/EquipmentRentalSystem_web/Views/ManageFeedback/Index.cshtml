@@ -1,44 +1,58 @@
 ﻿@model List<myproject_Library.Model.Feedback>
 
 @{
+
     ViewData["Title"] = "Equipment Feedback Management";
+    var users = ViewData["Users"] as List<myproject_Library.Model.User>;
+    var equips = ViewData["equips"] as List<myproject_Library.Model.Equipment>;
 }
 
-<h2>Equipment Feedback Management</h2>
-
-<!-- Search Form -->
-<div class="card mb-4">
-    <div class="card-header">Search Feedback</div>
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Filter by User & Equipment</h5>
+    </div>
     <div class="card-body">
-        <form method="get">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Equipment Name</label>
-                        <input type="text" name="equipmentSearch" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Return ID</label>
-                        <input type="number" name="returnId" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Transaction ID</label>
-                        <input type="number" name="transactionId" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <label>&nbsp;</label>
-                    <button type="submit" class="btn btn-primary btn-block">Search</button>
-                </div>
+        <form asp-controller="ManageFeedback" asp-action="FilterFeeds" method="get" class="d-flex flex-wrap gap-3 align-items-end">
+            <div class="form-group flex-grow-1">
+                <label class="form-label">Select User</label>
+                <select name="userId" class="form-select">
+                    <option value="">-- All Users --</option>
+
+                    @foreach (var item in users)
+                    {
+                        <option value="@(item.Id)">@(item.UserName)</option>
+                    }
+                </select>
             </div>
+
+            <div class="form-group flex-grow-1">
+                <label class="form-label">Select Equipment</label>
+                <select name="equipmentId" class="form-select">
+                    <option value="">-- All Equipments --</option>
+
+                    @foreach (var item in equips)
+                    {
+                        <option value="@(item.EquipmentId)">@(item.EquipmentName)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-filter me-2"></i>Filter
+                </button>
+            </div>
+            </span>
+            <a href="@Url.Action("Index", "ManageFeedback")" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-x-circle me-1"></i>Clear Filters
+            </a>
         </form>
     </div>
 </div>
-<form asp-action="ProcessFeedbacks" asp-asp-controller="ManageFeedback">
+
+
+
+<form asp-action="ProcessFeedbacks" asp-controller="ManageFeedback">
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -71,8 +85,9 @@
                 @(item.Transaction.TransactionId)
             </td>
             <td>
-                @(item.Date)
-            </td>
+                            @(item.Date.HasValue ? item.Date.Value.ToString("dd/MM/yyyy") : "")
+
+                        </td>
             <td>
                  <input type="hidden" name="originalValue_@item.FeedbackId" value="@item.IsVisible" />
 

@@ -6,6 +6,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="Views\Return\Create_Return.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AdditionalFiles Include="Views\Return\Create_Return.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="wwwroot\sounds\notify.mp3" />
 	</ItemGroup>
 

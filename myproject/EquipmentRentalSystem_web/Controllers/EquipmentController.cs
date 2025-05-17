@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using myproject_Library.Model;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace EquipmentRental.web.Controllers
 {
@@ -82,6 +83,7 @@ namespace EquipmentRental.web.Controllers
             if (id == null) return NotFound();
 
             var equipment = await _context.Equipment
+                .Include(e => e.RentalTransactions)
                 .Include(e => e.Category)
                 .Include(e => e.AvailabilityStatus)
                 .Include(e => e.Condition)
@@ -89,6 +91,22 @@ namespace EquipmentRental.web.Controllers
 
             if (equipment == null) return NotFound();
 
+            var feedbacks = new List<myproject_Library.Model.Feedback>();
+
+            if (equipment.RentalTransactions != null && equipment.RentalTransactions.Any())
+            {
+                var transactionIds = equipment.RentalTransactions
+                    .Select(t => t.TransactionId)
+                    .ToList();
+
+                feedbacks = _context.Feedbacks
+                    .Include(z=> z.User)
+                    .Where(z => transactionIds.Contains((int)z.TransactionId))
+                    .Where(s=> s.IsVisible ==  true)
+                    .ToList();
+            }
+
+            ViewData["feedback"] = feedbacks;
             return View(equipment);
         }
 

@@ -1,54 +1,181 @@
 @model myproject_Library.Model.Equipment
 
 @{
+
     ViewData["Title"] = "Equipment Details";
+
+    var feedbacks = ViewData["feedback"] as List<myproject_Library.Model.Feedback>;
+
 }
 
 <h2>Equipment Details</h2>
 
 <div class="card">
+
     <div class="card-header">
+
         <h3>@Model.EquipmentName</h3>
+
     </div>
+
     <div class="card-body">
+
         <div class="row">
+
             <div class="col-md-6">
+
                 <dl class="row">
+
                     <dt class="col-sm-4">Description</dt>
+
                     <dd class="col-sm-8">@Model.Description</dd>
 
                     <dt class="col-sm-4">Category</dt>
+
                     <dd class="col-sm-8">@(Model.Category?.CategoryName ?? "N/A")</dd>
 
                     <dt class="col-sm-4">Rental Price</dt>
+
                     <dd class="col-sm-8">@Model.RentalPrice</dd>
+
                 </dl>
+
             </div>
+
             <div class="col-md-6">
+
                 <dl class="row">
+
                     <dt class="col-sm-4">Cost</dt>
+
                     <dd class="col-sm-8">@Model.Cost</dd>
 
                     <dt class="col-sm-4">Status</dt>
+
                     <dd class="col-sm-8">@(Model.AvailabilityStatus?.AvailabilityStatusName ?? "N/A")</dd>
 
                     <dt class="col-sm-4">Condition</dt>
+
                     <dd class="col-sm-8">@(Model.Condition?.ConditionName ?? "N/A")</dd>
 
-                    <dt class="col-sm-4">Late Penalty</dt>
-                    <dd class="col-sm-8">@(Model.LatePenaltyPercentage)%</dd>
+
+
                 </dl>
+
             </div>
+
         </div>
+
     </div>
+
+
+
     <div class="card-footer">
+
         <div class="btn-group">
+
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+
             @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+
             {
+
                 <a asp-action="Edit" asp-route-id="@Model.EquipmentId" class="btn btn-primary">Edit</a>
+
                 <a asp-action="Delete" asp-route-id="@Model.EquipmentId" class="btn btn-danger">Delete</a>
+
             }
+
         </div>
+
     </div>
+
+</div>
+
+<div class="card">
+
+    <div class="card-header bg-light">
+
+        <h4 class="mb-0">Customer Feedback</h4>
+
+    </div>
+
+    <div class="card-body">
+
+        @if (feedbacks != null && feedbacks.Any())
+
+        {
+
+            @foreach (var comment in feedbacks)
+
+            {
+
+                <div class="card mb-3 shadow-sm">
+
+                    <div class="card-header d-flex justify-content-between align-items-center bg-light">
+
+                        <div>
+
+                            <span class="badge bg-primary rounded-pill">@comment.User.UserName</span>
+
+                            @for (int i = 0; i < (comment.Rating ?? 0); i++)
+
+                            {
+
+                                <i class="bi bi-star-fill text-warning"></i>
+
+                            }
+
+                            @for (int i = (comment.Rating ?? 0); i < 5; i++)
+
+                            {
+
+                                <i class="bi bi-star text-muted"></i>
+
+                            }
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            @(comment.Date.HasValue ? comment.Date.Value.ToString("dd/MM/yyyy") : "")
+
+                            @if (comment.Time.HasValue)
+
+                            {
+
+                                <span> at @comment.Time.Value.ToString(@"hh\:mm")</span>
+
+                            }
+
+                        </small>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <p class="card-text">@comment.CommentText</p>
+
+                    </div>
+
+                </div>
+
+            }
+
+        }
+
+        else
+
+        {
+
+            <div class="alert alert-info">
+
+                <i class="bi bi-info-circle me-2"></i>No feedback available for this equipment yet.
+
+            </div>
+
+        }
+
+    </div>
+
 </div>

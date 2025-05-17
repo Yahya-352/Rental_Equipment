@@ -89,10 +89,32 @@ namespace EquipmentRentalSystem_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RentalRequest request)
         {
+
             var user = await _userManager.GetUserAsync(User);
 
-            request.RequestStatusId = 1; // pending
+            if (!request.EquipmentId.HasValue || request.EquipmentId.Value <= 0)
+            {
+                TempData["Error"] = "Please select valid equipment.";
+                ViewData["equipments"] = _context.Equipment.ToList();
+                return View("CreateRequest", request);
+            }
 
+            var equipment = await _context.Equipment.FindAsync(request.EquipmentId.Value);
+            if (equipment == null)
+            {
+                TempData["Error"] = "Selected equipment not found.";
+                ViewData["equipments"] = _context.Equipment.ToList();
+                return View("CreateRequest", request);
+            }
+
+            if (equipment.ConditionId != 1 || equipment.AvailabilityStatusId != 1)
+            {
+                TempData["Error"] = "Item Not Available.";
+                ViewData["equipments"] = _context.Equipment.ToList();
+                return View("CreateRequest", request);
+            }
+
+            request.RequestStatusId = 1; // pending
             request.UserId = user.Id;
 
             if (!ModelState.IsValid || request.StartDate == null || request.ReturnDate == null)
@@ -101,6 +123,7 @@ namespace EquipmentRentalSystem_web.Controllers
                 ViewData["equipments"] = _context.Equipment.ToList();
                 return View("CreateRequest", request);
             }
+
             if (request.ReturnDate <= request.StartDate)
             {
                 TempData["Error"] = "Return date must be after start date.";
@@ -108,9 +131,7 @@ namespace EquipmentRentalSystem_web.Controllers
                 return View("CreateRequest", request);
             }
 
-
-            // Conflict check
-            if (await HasDateConflict(request.RequestId, request.EquipmentId ?? 0, request.StartDate.Value, request.ReturnDate.Value))
+            if (await HasDateConflict(request.RequestId, request.EquipmentId.Value, request.StartDate.Value, request.ReturnDate.Value))
             {
                 TempData["Error"] = "Date conflict detected. Please select a different rental period.";
                 ViewData["equipments"] = _context.Equipment.ToList();
@@ -119,7 +140,6 @@ namespace EquipmentRentalSystem_web.Controllers
 
             _context.RentalRequests.Add(request);
             await _context.SaveChangesAsync();
-
             TempData["Success"] = "Rental request created successfully.";
             return RedirectToAction("MyRequests");
         }

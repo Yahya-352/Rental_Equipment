@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myproject_Library.Model;
 
@@ -11,9 +12,10 @@ using myproject_Library.Model;
 namespace myproject_Library.Migrations
 {
     [DbContext(typeof(EquipmentDBContext))]
-    partial class EquipmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250515084914_db9")]
+    partial class db9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1441,7 +1443,7 @@ namespace myproject_Library.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9f246da7-0b99-466a-9e8d-86e67ed36129",
+                            ConcurrencyStamp = "73c7d7ca-069a-4cd3-86d2-70c8d666d14b",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1450,7 +1452,7 @@ namespace myproject_Library.Migrations
                             Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "06f32aa6-d818-4be5-af71-35a417014200",
+                            SecurityStamp = "3524ee41-44b2-4211-917c-9f91bb3b41e0",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         },
@@ -1458,7 +1460,7 @@ namespace myproject_Library.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "00b69fe9-cfc7-44ea-aea3-a925d69f07cc",
+                            ConcurrencyStamp = "3652f379-e9d8-42c6-bc01-dd495a1d61e6",
                             Email = "user@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1467,7 +1469,7 @@ namespace myproject_Library.Migrations
                             Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ecd0831e-ccd3-4047-8467-e9703ff08ea2",
+                            SecurityStamp = "977884b6-4cfb-4572-9279-ef71db1c93f0",
                             TwoFactorEnabled = false,
                             UserName = "User"
                         },
@@ -1475,7 +1477,7 @@ namespace myproject_Library.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c92580cb-3ade-458e-944a-ea2f626f4a51",
+                            ConcurrencyStamp = "32d0ed4c-ea69-4890-a108-d5d4c5c1cd9d",
                             Email = "manager@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1484,7 +1486,7 @@ namespace myproject_Library.Migrations
                             Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c602a009-d15a-4670-a2f9-78bfd69d2171",
+                            SecurityStamp = "506faaa7-9a54-45e9-810b-519e21eaf1d8",
                             TwoFactorEnabled = false,
                             UserName = "Manager"
                         },
@@ -1492,7 +1494,7 @@ namespace myproject_Library.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "676c8f65-5e5b-490f-8ebd-e44761e0e1fe",
+                            ConcurrencyStamp = "83cf17ca-e168-4516-8b41-e65dd888f859",
                             Email = "rehan@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -1501,7 +1503,7 @@ namespace myproject_Library.Migrations
                             Password = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PasswordHash = "AQAAAAEAACcQAAAAEE+oUrq/9bgM9HlHWRRzaELKRPWAme3qSKyyO/pBAcR9EqXn5uv+iFbOONeiYlJoaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5d3ced29-222b-40f2-a752-602a08f66eb4",
+                            SecurityStamp = "0f42fa51-3e9c-4d98-829b-e42ba1269012",
                             TwoFactorEnabled = false,
                             UserName = "Rehan"
                         });

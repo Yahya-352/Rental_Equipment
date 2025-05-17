@@ -1,23 +1,20 @@
 @model IEnumerable<myproject_Library.Model.Equipment>
-
 @{
     ViewData["Title"] = "Equipment Management";
 }
-
 <h2>Equipment Management</h2>
-
 <div class="row mb-3">
     <div class="col-md-8">
-        <form method="get" action="/Equipment" class="form-inline">
+        <form method="get" action="/Equipment" class="form-inline" id="equipmentFilterForm">
             <div class="input-group mb-2 mr-sm-2">
                 <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search equipment..." />
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
-            
+
             <div class="input-group mb-2 mr-sm-2">
-                <select name="categoryId" id="categorySelect" class="form-control">
+                <select name="categoryId" id="categorySelect" class="form-control" onchange="applyFilter()">
                     @foreach (var item in ViewBag.Categories)
                     {
                         if (item.Selected)
@@ -43,7 +40,6 @@
         }
     </div>
 </div>
-
 <table class="table table-striped">
     <thead>
         <tr>
@@ -78,18 +74,16 @@
         }
     </tbody>
 </table>
-
 @if (ViewBag.NoData == true)
 {
     <div class="alert alert-info mt-3">
         <p>No equipment found matching your search criteria. Try a different search or category filter.</p>
     </div>
 }
-
 @section Scripts {
     <script>
         function applyFilter() {
-            document.querySelector('form').submit();
+            document.getElementById('equipmentFilterForm').submit();
         }
     </script>
 }
