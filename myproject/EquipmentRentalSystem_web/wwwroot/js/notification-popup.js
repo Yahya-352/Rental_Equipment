@@ -2,7 +2,10 @@
     .withUrl("/notificationHub")
     .build();
 
-const userId = 1; // Change this to your dynamic user ID
+const userIdElement = document.getElementById('notification-container');
+const userId = userIdElement.dataset.userId;
+
+console.log(userId);
 
 connection.start()
     .then(() => connection.invoke("JoinGroup", `user_${userId}`))
