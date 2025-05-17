@@ -128,8 +128,6 @@
             userId: document.getElementById('notification-container').dataset.userId
         };
 
-        console.log("Sending notification data:", notificationData);
-
         fetch("/Notification/CreateNotification", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

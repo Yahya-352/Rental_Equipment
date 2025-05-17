@@ -53,6 +53,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RentalRequest" asp-action="Index">RentalRequest</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="Index">Notifications</a>
+                            </li>
                             
                         }
                         else if (User.IsInRole("User")){
@@ -68,14 +71,13 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RentalTranscation" asp-action="MyTranscations">My Transcation</a>
                             </li>
-                              <li class="nav-item">
+                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Return" asp-action="MyReturns">My Returns</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="Index">Notifications</a>
                             </li>
                         }
-                        
                     </ul>
 
                     <!-- Authentication section -->
