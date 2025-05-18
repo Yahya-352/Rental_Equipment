@@ -331,20 +331,18 @@ namespace myproject_Library.Model
             modelBuilder.Entity<RequestStatus>().HasData(
                 new RequestStatus { RequestStatusId = 1, RequestStatusName = "Pending" },
                 new RequestStatus { RequestStatusId = 2, RequestStatusName = "Approved" },
-                new RequestStatus { RequestStatusId = 3, RequestStatusName = "Completed" },
-                new RequestStatus { RequestStatusId = 4, RequestStatusName = "Rejected" },
-                new RequestStatus { RequestStatusId = 5, RequestStatusName = "Cancelled" }
+                new RequestStatus { RequestStatusId = 3, RequestStatusName = "Rejected" },
+                new RequestStatus { RequestStatusId = 4, RequestStatusName = "Cancelled" },
+                new RequestStatus { RequestStatusId = 5, RequestStatusName = "Completed" }
             );
         }
 
         private void SeedEquipmentConditions(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EquipmentCondition>().HasData(
-                new EquipmentCondition { ConditionId = 1, ConditionName = "Excellent" },
-                new EquipmentCondition { ConditionId = 2, ConditionName = "Good" },
-                new EquipmentCondition { ConditionId = 3, ConditionName = "Damaged" },
-                new EquipmentCondition { ConditionId = 4, ConditionName = "Under Repair" },
-                new EquipmentCondition { ConditionId = 5, ConditionName = "Retired" }
+                new EquipmentCondition { ConditionId = 1, ConditionName = "Healthy" },
+                new EquipmentCondition { ConditionId = 2, ConditionName = "Lost" },
+                new EquipmentCondition { ConditionId = 3, ConditionName = "Damaged" }
             );
         }
 
@@ -352,9 +350,8 @@ namespace myproject_Library.Model
         {
             modelBuilder.Entity<EquipmentAvailability>().HasData(
                 new EquipmentAvailability { AvailabilityStatusId = 1, AvailabilityStatusName = "Available" },
-                new EquipmentAvailability { AvailabilityStatusId = 2, AvailabilityStatusName = "Rented" },
-                new EquipmentAvailability { AvailabilityStatusId = 3, AvailabilityStatusName = "Under Maintenance" },
-                new EquipmentAvailability { AvailabilityStatusId = 4, AvailabilityStatusName = "Reserved" }
+                new EquipmentAvailability { AvailabilityStatusId = 2, AvailabilityStatusName = "Out of Stock" },
+                new EquipmentAvailability { AvailabilityStatusId = 3, AvailabilityStatusName = "Under Maintenance" }
             );
         }
 
@@ -362,9 +359,7 @@ namespace myproject_Library.Model
         {
             modelBuilder.Entity<PaymentStatus>().HasData(
                 new PaymentStatus { PaymentStatusId = 1, PaymentStatusName = "Paid" },
-                new PaymentStatus { PaymentStatusId = 2, PaymentStatusName = "Pending" },
-                new PaymentStatus { PaymentStatusId = 3, PaymentStatusName = "Cancelled" },
-                new PaymentStatus { PaymentStatusId = 4, PaymentStatusName = "Refunded" }
+                new PaymentStatus { PaymentStatusId = 2, PaymentStatusName = "Unpaid" }
             );
         }
 
