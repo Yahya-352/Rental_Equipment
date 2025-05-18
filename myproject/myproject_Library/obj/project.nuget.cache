@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RhVyb1WqDS0=",
+  "dgSpecHash": "NxkiN7UM1zI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj",
+  "projectFilePath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\salma\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\salma\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.36\\microsoft.aspnetcore.cryptography.internal.6.0.36.nupkg.sha512",

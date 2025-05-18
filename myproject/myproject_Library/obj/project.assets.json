@@ -2221,11 +2221,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj",
+      "projectUniqueName": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj",
       "projectName": "myproject_Library",
-      "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj",
+      "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj",
       "packagesPath": "C:\\Users\\salma\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject_Library\\obj\\",
+      "outputPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\salma\\AppData\\Roaming\\NuGet\\NuGet.Config",

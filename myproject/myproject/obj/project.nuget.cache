@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DghL96nqJtg=",
+  "dgSpecHash": "RXhFRTMB1nQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject\\myproject.csproj",
+  "projectFilePath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject\\myproject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\salma\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\salma\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.3.0\\microsoft.aspnetcore.authentication.2.3.0.nupkg.sha512",

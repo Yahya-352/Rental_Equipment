@@ -24,10 +24,10 @@ namespace myproject.configs
             services.AddDbContext<EquipmentDBContext>(options =>
 
             //Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=EquipmentsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
-
+            //
 
             //Data Source=STS_LAPTOP_02\\MSSQLSERVER02;Initial Catalog=EquipmentDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False
-                options.UseSqlServer(@"Data Source=STS_LAPTOP_02\MSSQLSERVER02;Initial Catalog=EquipmentDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"));
+                options.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=EquipmentsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
             // Add Identity services
             services.AddIdentity<User, Role>(options =>

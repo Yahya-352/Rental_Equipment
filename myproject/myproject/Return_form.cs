@@ -25,12 +25,14 @@ namespace myproject
         int return_id = -1;
         Decimal fee;
         private int _finalConditionId = -1;
+        private bool isLoading = true;
 
         public Return_form()
         {
             InitializeComponent();
             context = new EquipmentDBContext();
             _authService = ServiceConfigurator.GetService<AuthService>();
+            isLoading = false;
         }
 
         public Return_form(int Return, bool update)
@@ -64,18 +66,22 @@ namespace myproject
                     }
                     codition_cb.SelectedItem = transc.Equipment.ConditionId.Value;
 
-
                     if (_finalConditionId != -1)
                     {
                         codition_cb.SelectedValue = _finalConditionId;
                     }
 
+                    isLoading = false;
                     calculateLateDays();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading transaction: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                isLoading = false;
             }
         }
 
@@ -94,9 +100,18 @@ namespace myproject
                 if (transc != null)
                 {
                     textBox1.Text = transc.TransactionId.ToString();
-                    dateTimePicker1.Value = transc.RentalReturnDate ?? DateTime.Now;
+
+                    if (transc.RentalReturnDate.HasValue)
+                    {
+                        dateTimePicker1.Value = transc.RentalReturnDate.Value;
+                    }
+                    else
+                    {
+                        dateTimePicker1.Value = DateTime.Now;
+                    }
 
                     loadTrans();
+                    isLoading = false;
                     calculateLateDays();
                 }
                 else
@@ -108,6 +123,10 @@ namespace myproject
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading transaction: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                isLoading = false;
             }
         }
 
@@ -139,44 +158,47 @@ namespace myproject
                     MessageBox.Show("Please select a condition.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
                 if (transc == null)
                 {
                     MessageBox.Show("Transaction not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-
                 var equipment = context.Equipment
                     .FirstOrDefault(eq => eq.EquipmentId == transc.EquipmentId);
-
                 if (equipment == null)
                 {
                     MessageBox.Show("Equipment not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                // **GET THE TRANSACTION FROM DATABASE TO UPDATE TOTALFEE**
+                var existingTransaction = context.RentalTransactions
+                    .FirstOrDefault(t => t.TransactionId == transc.TransactionId);
+
                 if (this.Update)
                 {
                     int returnId = this.return_id;
-
                     var returnRecord = context.ReturnRecords
                         .FirstOrDefault(r => r.ReturnId == returnId);
-
                     if (returnRecord == null)
                     {
                         MessageBox.Show("Return record not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-
                     returnRecord.ActualReturnDate = dateTimePicker1.Value;
                     returnRecord.LateReturnFees = fee;
                     returnRecord.ConditionId = _finalConditionId;
+                    returnRecord.LateReturnDays = Math.Max(0, (dateTimePicker1.Value.Date - (transc.RentalReturnDate?.Date ?? DateTime.Now.Date)).Days);
+                    returnRecord.AddtionalCharges = fee - returnRecord.LateReturnFees; // Condition-based charges
+
+                    if (existingTransaction != null)
+                    {
+                        existingTransaction.TotalFee = (existingTransaction.RentalFee ?? 0) + (existingTransaction.Deposit ?? 0) + fee;
+                    }
 
                     equipment.AvailabilityStatusId = _finalConditionId;
                     equipment.ConditionId = _finalConditionId;
-
                     context.SaveChanges();
-
                     MessageBox.Show("Return record updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -184,20 +206,23 @@ namespace myproject
                     var returnRecord = new ReturnRecord
                     {
                         ActualReturnDate = dateTimePicker1.Value,
-                        LateReturnFees = fee,
+                        LateReturnFees = fee, 
                         ConditionId = _finalConditionId,
-                        TransactionId = transc.TransactionId
+                        TransactionId = transc.TransactionId,
+                        LateReturnDays = Math.Max(0, (dateTimePicker1.Value.Date - (transc.RentalReturnDate?.Date ?? DateTime.Now.Date)).Days)
                     };
 
-                    equipment.ConditionId = _finalConditionId;
-                    equipment.AvailabilityStatusId = 1;
+                    if (existingTransaction != null)
+                    {
+                        existingTransaction.TotalFee = (existingTransaction.RentalFee ?? 0) + (existingTransaction.Deposit ?? 0) + fee;
+                    }
 
+                    equipment.ConditionId = _finalConditionId;
+                    equipment.AvailabilityStatusId = _finalConditionId;
                     context.ReturnRecords.Add(returnRecord);
                     context.SaveChanges();
-
                     MessageBox.Show("Return record added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -214,20 +239,20 @@ namespace myproject
                         UserId = _authService?.CurrentUser?.Id ?? 0,
                         AffectedData = ex.StackTrace?.Substring(0, Math.Min(ex.StackTrace?.Length ?? 0, 50))
                     });
-
                     context.SaveChanges();
                 }
                 catch
                 {
-                    // If logging fails, don't crash the application
                 }
-
                 MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         public void calculateLateDays()
         {
+            // Don't calculate during form loading
+            if (isLoading) return;
+
             try
             {
                 if (transc == null || !transc.RentalReturnDate.HasValue || !transc.RentalStartDate.HasValue)
@@ -239,15 +264,18 @@ namespace myproject
                 var start_dat = transc.RentalStartDate.Value;
                 var actual_date = dateTimePicker1.Value;
 
-                int EarlyDays = Math.Max(0, (plan_date.Date - start_dat.Date).Days);
-                int lateDays = Math.Max(0, (actual_date.Date - plan_date.Date).Days);
-
                 if (actual_date.Date < start_dat.Date)
                 {
-                    MessageBox.Show("Return date cannot be before rental start date", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!isLoading && this.Visible)
+                    {
+                        MessageBox.Show("Return date cannot be before rental start date", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     dateTimePicker1.Value = plan_date;
                     return;
                 }
+
+                int EarlyDays = Math.Max(0, (plan_date.Date - start_dat.Date).Days);
+                int lateDays = Math.Max(0, (actual_date.Date - plan_date.Date).Days);
 
                 Decimal rentalFee = transc.RentalFee.HasValue ? transc.RentalFee.Value : 0;
 
