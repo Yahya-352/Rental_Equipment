@@ -40,7 +40,7 @@ namespace myproject
             .Include(t => t.Equipment)
             .Include(t => t.PaymentStatus)
             .FirstOrDefault(t => t.TransactionId == rentalTransaction.TransactionId);
-            }
+        }
 
         private void CreateTransactionPage_Load(object sender, EventArgs e)
         {
@@ -93,14 +93,14 @@ namespace myproject
                     {
                         TimeSpan rentalPeriod = request.ReturnDate.Value - request.StartDate.Value;
                         RentalPeriodTextBox.Text = rentalPeriod.Days.ToString();
-                        rentalPrice = equipment.RentalPrice.GetValueOrDefault(); 
+                        rentalPrice = equipment.RentalPrice.GetValueOrDefault();
 
 
                         decimal rentalFee = equipment.RentalPrice.GetValueOrDefault() * rentalPeriod.Days;
                         txtTotalCost.Text = rentalFee.ToString("C");
                     }
-                    if (transaction.EquipmentId != null)
-                        HighlightRentedDatesForEquipment(transaction.EquipmentId.Value);
+                    if (request.EquipmentId != null)
+                        HighlightRentedDatesForEquipment(request.EquipmentId.Value);
                 }
             }
         }
@@ -189,7 +189,7 @@ namespace myproject
                 }
 
                 decimal deposit = 0;
-                decimal.TryParse(Deposit.Text, out deposit); 
+                decimal.TryParse(Deposit.Text, out deposit);
 
                 var newTransaction = new RentalTransaction
                 {
@@ -200,7 +200,9 @@ namespace myproject
                     RentalFee = rentalFee,
                     Deposit = deposit,
                     EquipmentId = equipmentId,
-                    PaymentStatusId = paymentStatusId
+                    PaymentStatusId = paymentStatusId,
+                    AmountPaid = 0,
+                    TotalFee = rentalFee
                 };
 
                 if (transaction != null)

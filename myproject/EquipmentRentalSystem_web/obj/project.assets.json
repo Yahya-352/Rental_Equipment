@@ -12006,24 +12006,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rehan\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\salma\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\EquipmentRentalSystem_web\\EquipmentRentalSystem_web.csproj",
+      "projectUniqueName": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\EquipmentRentalSystem_web\\EquipmentRentalSystem_web.csproj",
       "projectName": "EquipmentRentalSystem_web",
-      "projectPath": "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\EquipmentRentalSystem_web\\EquipmentRentalSystem_web.csproj",
-      "packagesPath": "C:\\Users\\rehan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\EquipmentRentalSystem_web\\obj\\",
+      "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\EquipmentRentalSystem_web\\EquipmentRentalSystem_web.csproj",
+      "packagesPath": "C:\\Users\\salma\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\EquipmentRentalSystem_web\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\rehan\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\salma\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -12031,17 +12026,18 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "projectReferences": {
-            "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\myproject\\myproject.csproj": {
-              "projectPath": "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\myproject\\myproject.csproj"
+            "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject\\myproject.csproj": {
+              "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject\\myproject.csproj"
             },
-            "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\myproject_Library\\myproject_Library.csproj": {
-              "projectPath": "C:\\Users\\rehan\\Downloads\\myproject(sent1)\\myproject\\myproject_Library\\myproject_Library.csproj"
+            "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj": {
+              "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj"
             }
           }
         }
@@ -12055,8 +12051,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+      }
     },
     "frameworks": {
       "net6.0-windows7.0": {
@@ -12104,6 +12099,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[6.0.35, 6.0.35]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[6.0.35, 6.0.35]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[6.0.35, 6.0.35]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[6.0.35, 6.0.35]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -12112,7 +12125,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -3929,11 +3929,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject\\myproject.csproj",
+      "projectUniqueName": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject\\myproject.csproj",
       "projectName": "myproject",
-      "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject\\myproject.csproj",
+      "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject\\myproject.csproj",
       "packagesPath": "C:\\Users\\salma\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject\\obj\\",
+      "outputPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\salma\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3951,8 +3951,8 @@
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "projectReferences": {
-            "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj": {
-              "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj"
+            "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj": {
+              "projectPath": "C:\\Users\\salma\\OneDrive\\Desktop\\Codes\\C#\\Rental_EquipmentNew\\Rental_Equipment\\myproject\\myproject_Library\\myproject_Library.csproj"
             }
           }
         }
