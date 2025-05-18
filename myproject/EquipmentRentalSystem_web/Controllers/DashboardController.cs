@@ -21,12 +21,14 @@ namespace EquipmentRentalSystem_web.Controllers
         {
             var dashboardViewModel = new DashboardViewModel
             {
-                // We'll populate these in the next steps
                 PendingRequestsCount = 0,
+                ApprovedRequestsCount = 0,
                 CompletedRequestsCount = 0,
+                RejectedRequestsCount = 0,
+                CancelledRequestsCount = 0,
                 OverdueRequestsCount = 0,
-                RequestsByCategoryData = new List<CategoryDataPoint>(),
                 DamagedEquipmentCount = 0,
+                RequestsByCategoryData = new List<CategoryDataPoint>(),
                 FinancialSummary = new FinancialSummaryData(),
                 EquipmentStatusData = new EquipmentStatusData(),
                 TopRentedEquipment = new List<EquipmentRentalData>(),
@@ -36,45 +38,9 @@ namespace EquipmentRentalSystem_web.Controllers
             // Retrieve and populate the dashboard metrics
             await PopulateDashboardMetrics(dashboardViewModel);
 
-            // Add categories for navigation
             ViewBag.Categories = await _context.Categories.ToListAsync();
 
             return View(dashboardViewModel);
-        }
-
-        // Category-specific dashboard for managers
-        public async Task<IActionResult> CategoryDashboard(int categoryId)
-        {
-            // Check if user is authorized for this category
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-
-            // For simplicity, we're assuming CategoryManager role has access to all categories
-            // In a real app, you might have a user-category mapping table to check permissions
-            if (!User.IsInRole("Administrator") && !User.IsInRole("CategoryManager"))
-            {
-                return Forbid();
-            }
-
-            var category = await _context.Categories.FindAsync(categoryId);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            var categoryDashboardViewModel = new CategoryDashboardViewModel
-            {
-                CategoryId = categoryId,
-                CategoryName = category.CategoryName,
-                // We'll populate these in the next steps
-                TotalEquipment = 0,
-                AvailableEquipment = 0,
-                PendingRequests = 0,
-                TotalRevenue = 0
-            };
-
-            await PopulateCategoryDashboardMetrics(categoryDashboardViewModel);
-
-            return View(categoryDashboardViewModel);
         }
 
         private async Task PopulateDashboardMetrics(DashboardViewModel model)
@@ -82,18 +48,40 @@ namespace EquipmentRentalSystem_web.Controllers
             // Get current date for comparisons
             var today = DateTime.Today;
 
-            // 1. Pending vs Completed Requests
+            // Request status counts
             model.PendingRequestsCount = await _context.RentalRequests
-                .Where(r => r.RequestStatusId == 1) // Assuming 1 is Pending status
+                .Where(r => r.RequestStatusId == 1) // 1 is Pending status
+                .CountAsync();
+
+            model.ApprovedRequestsCount = await _context.RentalRequests
+                .Where(r => r.RequestStatusId == 2) // 2 is Approved status
+                .CountAsync();
+
+            model.RejectedRequestsCount = await _context.RentalRequests
+                .Where(r => r.RequestStatusId == 3) // 3 is Rejected status
+                .CountAsync();
+
+            model.CancelledRequestsCount = await _context.RentalRequests
+                .Where(r => r.RequestStatusId == 4) // 4 is Cancelled status
                 .CountAsync();
 
             model.CompletedRequestsCount = await _context.RentalRequests
-                .Where(r => r.RequestStatusId == 3) // Assuming 3 is Completed status
+                .Where(r => r.RequestStatusId == 5) // 5 is Completed status
                 .CountAsync();
 
-            // 2. Overdue Requests (transactions with return date passed but not returned)
+            // Overdue Requests (transactions with return date passed but not returned)
             model.OverdueRequestsCount = await _context.RentalTransactions
                 .Where(t => t.RentalReturnDate < today && !_context.ReturnRecords.Any(r => r.TransactionId == t.TransactionId))
+                .CountAsync();
+
+            // Damaged Equipment
+            model.DamagedEquipmentCount = await _context.Equipment
+                .Where(e => e.ConditionId == 3) // 3 is Damaged condition
+                .CountAsync();
+
+            // Lost Equipment
+            model.LostEquipmentCount = await _context.Equipment
+                .Where(e => e.ConditionId == 2) // 2 is Lost condition
                 .CountAsync();
 
             // 3. Requests by Category
@@ -113,12 +101,7 @@ namespace EquipmentRentalSystem_web.Controllers
                 });
             }
 
-            // 4. Damaged Equipment
-            model.DamagedEquipmentCount = await _context.Equipment
-                .Where(e => e.ConditionId == 3) // Assuming 3 is Damaged condition
-                .CountAsync();
-
-            // 5. Financial Summary
+            // Financial Summary
             var currentMonthTransactions = _context.RentalTransactions
                 .Where(t => (t.RentalStartDate ?? new DateTime()).Month == today.Month && (t.RentalStartDate ?? new DateTime()).Year == today.Year);
 
@@ -126,23 +109,23 @@ namespace EquipmentRentalSystem_web.Controllers
                 .SumAsync(t => t.AmountPaid ?? 0);
 
             model.FinancialSummary.PendingPayments = await _context.RentalTransactions
-                .Where(t => t.PaymentStatusId == 2) // Assuming 2 is Pending payment status
-                .SumAsync(t => t.AmountPaid ?? 0);
+                .Where(t => t.PaymentStatusId == 2) // 2 is Unpaid status
+                .SumAsync(t => t.TotalFee ?? 0);
 
             model.FinancialSummary.TotalRevenue = await _context.RentalTransactions
-                .Where(t => t.PaymentStatusId == 1) // Assuming 1 is Paid status
+                .Where(t => t.PaymentStatusId == 1) // 1 is Paid status
                 .SumAsync(t => t.AmountPaid ?? 0);
 
-            // 6. Equipment Status
+            // Equipment Status
             model.EquipmentStatusData.TotalEquipment = await _context.Equipment.CountAsync();
             model.EquipmentStatusData.AvailableEquipment = await _context.Equipment
-                .Where(e => e.AvailabilityStatusId == 1) // Assuming 1 is Available status
+                .Where(e => e.AvailabilityStatusId == 1) // 1 is Available status
                 .CountAsync();
-            model.EquipmentStatusData.RentedEquipment = await _context.Equipment
-                .Where(e => e.AvailabilityStatusId == 2) // Assuming 2 is Rented status
+            model.EquipmentStatusData.OutOfStockEquipment = await _context.Equipment
+                .Where(e => e.AvailabilityStatusId == 2) // 2 is Out of Stock status
                 .CountAsync();
             model.EquipmentStatusData.MaintenanceEquipment = await _context.Equipment
-                .Where(e => e.AvailabilityStatusId == 3) // Assuming 3 is Under Maintenance status
+                .Where(e => e.AvailabilityStatusId == 3) // 3 is Under Maintenance status
                 .CountAsync();
 
             // 7. Top Rented Equipment
@@ -185,6 +168,41 @@ namespace EquipmentRentalSystem_web.Controllers
                     Amount = transaction.AmountPaid ?? 0
                 });
             }
+        }
+
+        // Category-specific dashboard for managers
+        public async Task<IActionResult> CategoryDashboard(int categoryId)
+        {
+            // Check if user is authorized for this category
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+            // For simplicity, we're assuming CategoryManager role has access to all categories
+            // In a real app, you might have a user-category mapping table to check permissions
+            if (!User.IsInRole("Administrator") && !User.IsInRole("CategoryManager"))
+            {
+                return Forbid();
+            }
+
+            var category = await _context.Categories.FindAsync(categoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var categoryDashboardViewModel = new CategoryDashboardViewModel
+            {
+                CategoryId = categoryId,
+                CategoryName = category.CategoryName,
+                // We'll populate these in the next steps
+                TotalEquipment = 0,
+                AvailableEquipment = 0,
+                PendingRequests = 0,
+                TotalRevenue = 0
+            };
+
+            await PopulateCategoryDashboardMetrics(categoryDashboardViewModel);
+
+            return View(categoryDashboardViewModel);
         }
 
         private async Task PopulateCategoryDashboardMetrics(CategoryDashboardViewModel model)

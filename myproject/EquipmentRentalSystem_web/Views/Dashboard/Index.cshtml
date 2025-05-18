@@ -6,40 +6,56 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Equipment Rental Dashboard</h1>
-        <div>
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-download me-1"></i> Export Data
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
-                    <li><a class="dropdown-item" href="@Url.Action("ExportEquipmentData", "Dashboard")">Equipment Data</a></li>
-                    <li><a class="dropdown-item" href="@Url.Action("ExportTransactionData", "Dashboard")">Transaction Data</a></li>
-                </ul>
-            </div>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download me-1"></i> Export Data
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                <li><a class="dropdown-item" href="@Url.Action("ExportEquipmentData", "Dashboard")">Equipment Data</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("ExportTransactionData", "Dashboard")">Transaction Data</a></li>
+            </ul>
         </div>
     </div>
 
-    <!-- Summary Cards -->
+    <!-- Request Status Summary Cards -->
     <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+        <div class="col-xl col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Pending Requests
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingRequestsCount</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Approved Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ApprovedRequestsCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -50,20 +66,59 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CompletedRequestsCount</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-check fa-2x text-gray-300"></i>
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Rejected Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.RejectedRequestsCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-6 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                Cancelled Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CancelledRequestsCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Metrics: Overdue, Damaged, Lost -->
+    <div class="row">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Overdue Requests
+                                Overdue Rentals
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OverdueRequestsCount</div>
                         </div>
@@ -75,7 +130,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -87,6 +142,24 @@
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-tools fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                                Lost Equipment
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.LostEquipmentCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-search fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -111,7 +184,7 @@
                             <i class="fas fa-circle text-success"></i> Available (@Model.EquipmentStatusData.AvailableEquipment)
                         </span>
                         <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Rented (@Model.EquipmentStatusData.RentedEquipment)
+                            <i class="fas fa-circle text-primary"></i> Out of Stock (@Model.EquipmentStatusData.OutOfStockEquipment)
                         </span>
                         <span class="mr-2">
                             <i class="fas fa-circle text-warning"></i> Maintenance (@Model.EquipmentStatusData.MaintenanceEquipment)
@@ -306,11 +379,11 @@
         var statusChart = new Chart(statusCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Available', 'Rented', 'Maintenance'],
+                labels: ['Available', 'Out of Stock', 'Under Maintenance'],
                 datasets: [{
                     data: [
         @Model.EquipmentStatusData.AvailableEquipment,
-        @Model.EquipmentStatusData.RentedEquipment,
+        @Model.EquipmentStatusData.OutOfStockEquipment,
         @Model.EquipmentStatusData.MaintenanceEquipment
                     ],
                     backgroundColor: [
